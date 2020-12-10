@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.AttrMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Attr">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="dimid" jdbcType="BIGINT" property="dimid" />
+    <result column="attrName" jdbcType="VARCHAR" property="attrname" />
+  </resultMap>
+</mapper>

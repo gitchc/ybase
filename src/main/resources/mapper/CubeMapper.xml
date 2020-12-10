@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.CubeMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Cube">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="facttable" jdbcType="VARCHAR" property="facttable" />
+    <result column="pkcol" jdbcType="VARCHAR" property="pkcol" />
+    <result column="measurecol" jdbcType="VARCHAR" property="measurecol" />
+    <result column="postion" jdbcType="INTEGER" property="postion" />
+    <result column="autoload" jdbcType="TINYINT" property="autoload" />
+    <result column="dimids" jdbcType="LONGVARCHAR" property="dimids" />
+  </resultMap>
+</mapper>

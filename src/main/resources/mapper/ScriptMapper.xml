@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.ScriptMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Script">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="scrpitName" jdbcType="VARCHAR" property="scrpitname" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="lastStatus" jdbcType="TINYINT" property="laststatus" />
+    <result column="lastupdate" jdbcType="TIMESTAMP" property="lastupdate" />
+    <result column="updateuser" jdbcType="VARCHAR" property="updateuser" />
+    <result column="scrpitContent" jdbcType="LONGVARCHAR" property="scrpitcontent" />
+  </resultMap>
+</mapper>
