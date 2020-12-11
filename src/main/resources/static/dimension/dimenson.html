@@ -144,7 +144,9 @@
         del: function () {
             var id = this.getDimid();
             if (id) {
-                fetchPost("/member/delDim", {dimid: id}, reloadDimList);
+                showConfirm("提示", "确定删除么?", function () {
+                    fetchPost("/member/delDim", {dimid: id}, reloadDimList);
+                });
             }
         },
         attr: function () {
