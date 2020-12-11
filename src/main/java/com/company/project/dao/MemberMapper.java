@@ -2,6 +2,7 @@ package com.company.project.dao;
 
 import com.company.project.core.Mapper;
 import com.company.project.model.Member;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -17,4 +18,6 @@ public interface MemberMapper extends Mapper<Member> {
 
     @Update("update Member set datatype=#{datatype} where id = #{id}")
     void switchDim(String id, Integer datatype);
+    @Delete("delete from Member where dimid= #{dimid} or id = #{dimid}")
+    void delDim(String dimid);
 }

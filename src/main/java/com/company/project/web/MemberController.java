@@ -27,9 +27,6 @@ public class MemberController {
         MemberService.addDim(Member);
         return ResultGenerator.genSuccessResult();
     }
-
-
-
     @RequestMapping("/listDim")
     public Result listDim() {
         List<Member> list = MemberService.findAllDim();
@@ -38,6 +35,11 @@ public class MemberController {
     @RequestMapping("/switchDim")
     public Result switchDim(Member Member) {
         MemberService.switchDim(Member);
+        return ResultGenerator.genSuccessResult();
+    }
+    @RequestMapping("/delDim")
+    public Result delDim(Member Member) {
+        MemberService.delDim(Member);
         return ResultGenerator.genSuccessResult();
     }
 

@@ -1,6 +1,8 @@
 package com.company.project.service.impl;
 
 import com.company.project.core.AbstractService;
+import com.company.project.dao.AttrMapper;
+import com.company.project.dao.AttrvalueMapper;
 import com.company.project.dao.MemberMapper;
 import com.company.project.model.DataType;
 import com.company.project.model.Member;
@@ -23,6 +25,10 @@ import java.util.List;
 public class MemberServiceImpl extends AbstractService<Member> implements MemberService {
     @Resource
     private MemberMapper memberMapper;
+    @Resource
+    private AttrMapper attrMapper;
+    @Resource
+    private AttrvalueMapper attrvalueMapper;
 
     public void addDim(Member member) {
         member.setId(SnowID.nextID());
@@ -63,5 +69,12 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Override
     public void switchDim(Member member) {
         memberMapper.switchDim(member.getDimid(), member.getDatatype());
+    }
+
+    @Override
+    public void delDim(Member member) {
+        attrvalueMapper.deleteByDim(member.getDimid());//删除属性值
+        attrMapper.deleteByDim(member.getDimid());//删除属性
+        memberMapper.delDim(member.getDimid());//删除维度
     }
 }

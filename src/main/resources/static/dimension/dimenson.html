@@ -115,12 +115,18 @@
             return nowid;
         },
         add: function () {
-            showPrompt('输入维度名称', btnevent.insert)
+            showPrompt('输入维度名称', function (name) {
+                var member = {
+                    name: name,
+                    code: name
+                };
+                fetchPost("/member/addDim", member, reloadDimList);
+            });
         },
         edit: function () {
             var id = getDimid();
             if (id) {
-
+                fetchPost("/member/delDim", {dimid:id}, reloadDimList);
             }
         },
         del: function () {
@@ -134,13 +140,6 @@
             if (id) {
 
             }
-        },
-        insert: function (name) {
-            var member = {
-                name: name,
-                code: name
-            };
-            fetchPost("/member/addDim", member, reloadDimList);
         }
 
     }

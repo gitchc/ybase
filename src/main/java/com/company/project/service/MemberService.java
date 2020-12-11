@@ -17,4 +17,6 @@ public interface MemberService extends Service<Member> {
     List<Member> findAllDim();
 
     void switchDim(Member member);
+
+    void delDim(Member member);
 }
