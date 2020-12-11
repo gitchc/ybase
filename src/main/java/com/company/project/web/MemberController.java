@@ -2,6 +2,7 @@ package com.company.project.web;
 
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
+import com.company.project.core.ServiceException;
 import com.company.project.model.Member;
 import com.company.project.service.MemberService;
 import com.github.pagehelper.PageHelper;
@@ -23,23 +24,33 @@ public class MemberController {
     private MemberService MemberService;
 
     @RequestMapping("/addDim")
-    public Result addDim(Member Member) {
+    public Result addDim(Member Member) throws ServiceException {
         MemberService.addDim(Member);
         return ResultGenerator.genSuccessResult();
+
     }
+
     @RequestMapping("/listDim")
     public Result listDim() {
         List<Member> list = MemberService.findAllDim();
         return ResultGenerator.genSuccessResult(list);
     }
+
     @RequestMapping("/switchDim")
     public Result switchDim(Member Member) {
         MemberService.switchDim(Member);
         return ResultGenerator.genSuccessResult();
     }
+
     @RequestMapping("/delDim")
     public Result delDim(Member Member) {
         MemberService.delDim(Member);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @RequestMapping("/updateDim")
+    public Result updateDim(Member Member) {
+        MemberService.updateDim(Member);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -50,7 +61,7 @@ public class MemberController {
     }
 
     @RequestMapping("/delete")
-    public Result delete(@RequestParam Integer id) {
+    public Result delete(@RequestParam String id) {
         MemberService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -62,7 +73,7 @@ public class MemberController {
     }
 
     @RequestMapping("/detail")
-    public Result detail(@RequestParam Integer id) {
+    public Result detail(@RequestParam String id) {
         Member Member = MemberService.findById(id);
         return ResultGenerator.genSuccessResult(Member);
     }

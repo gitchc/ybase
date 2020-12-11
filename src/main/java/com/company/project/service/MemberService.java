@@ -1,6 +1,8 @@
 package com.company.project.service;
-import com.company.project.model.Member;
+
 import com.company.project.core.Service;
+import com.company.project.core.ServiceException;
+import com.company.project.model.Member;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  */
 public interface MemberService extends Service<Member> {
 
-    void addDim(Member member);
+    void addDim(Member member) throws ServiceException;
 
     void addMember(Member member);
 
@@ -19,4 +21,6 @@ public interface MemberService extends Service<Member> {
     void switchDim(Member member);
 
     void delDim(Member member);
+
+    void updateDim(Member member);
 }

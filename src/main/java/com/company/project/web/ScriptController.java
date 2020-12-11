@@ -29,7 +29,7 @@ public class ScriptController {
     }
 
     @RequestMapping("/delete")
-    public Result delete(@RequestParam Integer id) {
+    public Result delete(@RequestParam String id) {
         ScriptService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -41,7 +41,7 @@ public class ScriptController {
     }
 
     @RequestMapping("/detail")
-    public Result detail(@RequestParam Integer id) {
+    public Result detail(@RequestParam String id) {
         Script Script = ScriptService.findById(id);
         return ResultGenerator.genSuccessResult(Script);
     }

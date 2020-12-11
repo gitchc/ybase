@@ -13,11 +13,15 @@ public interface MemberMapper extends Mapper<Member> {
     @Select("select max(position) from Member where pid = #{pid}")
     Integer getMaxPosition(@Param("pid") String pid);
 
-    @Select("select * from Member where membertype=1")
+    @Select("select * from Member where membertype=0")
     List<Member> selectAllDim();
 
     @Update("update Member set datatype=#{datatype} where id = #{id}")
     void switchDim(String id, Integer datatype);
+
     @Delete("delete from Member where dimid= #{dimid} or id = #{dimid}")
     void delDim(String dimid);
+
+    @Update("update Member set name=#{name} where id = #{id}")
+    void updateDim(String id, String name);
 }

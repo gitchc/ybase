@@ -29,7 +29,7 @@ public class CubeController {
     }
 
     @RequestMapping("/delete")
-    public Result delete(@RequestParam Integer id) {
+    public Result delete(@RequestParam String id) {
         CubeService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -41,7 +41,7 @@ public class CubeController {
     }
 
     @RequestMapping("/detail")
-    public Result detail(@RequestParam Integer id) {
+    public Result detail(@RequestParam String id) {
         Cube Cube = CubeService.findById(id);
         return ResultGenerator.genSuccessResult(Cube);
     }

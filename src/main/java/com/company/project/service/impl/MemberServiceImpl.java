@@ -1,6 +1,7 @@
 package com.company.project.service.impl;
 
 import com.company.project.core.AbstractService;
+import com.company.project.core.ServiceException;
 import com.company.project.dao.AttrMapper;
 import com.company.project.dao.AttrvalueMapper;
 import com.company.project.dao.MemberMapper;
@@ -12,6 +13,8 @@ import com.company.project.service.MemberService;
 import com.company.project.utils.SnowID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Condition;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,7 +33,15 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Resource
     private AttrvalueMapper attrvalueMapper;
 
-    public void addDim(Member member) {
+    public void addDim(Member member) throws ServiceException {
+        Condition condition = new Condition(Member.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("membertype", MemberType.DIM);
+        criteria.andEqualTo("code",member.getCode());
+        List<Member> old = memberMapper.selectByCondition(condition);
+        if (old.size() > 0) {
+            throw new ServiceException("维度编码不能重复!");
+        }
         member.setId(SnowID.nextID());
         member.setPid("-1");
         String pid = member.getPid();
@@ -76,5 +87,10 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         attrvalueMapper.deleteByDim(member.getDimid());//删除属性值
         attrMapper.deleteByDim(member.getDimid());//删除属性
         memberMapper.delDim(member.getDimid());//删除维度
+    }
+
+    @Override
+    public void updateDim(Member member) {
+        memberMapper.updateDim(member.getId(), member.getName());
     }
 }

@@ -99,7 +99,7 @@
         })
         $('button').click(function () {
             var id = $(this).attr('id');
-            btnevent[id].call();
+            btnevent[id]();
         });
         //渲染
         reloadDimList();
@@ -107,13 +107,6 @@
     });
 
     var btnevent = {
-        getDimid: function () {
-            if (!dimid) {
-                msgWarn("请先选择一个维度");
-                return;
-            }
-            return nowid;
-        },
         add: function () {
             showPrompt('输入维度名称', function (name) {
                 var member = {
@@ -124,24 +117,49 @@
             });
         },
         edit: function () {
-            var id = getDimid();
+            var id = this.getDimid();
             if (id) {
-                fetchPost("/member/delDim", {dimid:id}, reloadDimList);
+                fetchGet("/member/detail?id="+id, function (data) {
+                    openContentDialog("修改维度", 100, 200, btnevent.initDetail(data), function () {
+                        var editname = $('#editid').val();
+                        fetchPost("/member/updateDim",{id:id, name: editname},reloadDimList)
+                    });
+                });
+
             }
         },
-        del: function () {
-            var id = getDimid();
-            if (id) {
+        initDetail: function (data) { //拼接维度信息
+           var content = '<div class="layui-form-item">' +
+                '<label class="layui-form-label">名称</label>' +
+                '<input type="text" id="editid" class="layui-layer-input" value="' + data.name + '">' +
+                '</div>' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label">编码</label>' +
+                '<input type="text" class="layui-layer-input" disabled value="' + data.code + '">' +
+                '</div>';
 
+            return content;
+
+        },
+        del: function () {
+            var id = this.getDimid();
+            if (id) {
+                fetchPost("/member/delDim", {dimid: id}, reloadDimList);
             }
         },
         attr: function () {
-            var id = getDimid();
+            var id = this.getDimid();
             if (id) {
 
             }
+        },
+        getDimid: function () {
+            if (!dimid) {
+                msgWarn("请先选择一个维度");
+                return;
+            }
+            return dimid;
         }
-
     }
     var dimid;
     var reloadDimList = function () {
@@ -152,7 +170,7 @@
                 $('#dimform').append(' <div class="layui-row"> ' +
                     '<div class=" layui-col-md8" ><label dimid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
                     '                   class="layui-form-label dimlabel">' + item.name + '</label> </div> \n' +
-                    ' <div class=" layui-col-md2">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="卷积|平面" lay-filter="rollup" '+check+'></div></div>');
+                    ' <div class=" layui-col-md2">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="卷积|平面" lay-filter="rollup" ' + check + '></div></div>');
             })
             form.render();
         });
@@ -163,8 +181,8 @@
     var bindDimSwich = function () {
         form.on('switch(rollup)', function (data) {
             var dimid = $(data.elem).attr('dimid');
-            var datatype = this.checked?6:7;
-            fetchPost("/member/switchDim", {dimid:dimid,datatype:datatype});
+            var datatype = this.checked ? 6 : 7;
+            fetchPost("/member/switchDim", {dimid: dimid, datatype: datatype});
         });
         $(document).on("click", ".dimlabel", function () {
             $('.dimlabel').removeClass("custom-tree-item-clicked");

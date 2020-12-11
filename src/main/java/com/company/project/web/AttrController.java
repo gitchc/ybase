@@ -1,11 +1,11 @@
 package com.company.project.web;
+
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.model.Attr;
 import com.company.project.service.AttrService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +14,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
-* Created by CodeGenerator on 2020-12-10.
-*/
+ * Created by CodeGenerator on 2020-12-10.
+ */
 @RestController
 @RequestMapping("/attr")
 public class AttrController {
@@ -29,7 +29,7 @@ public class AttrController {
     }
 
     @RequestMapping("/delete")
-    public Result delete(@RequestParam Integer id) {
+    public Result delete(@RequestParam String id) {
         AttrService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -41,7 +41,7 @@ public class AttrController {
     }
 
     @RequestMapping("/detail")
-    public Result detail(@RequestParam Integer id) {
+    public Result detail(@RequestParam String id) {
         Attr Attr = AttrService.findById(id);
         return ResultGenerator.genSuccessResult(Attr);
     }

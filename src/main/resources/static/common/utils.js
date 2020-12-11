@@ -12,11 +12,11 @@ function showInfo(msg, title) {
     if (!title)
         title = '提示信息';
     layer.alert(msg, {
-        icon : 1,
-        title : title,
-        shade : false,
-        zIndex:2147483647
-        
+        icon: 1,
+        title: title,
+        shade: false,
+        zIndex: 2147483647
+
     });
 }
 
@@ -25,11 +25,11 @@ function showError(msg, title) {
     if (!title)
         title = '错误信息';
     layer.alert(msg, {
-        icon : 2,
-        title : title,
-        shade : false,
-        zIndex:2147483647
-        
+        icon: 2,
+        title: title,
+        shade: false,
+        zIndex: 2147483647
+
     });
 }
 
@@ -38,10 +38,10 @@ function showWarn(msg, title) {
     if (!title)
         title = '警告信息';
     layer.alert(msg, {
-        icon : 0,
-        title : title,
-        shade : false,
-        zIndex:2147483647
+        icon: 0,
+        title: title,
+        shade: false,
+        zIndex: 2147483647
     });
 }
 
@@ -52,28 +52,30 @@ function msgInfo(msg, time) {
         time = 1500
     }
     layer.msg(msg, {
-        icon : 1,
-        time : time
+        icon: 1,
+        time: time
     });
 }
+
 // 警告提示层
 function msgWarn(msg, time) {
     if (!time) {
         time = 1500
     }
     layer.msg(msg, {
-        icon : 0,
-        time : time
+        icon: 0,
+        time: time
     });
 }
+
 // 错误提示
 function msgError(msg, time) {
     if (!time) {
         time = 1500
     }
     layer.msg(msg, {
-        icon : 2,
-        time : time
+        icon: 2,
+        time: time
     });
 }
 
@@ -82,8 +84,8 @@ function showTips(msg, obj, type) {
     if (!type)
         type = 3;
     layer.tips(msg, obj, {
-        tips : [ type, '#3595CC' ],
-        time : 2500
+        tips: [type, '#3595CC'],
+        time: 2500
     });
 }
 
@@ -93,17 +95,20 @@ function showLoading(loadtips) {
     if (!loadtips) {
         loadtips = "正在执行...";
     }
-    var index = layer.load(2, {shade: [0.1,'#fff']}); //又换了种风格，并且设定最长等待30秒
+    var index = layer.load(2, {shade: [0.1, '#fff']}); //又换了种风格，并且设定最长等待30秒
 }
-function closeLoading(){
+
+function closeLoading() {
     layer.closeAll("loading");
 }
+
 // prompt,对话框
-function showPrompt(title, fn, type) {
+function showPrompt(title, fn, value, type) {
     layer.prompt({
-        title : title,
-        formType : (type === null || type === undefined) ? 0 : type
-    }, function(value, index) {
+        title: title,
+        formType: (type === null || type === undefined) ? 0 : type,
+        value: !value ? "" : value
+    }, function (value, index) {
         // 执行完毕，关闭窗体
         fn(value);
         layer.close(index);
@@ -134,34 +139,30 @@ function showConfirm(title, msg, yes, no, yestext, notext) {
     );
 
 }
-/*******************************************************************************
- * ***********URL弹窗********* *************************** title:标题 url:地址
- * width:宽度 height:高度 shade:遮蔽层透明度
- ******************************************************************************/
-function openURLDialog(title, url, width, height, shade) {// iframe模式打开弹窗
-    layer.open({
-        type : 2, // page层
-        area : [ width, height ],
-        title : title,
-        shade : shade ? shade : false, // 遮罩透明度
-        moveType : 1, // 拖拽风格，0是默认，1是传统拖动
-        maxmin : true,
-        content : url
-    });
-}
+
 /*******************************************************************************
  * *********div组件弹窗******* *************************** title:标题 content:标签内容
  * width:宽度 height:高度 shade:遮蔽层透明度
  ******************************************************************************/
-function openContentDialog(title, content, width, height, shade) {// div组件打开弹窗
+function openContentDialog(title,width, height,content,yesFn) {// div组件打开弹窗
     layer.open({
-        type : 1, // page层
-        area : [ width, height ],
-        title : title,
-        shade : shade ? shade : false, // 遮罩透明度
-        moveType : 1, // 拖拽风格，0是默认，1是传统拖动
-        maxmin : true,
-        content : content
+        type: 1, // page层
+        area: [width, height],
+        title: title,
+        shade: 0.3, // 遮罩透明度
+        moveType: 1, // 拖拽风格，0是默认，1是传统拖动
+        maxmin: true,
+        skin: 'layui-layer-prompt',
+        btn: ['确定', '取消'],
+        yes: function (index) {
+            if (yesFn)
+                yesFn();
+            layer.close(index);
+        },
+        no: function (index) {
+            layer.close(index);
+        },
+        content: content
     });
     return layer;
 }
@@ -170,81 +171,84 @@ function openContentDialog(title, content, width, height, shade) {// div组件�
  * ***********URL弹窗********* *************************** title:标题 url:地址
  * width:宽度 height:高度 fn:点确定之后的回调函数
  ******************************************************************************/
-function openDialogWithbtn(title, url, width, height, fn) {
+function openUrlDialog(title, url, width, height, fn) {
     layer.open({
-        type : 2, // page层
-        area : [ width, height ],
-        title : title,
-        shade : 0.3, // 遮罩透明度
-        maxmin : false,
-        moveType : 1, // 拖拽风格，0是默认，1是传统拖动
-        btn : ['确定','取消'],
-        yes : function(index) {
+        type: 2, // page层
+        area: [width, height],
+        title: title,
+        shade: 0.3, // 遮罩透明度
+        maxmin: false,
+        moveType: 1, // 拖拽风格，0是默认，1是传统拖动
+        btn: ['确定', '取消'],
+        yes: function (index) {
             if (fn)
                 fn();
             layer.close(index);
         },
-        no : function(index) {
+        no: function (index) {
             layer.close(index);
         },
-        content : url
+        content: url
     });
 }
+
 /*******************************************************************************
  * ***********打开全屏窗口********* *************************** title:标题 url:地址
  * width:宽度 height:高度 fn:点确定之后的回调函数
  ******************************************************************************/
 function openFullDialog(url, title, width, height) {
     var index = layer.open({
-        type : 2, // page层
-        area : [ width, height ],
-        title : title,
-        shade : 0.3, // 遮罩透明度
-        moveType : 1, // 拖拽风格，0是默认，1是传统拖动
-        maxmin : true,
-        content : url
+        type: 2, // page层
+        area: [width, height],
+        title: title,
+        shade: 0.3, // 遮罩透明度
+        moveType: 1, // 拖拽风格，0是默认，1是传统拖动
+        maxmin: true,
+        content: url
     });
     layer.full(index);
 }
 
 function fetchGet(url, successFn) {
     $.ajax({
-        url:url,
-        type:"Get",
-        dataType:"json",
-        success:function(data){
+        url: url,
+        type: "Get",
+        dataType: "json",
+        success: function (data) {
             if (data.code == 200) {
                 if (successFn) {
                     successFn(data.data);
                 }
-            }else {
-                showError('错误码:' + data.code + ",错误信息:"+data.message);
+            } else {
+                showWarn( data.message);
             }
         },
-        error:function(data){
-            showError('错误码:' + data.code + ",错误信息:"+data.message);
+        error: function (data) {
+            showError('错误码:' + data.code + ",错误信息:" + data.message);
         }
     });
 }
-function fetchPost(url, data,successFn) {
+
+function fetchPost(url, data, successFn) {
     $.ajax({
-        url:url,
-        data:data,
-        type:"Post",
-        dataType:"json",
-        success:function(data){
+        url: url,
+        data: data,
+        type: "Post",
+        dataType: "json",
+        success: function (data) {
             if (data.code == 200) {
                 if (successFn) {
                     successFn(data.data);
                 }
-            }else {
-                showError('错误码:' + data.code + ",错误信息:"+data.message);
+            } else {
+                showError('错误码:' + data.code + ",错误信息:" + data.message);
             }
         },
-        error:function(data){
-            showError('错误码:' + data.code + ",错误信息:"+data.message);
+        error: function (data) {
+            showError('错误码:' + data.code + ",错误信息:" + data.message);
         }
     });
+
 }
 
 
