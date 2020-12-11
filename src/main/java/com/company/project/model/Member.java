@@ -1,7 +1,8 @@
 package com.company.project.model;
 
-import javax.persistence.*;
+import lombok.Data;
 
+import javax.persistence.*;
 public class Member {
     /**
      * 雪花id

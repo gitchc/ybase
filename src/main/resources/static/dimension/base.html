@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>等比例列表排列</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/layuiadmin/style/admin.css" media="all">
+</head>
+<style>
+    body, html {
+        height: 100%;
+    }
+    #dimlayout{
+        height: calc(100% - 10px);
+    }
+    .layrow, .layui-card {
+        height: calc(100% - 5px);
+    }
+
+    #dimlayout {
+        padding: 10px 10px 0px 10px;
+
+    }
+
+    .hide {
+        display: none;
+    }
+</style>
+<body>
+<div id="dimlayout">
+    <div class="layui-row layui-col-space10 layrow">
+        <div class=" layui-col-md3 layrow" id="left">
+            <!-- 填充内容 -->
+            <div class="layui-card">
+                <div class="layui-row">
+                    <div class="layui-elem-quote layui-quote-nm">
+                        <strong>维度信息</strong>
+                    </div>
+
+                </div>
+                <div class="layui-row">
+                    <div id="dimtree"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class=" layui-col-md9 layrow" id="right">
+            <div class="layui-card">
+                <div class="layui-row">
+                    <div class="layui-elem-quote layui-quote-nm">
+                        <a href="javascript:;" title="侧边伸缩">
+                            <i class="layui-icon layui-icon-shrink-right" id="tabclick"></i>
+                        </a>
+                        <strong>成员信息</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</div>
+
+<script src="/static/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/static/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'tree', 'jquery', 'layer'], function () {
+        var $ = layui.$, layer = layui.layer;
+        var tree = layui.tree;
+        $('#tabclick').click(function () {
+            $(this).toggleClass('layui-icon-shrink-right layui-icon-spread-left');
+            $('#left').toggleClass('hide');
+            $('#right').toggleClass('layui-col-md9 layui-col-md12');
+        })
+        //渲染
+        var inst1 = tree.render({
+            elem: '#dimtree'  //绑定元素
+            , data: [{
+                title: '江西' //一级菜单
+                , children: [{
+                    title: '南昌' //二级菜单
+                    , children: [{
+                        title: '高新区' //三级菜单
+                        //…… //以此类推，可无限层级
+                    }]
+                }]
+            }, {
+                title: '陕西' //一级菜单
+                , children: [{
+                    title: '西安' //二级菜单
+                }]
+            }]
+        });
+    });
+
+</script>
+</body>
+</html>

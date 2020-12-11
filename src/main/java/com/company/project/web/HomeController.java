@@ -14,7 +14,7 @@ import java.io.IOException;
 public class HomeController {
     @RequestMapping("/")
     public void redirect(HttpServletRequest rq, HttpServletResponse rp) throws IOException {
-        rp.sendRedirect("/static/views/index.html");  //跳转的指定页面。
+        rp.sendRedirect("/static/index.html");  //跳转的指定页面。
     }
 
 
