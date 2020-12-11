@@ -8,9 +8,9 @@ name varchar(255)comment'成员名称',
 code varchar(255)comment'成员编码',
 position int comment'成员排序',
 generation int comment'成员代',
-datatype tinyint default 0 comment'数据类型:0数值,1货币,2整数,3时间类型,4文本,5下拉列表,6手动上卷,7自动上卷',
-membertype tinyint default 1 comment'成员类型,0维度,1成员,2共享成员',
-status tinyint default 0 comment'成员状态,0正常,1只读,2冻结',
+datatype int default 0 comment'数据类型:0数值,1货币,2整数,3时间类型,4文本,5下拉列表,6手动上卷,7自动上卷',
+membertype int default 1 comment'成员类型,0维度,1成员,2共享成员',
+status int default 0 comment'成员状态,0正常,1只读,2冻结',
 weight float default 1 comment'权重',
 uniquecode text comment '唯一编码',
 uniqueposition text comment '唯一排序'
@@ -41,7 +41,7 @@ facttable varchar(255) comment'实体表名',
 pkcol varchar(255) default 'ID' comment 'id列',
 measurecol varchar(500) default 'VALUE' comment'度量列',
 postion int comment'cube排序',
-autoload tinyint default 0 comment'状态,0自动加载,1手动加载'
+autoload int default 0 comment'状态,0自动加载,1手动加载'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Script表
@@ -50,8 +50,8 @@ CREATE TABLE Script(
 id bigint primary key not null comment '雪花id',
 scrpitContent text comment '脚本信息',
 scrpitName varchar(255) comment '脚本名称',
-status tinyint default 0 comment'状态,0正常,1不执行',
-lastStatus tinyint default 0 comment '上次执行状态,0未执行,1执行成功,2执行失败',
+status int default 0 comment'状态,0正常,1不执行',
+lastStatus int default 0 comment '上次执行状态,0未执行,1执行成功,2执行失败',
 lastupdate timestamp default now() comment '更新时间',
 updateuser varchar(255) comment '更新人'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -38,7 +38,6 @@
         <div class=" layui-col-md3 layrow" id="left">
             <!-- 填充内容 -->
             <div class="layui-card">
-
                 <div class="layui-row">
                     <div class="layui-elem-quote layui-quote-nm">
                         <strong>维度信息</strong>
@@ -60,7 +59,9 @@
                     </div>
                 </div>
                 <div class="layui-row">
-                    <div id="dimtree"></div>
+                    <form class="layui-form" id="dimform">
+
+                    </form>
                 </div>
             </div>
         </div>
@@ -89,9 +90,8 @@
         base: '/static/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'tree', 'jquery', 'layer'], function () {
-        $ = layui.$, layer = layui.layer;
-        tree = layui.tree;
+    }).use(['index', 'jquery', 'layer', 'form', 'element'], function () {
+        $ = layui.$, layer = layui.layer, form = layui.form;
         $('#tabclick').click(function () {
             $(this).toggleClass('layui-icon-shrink-right layui-icon-spread-left');
             $('#left').toggleClass('hide');
@@ -102,65 +102,78 @@
             btnevent[id].call();
         });
         //渲染
-        reloadTree();
+        reloadDimList();
+        bindDimSwich();
     });
+
     var btnevent = {
-        getNowid: function () {
-            if (!nowid) {
+        getDimid: function () {
+            if (!dimid) {
                 msgWarn("请先选择一个维度");
-                return ;
+                return;
             }
             return nowid;
         },
         add: function () {
-         showPrompt('输入维度名称', btnevent.insert)
+            showPrompt('输入维度名称', btnevent.insert)
         },
         edit: function () {
-           var id = this.getNowid();
+            var id = getDimid();
             if (id) {
 
             }
         },
         del: function () {
-            var id = this.getNowid();
+            var id = getDimid();
             if (id) {
 
             }
         },
         attr: function () {
-            var id = this.getNowid();
+            var id = getDimid();
             if (id) {
 
             }
         },
         insert: function (name) {
             var member = {
-                name:name,
-                code:name,
-                pid:
+                name: name,
+                code: name
             };
-            fetchPost("/member/add",member,reloadTree());
+            fetchPost("/member/addDim", member, reloadDimList);
         }
 
     }
-    var nowid  ;
-    function reloadTree() {
-        var inst1 = tree.render({
-            elem: '#dimtree'  //绑定元素
-            , showLine: false  //是否开启连接线
-            , data: [{
-                id: 'nihoa',
-                title: '江西' //一级菜单
-            }, {
-                title: '陕西' //一级菜单
-            }]
-            , click: function (obj) {
-                nowid = obj.data.id;
-
-            }
+    var dimid;
+    var reloadDimList = function () {
+        $('#dimform').empty();
+        fetchGet("/member/listDim", function (data) {
+            data.forEach((item, index, array) => {
+                var check = item.datatype == 6 ? 'checked' : '';
+                $('#dimform').append(' <div class="layui-row"> ' +
+                    '<div class=" layui-col-md8" ><label dimid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
+                    '                   class="layui-form-label dimlabel">' + item.name + '</label> </div> \n' +
+                    ' <div class=" layui-col-md2">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="卷积|平面" lay-filter="rollup" '+check+'></div></div>');
+            })
+            form.render();
         });
+
     }
 
+    //表单切换绑定事件
+    var bindDimSwich = function () {
+        form.on('switch(rollup)', function (data) {
+            var dimid = $(data.elem).attr('dimid');
+            var datatype = this.checked?6:7;
+            fetchPost("/member/switchDim", {dimid:dimid,datatype:datatype});
+        });
+        $(document).on("click", ".dimlabel", function () {
+            $('.dimlabel').removeClass("custom-tree-item-clicked");
+            $(this).addClass("custom-tree-item-clicked");
+            dimid = $(this).attr('dimid');
+        });
+
+    };
 </script>
 </body>
 </html>

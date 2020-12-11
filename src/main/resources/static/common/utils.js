@@ -207,39 +207,41 @@ function openFullDialog(url, title, width, height) {
     layer.full(index);
 }
 
-function fetchGet(url, successFn, errorFn) {
+function fetchGet(url, successFn) {
     $.ajax({
         url:url,
         type:"Get",
         dataType:"json",
         success:function(data){
-            if (successFn) {
-                successFn.call(data);
+            if (data.code == 200) {
+                if (successFn) {
+                    successFn(data.data);
+                }
+            }else {
+                showError('错误码:' + data.code + ",错误信息:"+data.message);
             }
         },
         error:function(data){
-            if (errorFn) {
-                errorFn.call(data);
-            }
             showError('错误码:' + data.code + ",错误信息:"+data.message);
         }
     });
 }
-function fetchPost(url, data,successFn, errorFn) {
+function fetchPost(url, data,successFn) {
     $.ajax({
         url:url,
         data:data,
         type:"Post",
         dataType:"json",
         success:function(data){
-            if (successFn) {
-                successFn.call(data);
+            if (data.code == 200) {
+                if (successFn) {
+                    successFn(data.data);
+                }
+            }else {
+                showError('错误码:' + data.code + ",错误信息:"+data.message);
             }
         },
         error:function(data){
-            if (errorFn) {
-                errorFn.call(data);
-            }
             showError('错误码:' + data.code + ",错误信息:"+data.message);
         }
     });
