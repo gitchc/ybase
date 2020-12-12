@@ -11,6 +11,7 @@ import com.company.project.model.MemberType;
 import com.company.project.model.StatusType;
 import com.company.project.service.MemberService;
 import com.company.project.utils.SnowID;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -37,7 +38,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         Condition condition = new Condition(Member.class);
         Example.Criteria criteria = condition.createCriteria();
         criteria.andEqualTo("membertype", MemberType.DIM);
-        criteria.andEqualTo("code",member.getCode());
+        criteria.andEqualTo("code", member.getCode());
         List<Member> old = memberMapper.selectByCondition(condition);
         if (old.size() > 0) {
             throw new ServiceException("维度编码不能重复!");
@@ -49,8 +50,8 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         member.setDatatype(DataType.MAROLLUP);//手动上卷
         member.setGeneration(-1);
         member.setDimid("-1");
-        member.setUniquecode(member.getCode());
-        member.setUniqueposition("0");
+        member.setUnicode(member.getCode());
+        member.setUnipos("0");
         Integer maxPos = memberMapper.getMaxPosition(pid);
         Integer nextPos = maxPos == null ? 1 : maxPos + 1;
         member.setPosition(nextPos);
@@ -60,16 +61,21 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     public void addMember(Member member) {
         member.setId(SnowID.nextID());
         String pid = member.getPid();
+        if (StringUtils.isBlank(pid)) {
+            String dimid = member.getDimid();
+            pid = dimid;
+            member.setPid(dimid);
+        }
         Member Pmember = memberMapper.selectByPrimaryKey(pid);
-        member.setGeneration(Pmember.getGeneration() + 1);
-        member.setUniquecode(Pmember.getUniquecode() + "," + member.getCode());
-        member.setUniqueposition(Pmember.getUniqueposition() + "." + member.getPosition());
         member.setStatus(StatusType.NORMAL);
         member.setWeight(member.getWeight() == null ? 1L : member.getWeight());
         Integer maxPos = memberMapper.getMaxPosition(pid);
         Integer nextPos = maxPos == null ? 1 : maxPos + 1;
         member.setPosition(nextPos);
         member.setDimid(Pmember.getDimid().equals("-1") ? Pmember.getId() : Pmember.getId());
+        member.setGeneration(Pmember.getGeneration() + 1);
+        member.setUnicode(Pmember.getUnicode() + "," + member.getCode());
+        member.setUnipos(Pmember.getUnipos() + "." + member.getPosition());
         memberMapper.insert(member);
     }
 
@@ -83,14 +89,23 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     }
 
     @Override
-    public void delDim(Member member) {
-        attrvalueMapper.deleteByDim(member.getDimid());//删除属性值
-        attrMapper.deleteByDim(member.getDimid());//删除属性
-        memberMapper.delDim(member.getDimid());//删除维度
+    public void delDim(String dimid) {
+        attrvalueMapper.deleteByDim(dimid);//删除属性值
+        attrMapper.deleteByDim(dimid);//删除属性
+        memberMapper.delDim(dimid);//删除维度
     }
 
     @Override
     public void updateDim(Member member) {
         memberMapper.updateDim(member.getId(), member.getName());
+    }
+
+    @Override
+    public void deleteMember(String id) {
+        Member member = memberMapper.selectByPrimaryKey(id);
+        if (member != null) {
+            attrvalueMapper.deleteByMemberid(id, member.getUnicode() + ",%");//删除属性值
+            memberMapper.delMemberByUnicode(id, member.getUnicode() + ",%");//删除维度
+        }
     }
 }

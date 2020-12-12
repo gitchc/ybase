@@ -31,6 +31,11 @@
     .hide {
         display: none;
     }
+
+    .layui-select-title, .layui-form-select {
+        width: 240px
+    }
+
 </style>
 <body>
 <div id="dimlayout">
@@ -42,16 +47,16 @@
                     <div class="layui-elem-quote layui-quote-nm">
                         <strong>维度信息</strong>
                         <div class="layui-btn-group">
-                            <button type="button" id="add" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <button type="button" action="add" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe654;</i>
                             </button>
-                            <button type="button" id="edit" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <button type="button" action="edit" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe642;</i>
                             </button>
-                            <button type="button" id="del" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <button type="button" action="del" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe640;</i>
                             </button>
-                            <button type="button" id="attr" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <button type="button" action="attr" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe641;</i>
                             </button>
                         </div>
@@ -73,8 +78,22 @@
                             <i class="layui-icon layui-icon-shrink-right" id="tabclick"></i>
                         </a>
                         <strong>成员信息</strong>
+                        <div class="layui-btn-group">
+                            <button type="button" action="add" class="layui-btn layui-btn-primary layui-btn-sm">
+                                <i class="layui-icon">&#xe654;</i>
+                            </button>
+                            <button type="button" action="edit" class="layui-btn layui-btn-primary layui-btn-sm">
+                                <i class="layui-icon">&#xe642;</i>
+                            </button>
+                            <button type="button" action="del" class="layui-btn layui-btn-primary layui-btn-sm">
+                                <i class="layui-icon">&#xe640;</i>
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <form class="layui-form" id="memberform">
+
+                </form>
             </div>
         </div>
 
@@ -91,45 +110,36 @@
     }).extend({
         index: 'lib/index' //主入口模块
     }).use(['index', 'jquery', 'layer', 'form', 'element'], function () {
-        $ = layui.$, layer = layui.layer, form = layui.form;
-        $('#tabclick').click(function () {
-            $(this).toggleClass('layui-icon-shrink-right layui-icon-spread-left');
-            $('#left').toggleClass('hide');
-            $('#right').toggleClass('layui-col-md9 layui-col-md12');
-        })
-        $('button').click(function () {
-            var id = $(this).attr('id');
-            btnevent[id]();
-        });
+        $ = layui.$, layer = layui.layer, form = layui.form, element = layui.element;
         //渲染
-        reloadDimList();
-        bindDimSwich();
+        bindEvent();
+        dimBtnevent.initDims();
     });
-
-    var btnevent = {
+    //维度工具栏操作区域
+    var dimBtnevent = {
         add: function () {
             showPrompt('输入维度名称', function (name) {
                 var member = {
                     name: name,
                     code: name
                 };
-                fetchPost("/member/addDim", member, reloadDimList);
+                fetchPost("/member/addDim", member, dimBtnevent.initDims);
             });
         },
         edit: function () {
             var id = this.getDimid();
             if (id) {
-                fetchGet("/member/detail?id="+id, function (data) {
-                    openContentDialog("修改维度", 100, 200, btnevent.initDetail(data), function () {
+                fetchGet("/member/detail?id=" + id, function (data) {
+                    openPromptDialog("修改维度", 100, 200, dimBtnevent.initDetail(data), function () {
                         var editname = $('#editid').val();
-                        fetchPost("/member/updateDim",{id:id, name: editname},reloadDimList)
+                        fetchPost("/member/updateDim", {id: id, name: editname}, dimBtnevent.initDims)
                     });
                 });
 
             }
         },
         initDetail: function (data) { //拼接维度信息
-           var content = '<div class="layui-form-item">' +
+            var content = '<div class="layui-form-item">' +
                 '<label class="layui-form-label">名称</label>' +
                 '<input type="text" id="editid" class="layui-layer-input" value="' + data.name + '">' +
                 '</div>' +
@@ -145,7 +155,7 @@
             var id = this.getDimid();
             if (id) {
                 showConfirm("提示", "确定删除么?", function () {
-                    fetchPost("/member/delDim", {dimid: id}, reloadDimList);
+                    fetchGet("/member/delDim?id=" + id, dimBtnevent.initDims);
                 });
             }
         },
@@ -161,38 +171,197 @@
                 return;
             }
             return dimid;
+        },
+        initDims: function () {
+            $('#dimform').empty();
+            $('#memberform').empty();
+            fetchGet("/member/listDim", function (data) {
+                data.forEach((item, index, array) => {
+                    var check = item.datatype == 6 ? 'checked' : '';
+                    $('#dimform').append(' <div class="layui-row"> ' +
+                        '<div class=" layui-col-md8" ><label dimid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
+                        '                   class="layui-form-label dimlabel">' + item.name + '</label> </div> \n' +
+                        ' <div class=" layui-col-md2">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="卷积|平面" lay-filter="rollup" ' + check + '></div></div>');
+                })
+                form.render();
+                restInitVars();
+            });
+
         }
     }
-    var dimid;
-    var reloadDimList = function () {
-        $('#dimform').empty();
-        fetchGet("/member/listDim", function (data) {
-            data.forEach((item, index, array) => {
-                var check = item.datatype == 6 ? 'checked' : '';
-                $('#dimform').append(' <div class="layui-row"> ' +
-                    '<div class=" layui-col-md8" ><label dimid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
-                    '                   class="layui-form-label dimlabel">' + item.name + '</label> </div> \n' +
-                    ' <div class=" layui-col-md2">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="卷积|平面" lay-filter="rollup" ' + check + '></div></div>');
-            })
-            form.render();
-        });
+    var dimid, memberid;
 
+    function restInitVars() {
+        dimid = "";
+        memberid = "";
     }
 
-    //表单切换绑定事件
-    var bindDimSwich = function () {
+    //维度左侧事件
+    var bindEvent = function () {
+        //隐藏工具栏
+        $('#tabclick').click(function () {
+            $(this).toggleClass('layui-icon-shrink-right layui-icon-spread-left');
+            $('#left').toggleClass('hide');
+            $('#right').toggleClass('layui-col-md9 layui-col-md12');
+        })
+        //左侧按钮事件
+        $('#left button').click(function () {
+            var action = $(this).attr('action');
+            dimBtnevent[action]();
+        });
+        //右侧按钮事件
+        $('#right button').click(function () {
+            var action = $(this).attr('action');
+            memberBtnevent[action]();
+        });
+        //聚合按钮切换
         form.on('switch(rollup)', function (data) {
             var dimid = $(data.elem).attr('dimid');
             var datatype = this.checked ? 6 : 7;
             fetchPost("/member/switchDim", {dimid: dimid, datatype: datatype});
         });
-        $(document).on("click", ".dimlabel", function () {
+        //维度点击事件
+        $("#dimform").on("click", ".dimlabel", function () {
             $('.dimlabel').removeClass("custom-tree-item-clicked");
             $(this).addClass("custom-tree-item-clicked");
             dimid = $(this).attr('dimid');
+            memberBtnevent.initMembers();
         });
 
     };
+
+    var MEMBERTYPES = {
+        DIM: 0,
+        MEMBER: 1
+    };
+    //成员工具栏操作区域
+    var memberBtnevent = {
+        add: function () {
+            var dimid = this.getDimid();
+            if (dimid) {
+                var member = {
+                    dimid: dimid,
+                    pid: memberid,
+                    name: "",
+                    code: "",
+                    datatype: 0,
+                    weight: 1,
+                    membertype: MEMBERTYPES.MEMBER
+                };
+                openPromptDialog("新增成员", '450px', '350px', memberBtnevent.initDetail(member, false), function () {
+                    member.name = $('#name').val();
+                    member.code = $('#code').val();
+                    member.datatype = $('#datatype').val();
+                    member.weight = $('#weight').val();
+                    fetchPost("/member/addMember", member, this.initMembers)
+                });
+            }
+        },
+        edit: function () {
+            var dimid = this.getDimid();
+            if (dimid) {
+                fetchGet("/member/detail?id=" + id, function (member) {
+                    openContentDialog("修改成员", '450px', '350px', memberBtnevent.initDetail(member, true), function () {
+                        member.name = $('#name').val();
+                        member.datatype = $('#datatype').val();
+                        member.weight = $('#weight').val();
+                        fetchPost("/member/updateMember", member, this.initMembers)
+                    });
+                });
+
+            }
+        },
+        dataTypes: [
+            {value: 0, name: "数值"},
+            /*{value:1,name:"货币"},
+            {value:2,name:"整数"},
+            {value:3,name:"日期戳"},
+            {value:4,name:"文本"},
+            {value:5,name:"下拉列表"},*/
+            {value: 6, name: "手动上卷"},
+            {value: 7, name: "自动上卷"}
+        ],
+        initDetail: function (member, isedit) { //拼接维度信息
+            var disab = isedit ? "disabled" : "";
+            var datatype = member.datatype;
+            var content = '<form class="layui-form" id="memberInitForm">' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label">名称</label>' +
+                '<div class="layui-input-inline">' +
+                '<input type="text" id="name" class="layui-layer-input" value="' + member.name + '">' +
+                '</div>' +
+                '</div>' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label">编码</label>' +
+                '<div class="layui-input-inline">' +
+                '<input type="text" id="code" class="layui-layer-input"  ' + disab + ' value="' + member.code + '">' +
+                '</div>' +
+                '</div>' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label">权重</label>' +
+                '<div class="layui-input-inline">' +
+                '<input type="text" id="weight" class="layui-layer-input" value="' + member.weight + '">' +
+                '</div>' +
+                '</div>' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label">数据类型</label>' +
+                ' <div class="layui-input-inline"> ' +
+                '<select id="datatype" >';
+            this.dataTypes.forEach((item, index, array) => {
+                var selectable = item.value == datatype ? "selected" : "";
+                content += "<option value='" + item.value + "' " + selectable + ">" + item.name + "</option>";
+            });
+
+            content += '</select> ' +
+                '</div>' +
+                '</div>' +
+                '</form>';
+            return content;
+
+        },
+        del: function () {
+            if (memberid) {
+                showConfirm("提示", "确定删除么?", function () {
+                    fetchget("/member/delMember?id=" + memberid, this.initMembers);
+                });
+            }
+        },
+        getDimid: function () {
+            if (!dimid) {
+                msgWarn("请先选择一个维度");
+                return;
+            }
+            return dimid;
+        },
+        initMembers: function () {
+
+        }
+    }
+
+    function openPromptDialog(title, width, height, content, yesFn) {// div组件打开弹窗
+        layer.open({
+            type: 1, // page层
+            area: [width, height],
+            title: title,
+            shade: 0.3, // 遮罩透明度
+            moveType: 1, // 拖拽风格，0是默认，1是传统拖动
+            maxmin: false,
+            skin: 'layui-layer-prompt',
+            btn: ['确定', '取消'],
+            yes: function (index) {
+                if (yesFn)
+                    yesFn();
+                layer.close(index);
+            },
+            no: function (index) {
+                layer.close(index);
+            }, success: function () {
+                form.render('select');
+            },
+            content: content
+        });
+        return layer;
+    }
 </script>
 </body>
 </html>

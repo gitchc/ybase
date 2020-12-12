@@ -68,12 +68,12 @@ public class Member {
     /**
      * 唯一编码
      */
-    private String uniquecode;
+    private String unicode;
 
     /**
      * 唯一排序
      */
-    private String uniqueposition;
+    private String unipos;
 
 
 }

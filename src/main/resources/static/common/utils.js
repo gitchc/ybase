@@ -140,10 +140,8 @@ function showConfirm(title, msg, yes, no, yestext, notext) {
 
 }
 
-/*******************************************************************************
- * *********div组件弹窗******* *************************** title:标题 content:标签内容
- * width:宽度 height:高度 shade:遮蔽层透明度
- ******************************************************************************/
+
+
 function openContentDialog(title,width, height,content,yesFn) {// div组件打开弹窗
     layer.open({
         type: 1, // page层
@@ -151,8 +149,8 @@ function openContentDialog(title,width, height,content,yesFn) {// div组件打�
         title: title,
         shade: 0.3, // 遮罩透明度
         moveType: 1, // 拖拽风格，0是默认，1是传统拖动
-        maxmin: true,
-        skin: 'layui-layer-prompt',
+        maxmin: false,
+        // skin: 'layui-layer-prompt',
         btn: ['确定', '取消'],
         yes: function (index) {
             if (yesFn)

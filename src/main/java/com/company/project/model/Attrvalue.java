@@ -13,10 +13,14 @@ public class Attrvalue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
+    /*
+    * 属性id
+    * */
+    private String attrid;
     /**
-     * 成员id
+     * 成员code
      */
-    private String memberid;
+    private String membercode;
 
     /**
      * 属性值

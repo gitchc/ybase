@@ -24,4 +24,7 @@ public interface MemberMapper extends Mapper<Member> {
 
     @Update("update Member set name=#{name} where id = #{id}")
     void updateDim(String id, String name);
+
+    @Delete("delete from Member where id= #{id} or unicode like #{unicode}")
+    void delMemberByUnicode(String id, String unicode);
 }

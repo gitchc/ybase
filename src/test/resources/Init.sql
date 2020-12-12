@@ -12,8 +12,8 @@ datatype int default 0 comment'数据类型:0数值,1货币,2整数,3时间类�
 membertype int default 1 comment'成员类型,0维度,1成员,2共享成员',
 status int default 0 comment'成员状态,0正常,1只读,2冻结',
 weight float default 1 comment'权重',
-uniquecode text comment '唯一编码',
-uniqueposition text comment '唯一排序'
+unicode text comment '唯一编码',
+unipos text comment '唯一排序'
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
@@ -28,11 +28,12 @@ attrName varchar(255)comment'属性名称'
 DROP TABLE IF EXISTS ATTRValue;
 CREATE TABLE ATTRValue(
 id bigint primary key not null comment '雪花id',
-memberid bigint comment'成员id',
+attrid bigint comment '属性id',
+memberCode varchar(255) comment'成员code',
 attrValue varchar(255)comment'属性值'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- ATTRValue表
+-- Cube表
 DROP TABLE IF EXISTS Cube;
 CREATE TABLE Cube(
 id bigint primary key not null comment '雪花id',

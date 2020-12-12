@@ -20,7 +20,9 @@ public interface MemberService extends Service<Member> {
 
     void switchDim(Member member);
 
-    void delDim(Member member);
+    void delDim(String dimid);
 
     void updateDim(Member member);
+
+    void deleteMember(String id);
 }

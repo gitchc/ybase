@@ -43,8 +43,8 @@ public class MemberController {
     }
 
     @RequestMapping("/delDim")
-    public Result delDim(Member Member) {
-        MemberService.delDim(Member);
+    public Result delDim(@RequestParam String id) {
+        MemberService.delDim(id);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -60,14 +60,14 @@ public class MemberController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @RequestMapping("/delete")
-    public Result delete(@RequestParam String id) {
-        MemberService.deleteById(id);
+    @RequestMapping("/deleteMember")
+    public Result deleteMember(@RequestParam String id) {
+        MemberService.deleteMember(id);
         return ResultGenerator.genSuccessResult();
     }
 
-    @RequestMapping("/update")
-    public Result update(Member Member) {
+    @RequestMapping("/updateMember")
+    public Result updateMember(Member Member) {
         MemberService.update(Member);
         return ResultGenerator.genSuccessResult();
     }
