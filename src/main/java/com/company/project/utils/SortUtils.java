@@ -1,6 +1,7 @@
 package com.company.project.utils;
 
 import com.company.project.model.Member;
+import com.company.project.model.Position;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,13 +13,13 @@ public class SortUtils {
      * 1.1.2 1.2.3
      * 高效排序
      */
-    public static List<Member> sort(List<Member> data) {
+    public static <T extends Position> List<T> sort(List<T> data) {
         return data.stream().sorted(c2).collect(Collectors.toList());
     }
 
     private static final int ToRight = 1;
     private static final int ToLeft = -1;
-    private static final Comparator<Member> c2 = (t1, t2) -> {
+    private static  Comparator<Position> c2 = (t1, t2) -> {
         String[] str1Split = t1.getUnipos().split("\\.");
         String[] str2Split = t2.getUnipos().split("\\.");
         int minSplitLength = str1Split.length > str2Split.length ? str2Split.length : str1Split.length;

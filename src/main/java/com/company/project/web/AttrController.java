@@ -3,9 +3,8 @@ package com.company.project.web;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.model.Attr;
+import com.company.project.model.ColVo;
 import com.company.project.service.AttrService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,9 +21,9 @@ public class AttrController {
     @Resource
     private AttrService AttrService;
 
-    @RequestMapping("/add")
-    public Result add(Attr Attr) {
-        AttrService.save(Attr);
+    @RequestMapping("/insert")
+    public Result insert(Attr Attr) {
+        AttrService.insertAttr(Attr);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -47,10 +46,8 @@ public class AttrController {
     }
 
     @RequestMapping("/list")
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        PageHelper.startPage(page, size);
-        List<Attr> list = AttrService.findAll();
-        PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+    public Result list(@RequestParam String dimid, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        List<ColVo> attrs = AttrService.getAttrByDimid(dimid);
+        return ResultGenerator.genSuccessResult(attrs);
     }
 }

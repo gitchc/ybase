@@ -6,7 +6,6 @@ import com.company.project.service.ScriptService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,9 +21,9 @@ public class ScriptController {
     @Resource
     private ScriptService ScriptService;
 
-    @RequestMapping("/add")
-    public Result add(Script Script) {
-        ScriptService.save(Script);
+    @RequestMapping("/insert")
+    public Result insert(Script Script) {
+        ScriptService.insert(Script);
         return ResultGenerator.genSuccessResult();
     }
 

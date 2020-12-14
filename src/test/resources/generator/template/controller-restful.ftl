@@ -21,8 +21,8 @@ public class ${modelNameUpperCamel}Controller {
     private ${modelNameUpperCamel}Service ${modelNameLowerCamel}Service;
 
     @PostMapping
-    public Result add(@RequestBody ${modelNameUpperCamel} ${modelNameLowerCamel}) {
-        ${modelNameLowerCamel}Service.save(${modelNameLowerCamel});
+    public Result insert(@RequestBody ${modelNameUpperCamel} ${modelNameLowerCamel}) {
+        ${modelNameLowerCamel}Service.insert(${modelNameLowerCamel});
         return ResultGenerator.genSuccessResult();
     }
 

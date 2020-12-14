@@ -6,7 +6,6 @@ import com.company.project.service.CubeService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,9 +21,9 @@ public class CubeController {
     @Resource
     private CubeService CubeService;
 
-    @RequestMapping("/add")
-    public Result add(Cube Cube) {
-        CubeService.save(Cube);
+    @RequestMapping("/insert")
+    public Result insert(Cube Cube) {
+        CubeService.insert(Cube);
         return ResultGenerator.genSuccessResult();
     }
 

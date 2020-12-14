@@ -31,7 +31,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Resource
     private AttrvalueMapper attrvalueMapper;
 
-    public void addDim(Member member) throws ServiceException {
+    public void insertDim(Member member) throws ServiceException {
         Condition condition = new Condition(Member.class);
         Example.Criteria criteria = condition.createCriteria();
         criteria.andEqualTo("membertype", MemberType.DIM);
@@ -55,7 +55,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         memberMapper.insert(member);
     }
 
-    public void addMember(Member member) {
+    public void insertMember(Member member) {
         member.setId(SnowID.nextID());
         String pid = member.getPid();
         String dimid = member.getDimid();

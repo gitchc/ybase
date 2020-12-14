@@ -121,7 +121,7 @@
                     name: name,
                     code: name
                 };
-                fetchPost("/member/addDim", member, dimBtnevent.initDims);
+                fetchPost("/member/insertDim", member, dimBtnevent.initDims);
             });
         },
         edit: function () {
@@ -281,7 +281,7 @@
                     member.name = nmembner.name ? nmembner.name : nmembner.code;
                     member.weight = nmembner.weight;
                     member.datatype = nmembner.datatype;
-                    fetchPost("/member/addMember", member, memberBtnevent.reloadMembers)
+                    fetchPost("/member/insertMember", member, memberBtnevent.reloadMembers)
                 });
             }
         },

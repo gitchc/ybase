@@ -28,9 +28,9 @@ public class MemberController {
     @Resource
     private MemberService MemberService;
 
-    @RequestMapping("/addDim")
-    public Result addDim(Member Member) throws ServiceException {
-        MemberService.addDim(Member);
+    @RequestMapping("/insertDim")
+    public Result insertDim(Member Member) throws ServiceException {
+        MemberService.insertDim(Member);
         return ResultGenerator.genSuccessResult();
 
     }
@@ -59,9 +59,9 @@ public class MemberController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @RequestMapping("/addMember")
-    public Result add(Member Member) {
-        MemberService.addMember(Member);
+    @RequestMapping("/insertMember")
+    public Result insert(Member Member) {
+        MemberService.insertMember(Member);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -96,9 +96,8 @@ public class MemberController {
         criteria.andEqualTo("dimid", dimid);
         criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
         List<Member> list = MemberService.findByCondition(condition);
-        List<Member> finalshow = SortUtils.sort(list);
-        List<MemberVo> res = new ArrayList<>(finalshow.size());
-        finalshow.forEach(item -> {
+        List<MemberVo> res = new ArrayList<>(list.size());
+        list.forEach(item -> {
             MemberVo vo = new MemberVo();
             BeanUtil.copyProperties(item, vo);
             vo.setDatatypedetail(DataType.getStr(item.getDatatype()));
@@ -106,7 +105,7 @@ public class MemberController {
             vo.setCodedetail(MemberUtil.getCodeDetail(item));
             res.add(vo);
         });
-
-        return ResultGenerator.genSuccessResult(res);
+        List<MemberVo> finalRes = SortUtils.sort(res);
+        return ResultGenerator.genSuccessResult(finalRes);
     }
 }

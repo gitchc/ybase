@@ -13,9 +13,9 @@ import java.util.List;
  */
 public interface MemberService extends Service<Member> {
 
-    void addDim(Member member) throws ServiceException;
+    void insertDim(Member member) throws ServiceException;
 
-    void addMember(Member member);
+    void insertMember(Member member);
 
     List<Member> findAllDim();
 

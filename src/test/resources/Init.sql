@@ -35,7 +35,7 @@ attrid bigint comment '属性id',
 memberCode varchar(255) comment'成员code',
 attrValue varchar(255)comment'属性值'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+CREATE index index_code  ON attrvalue (attrid,memberCode);
 -- Cube表
 DROP TABLE IF EXISTS Cube;
 CREATE TABLE Cube(

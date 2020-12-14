@@ -17,7 +17,7 @@
 
 
     .layrow, .layui-card {
-       height:  100%;
+        height: 100%;
     }
 
     .hide {
@@ -52,216 +52,122 @@
 <script src="/static/layuiadmin/layui/layui.js"></script>
 <script src="/static/common/utils.js"></script>
 <script>
+    var  field;
     layui.config({
         base: '/static/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
     }).use(['index', 'jquery', 'layer', 'form', 'table'], function () {
         $ = layui.$, layer = layui.layer, form = layui.form, table = layui.table;
+
+        dimid = getUrlParam('dimid');
         //渲染
-        // bindEvent();
-        // dimBtnevent.initDims();
+        attrBtnEvent.init();
+        bindEvent();
     });
 
-    var attrid, membercode;
 
     function restInitVars() {
-        attrid = "";
-        membercode = "";
+        field = "";
     }
 
     //维度左侧事件
     var bindEvent = function () {
-        //隐藏工具栏
-        $('#tabclick').click(function () {
-            $(this).toggleClass('layui-icon-shrink-right layui-icon-spread-left');
-            $('#left').toggleClass('hide');
-            $('#right').toggleClass('layui-col-md9 layui-col-md12');
-        })
-        //左侧按钮事件
-        $('#left button').click(function () {
-            var action = $(this).attr('action');
-            dimBtnevent[action]();
-        });
         //右侧按钮事件
         $('#right button').click(function () {
             var action = $(this).attr('action');
-            memberBtnevent[action]();
-        });
-        //聚合按钮切换
-        form.on('switch(rollup)', function (data) {
-            var dimid = $(data.elem).attr('dimid');
-            var datatype = this.checked ? DATATYPES.MANAUTO.value : DATATYPES.AUTO.value;//自动上卷 还是手动上卷
-            showConfirm("提示", "切换,会把该维度下面所有的上卷节点类型都变更,确定切换么?", () => {
-                fetchPost("/member/switchDim", {dimid: dimid, datatype: datatype});
-            });
-
-        });
-        //维度点击事件
-        $("#dimform").on("click", ".dimlabel", function () {
-            $('.dimlabel').removeClass("custom-tree-item-clicked");
-            $(this).addClass("custom-tree-item-clicked");
-            dimid = $(this).attr('dimid');
-            memberBtnevent.initMembers();
+            attrBtnEvent[action]();
         });
         //监听单元格编辑
-        table.on('edit(membertable)', function (obj) {
+        table.on('edit(attrtable)', function (obj) {
             var value = obj.value //得到修改后的值
                 , data = obj.data //得到所在行所有键值
                 , field = obj.field; //得到字段
             // layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
-            fetchPost("/member/updateField", {code: data.code, field: obj.field, value: value, dimid: dimid})
+            fetchPost("/attrvalue/updateValue", {code: data.code, attrvalue: value, attrname: field,dimid:dimid})
         });
         //监听行单击事件（双击事件为：rowDouble）
-        table.on('row(membertable)', function (obj) {
+        table.on('row(attrtable)', function (obj) {
             var data = obj.data;
             //标注选中样式
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
-            memberid = data.id;
+            field = obj.field;
         });
     };
 
-    const MEMBERTYPES = {
-        DIM: 0,
-        MEMBER: 1
-    };
-    const DATATYPES = {
-        NUM: {value: 0, name: "数值"},
-        // COIN:{value:1, name: "货币"},
-        // INT:{value:2,name:"整数"},
-        // DATE:{value:3,name:"日期戳"},
-        // TXT:{value:4,name:"文本"},
-        // LIST:{value:5,name:"下拉列表"},
-        MANAUTO: {value: 10, name: "手动上卷"},
-        AUTO: {value: 11, name: "自动上卷"}
-    };
     //成员工具栏操作区域
-    var memberBtnevent = {
+    var attrBtnEvent = {
         add: function () {
-            var dimid = this.getDimid();
             if (dimid) {
-                var member = {
-                    dimid: dimid,
-                    pid: memberid,
-                    name: "",
-                    code: "",
-                    datatype: DATATYPES.NUM.value, //默认数值
-                    weight: 1,
-                    membertype: MEMBERTYPES.MEMBER//默认成员
-                };
-                openPromptDialog("新增成员", '450px', '350px', memberBtnevent.initDetail(member, false), function () {
-                    var nmembner = form.val('memberInitForm');
-                    member.code = nmembner.code;
-                    member.name = nmembner.name ? nmembner.name : nmembner.code;
-                    member.weight = nmembner.weight;
-                    member.datatype = nmembner.datatype;
-                    fetchPost("/member/addMember", member, memberBtnevent.reloadMembers)
+                showPrompt('新增属性', function (name) {
+                    var attr = {
+                        dimid: dimid,
+                        attrname: name
+                    };
+                    fetchPost("/attr/insert", attr, attrBtnEvent.init);
                 });
             }
         },
         edit: function () {
-            var dimid = this.getDimid();
-            if (dimid && memberid) {
+            if (field && field!="name"&&field!="code") {
                 fetchGet("/member/detail?id=" + memberid, function (member) {
-                    openPromptDialog("修改成员", '450px', '350px', memberBtnevent.initDetail(member, true), function () {
-                        var nmembner = form.val('memberInitForm');
-                        member.name = nmembner.name ? nmembner.name : nmembner.code;
-                        member.weight = nmembner.weight;
-                        member.datatype = nmembner.datatype;
-                        fetchPost("/member/updateMember", member, memberBtnevent.reloadMembers)
-                    });
+
                 });
 
             }
-        },
-        initDetail: function (member, isedit) { //拼接维度信息
-            var disab = isedit ? "class='layui-input layui-disabled' disabled" : "class='layui-input'";
-            var datatype = member.datatype;
-            var content = '<form class="layui-form"  lay-filter="memberInitForm">' +
-                '<div class="layui-form-item">' +
-                '<label class="layui-form-label" >编码</label>' +
-                '<div class="layui-input-inline">' +
-                '<input type="text" name="code"  lay-verify="required" ' + disab + ' value="' + member.code + '">' +
-                '</div>' +
-                '</div>' +
-                '<div class="layui-form-item">' +
-                '<label class="layui-form-label" >名称</label>' +
-                '<div class="layui-input-inline">' +
-                '<input type="text" name="name" class="layui-input"  value="' + member.name + '">' +
-                '</div>' +
-                '</div>' +
-                '<div class="layui-form-item">' +
-                '<label class="layui-form-label" >权重</label>' +
-                '<div class="layui-input-inline">' +
-                '<input type="text" name="weight" class="layui-input" lay-verify="required" value="' + member.weight + '">' +
-                '</div>' +
-                '</div>' +
-                '<div class="layui-form-item">' +
-                '<label class="layui-form-label">数据类型</label>' +
-                ' <div class="layui-input-inline"> ' +
-                '<select name="datatype" >';
-            Object.values(DATATYPES).forEach((item, index, array) => {
-                var selectable = item.value == datatype ? "selected" : "";
-                content += "<option value='" + item.value + "' " + selectable + ">" + item.name + "</option>";
-            });
-
-            content += '</select> ' +
-                '</div>' +
-                '</div>' +
-                '</form>';
-            return content;
-
         },
         del: function () {
-            if (memberid) {
-                showConfirm("提示", "确定删除么?", function () {
-                    fetchGet("/member/delMember?id=" + memberid, memberBtnevent.reloadMembers);
+            if (field && field!="name"&&field!="code") {
+                showConfirm("提示", "确定删除["+field+"]么?", function () {
+                    fetchGet("/member/delMember?id=" + memberid, attrBtnEvent.reloadMembers);
                 });
             }
         },
-        getDimid: function () {
-            if (!dimid) {
-                msgWarn("请先选择一个维度");
-                return;
-            }
-            return dimid;
-        },
-        initMembers: function () {
+        init: function () {
             reloadTable();
         },
-        reloadMembers: function () {
+        reload: function () {
             reloadTable();
         }
     }
 
     function reloadTable() {
-        memberid = "";
+        restInitVars();
         $('#righttable').empty();
-        $('#righttable').append('<table class="layui-hide" id="membertable" lay-filter="membertable">\n' +
+        $('#righttable').append('<table class="layui-hide" id="attrtable" lay-filter="attrtable">\n' +
             '                </table>');
-        //展示已知数据
-        var tableoptions = {
-            elem: '#membertable'
-            , id: 'membertable'
-            , height: 'full-85'
-            , cols: [[ //标题栏
-                {field: 'codedetail', title: '编码', width: 250}
-                , {field: 'name', title: '名称', width: 150, align: 'center', edit: 'text'}
-                , {field: 'weight', title: '权重', width: 80, align: 'center', edit: 'text'}
-                , {field: 'datatypedetail', title: '数据类型', align: 'center', width: 120,}
-                , {field: 'statusdetail', title: '成员状态', align: 'center', width: 120,}
-            ]]
-            , url: '/member/listMemmbers?dimid=' + dimid
-            , parseData: function (res) { //res 即为原始返回的数据
-                return {
-                    "code": res.code == 200 ? 0 : res.code, //解析接口状态
-                    "msg": res.message, //解析提示文本
-                    "count": res.data.length, //解析数据长度
-                    "data": res.data //解析数据列表
+        fetchGet('/attr/list?dimid=' + dimid, (data) => {
+            var tableoptions = {};
+            if (!data || data.length == 0) {
+                tableoptions = {
+                    elem: '#attrtable'
+                    , id: 'attrtable'
+                    , height: 'full-85'
+                    , cols: [[{field: 'col', title: '属性'}]]
+                    , data: []
                 };
+            } else {
+                //展示已知数据
+                tableoptions = {
+                    elem: '#attrtable'
+                    , id: 'attrtable'
+                    , height: 'full-85'
+                    , cols: [data]
+                    , url: '/attrvalue/listAttrValues?dimid=' + dimid
+                    , parseData: function (res) { //res 即为原始返回的数据
+                        return {
+                            "code": res.code == 200 ? 0 : res.code, //解析接口状态
+                            "msg": res.message, //解析提示文本
+                            "count": res.data.length, //解析数据长度
+                            "data": res.data //解析数据列表
+                        };
+                    }
+                };
+
             }
-        };
-        table.render(tableoptions);
+            table.render(tableoptions);
+        });
+
 
     }
 

@@ -9,8 +9,8 @@ import java.util.List;
  * Service 层 基础接口，其他Service 接口 请继承该接口
  */
 public interface Service<T> {
-    void save(T model);//持久化
-    void save(List<T> models);//批量持久化
+    void insert(T model);//持久化
+    void insert(List<T> models);//批量持久化
     void deleteById(String id);//通过主鍵刪除
     void deleteByIds(String ids);//批量刪除 eg：ids -> “1,2,3,4”
     void update(T model);//更新

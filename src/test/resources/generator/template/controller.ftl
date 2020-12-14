@@ -22,9 +22,9 @@ public class ${modelNameUpperCamel}Controller {
     @Resource
     private ${modelNameUpperCamel}Service ${modelNameLowerCamel}Service;
 
-    @RequestMapping("/add")
+    @RequestMapping("/insert")
     public Result add(${modelNameUpperCamel} ${modelNameLowerCamel}) {
-        ${modelNameLowerCamel}Service.save(${modelNameLowerCamel});
+        ${modelNameLowerCamel}Service.insert(${modelNameLowerCamel});
         return ResultGenerator.genSuccessResult();
     }
 

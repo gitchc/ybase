@@ -3,7 +3,7 @@ package com.company.project.model;
 import lombok.Data;
 
 @Data
-public class MemberVo {
+public class MemberVo extends Position{
     /**
      * 雪花id
      */
@@ -64,10 +64,6 @@ public class MemberVo {
      */
     private String unicode;
 
-    /**
-     * 唯一排序
-     */
-    private String unipos;
     private String datatypedetail;
     private String statusdetail;
     private String codedetail;

@@ -15,4 +15,8 @@ public class MemberUtil {
         sb.append(member.getCode());
         return sb.toString();
     }
+
+    public static String toString(Object obj) {
+        return obj == null ? "" : obj.toString();
+    }
 }

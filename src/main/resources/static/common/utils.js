@@ -141,8 +141,7 @@ function showConfirm(title, msg, yes, no, yestext, notext) {
 }
 
 
-
-function openContentDialog(title,width, height,content,yesFn) {// div组件打开弹窗
+function openContentDialog(title, width, height, content, yesFn) {// div组件打开弹窗
     layer.open({
         type: 1, // page层
         area: [width, height],
@@ -194,7 +193,7 @@ function openUrlDialog(title, url, width, height, fn) {
  * ***********打开全屏窗口********* *************************** title:标题 url:地址
  * width:宽度 height:高度 fn:点确定之后的回调函数
  ******************************************************************************/
-function openFullDialog(title,url,width, height) {
+function openFullDialog(title, url, width, height) {
     var index = layer.open({
         type: 2, // page层
         area: [width, height],
@@ -218,7 +217,7 @@ function fetchGet(url, successFn) {
                     successFn(data.data);
                 }
             } else {
-                showWarn( data.message);
+                showWarn(data.message);
             }
         },
         error: function (data) {
@@ -249,4 +248,9 @@ function fetchPost(url, data, successFn) {
 
 }
 
-
+//解析url参数
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+}
