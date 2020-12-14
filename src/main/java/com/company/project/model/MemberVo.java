@@ -68,6 +68,7 @@ public class MemberVo {
      * 唯一排序
      */
     private String unipos;
-    private String datatypeDetail;
-    private String statusDetail;
+    private String datatypedetail;
+    private String statusdetail;
+    private String codedetail;
 }

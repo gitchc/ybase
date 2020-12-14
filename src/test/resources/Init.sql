@@ -4,8 +4,8 @@ CREATE TABLE Member(
 id bigint primary key not null comment '雪花id',
 dimid bigint comment'维度id',
 pid bigint comment'父id',
-name varchar(255)comment'成员名称',
-code varchar(255)comment'成员编码',
+name varchar(255) not null comment'成员名称',
+code varchar(255) not null comment'成员编码',
 position int comment'成员排序',
 generation int comment'成员代',
 datatype int default 0 comment'数据类型:0数值,1货币,2整数,3时间类型,4文本,5下拉列表,6手动上卷,7自动上卷',
@@ -16,6 +16,9 @@ unicode text comment '唯一编码',
 unipos text comment '唯一排序'
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+CREATE index index_code  ON Member (dimid,code,status);
+CREATE index index_position  ON Member (position asc);
+-- CREATE index index_unicode  ON Member (unicode);
 
 -- ATTR表
 DROP TABLE IF EXISTS ATTR;

@@ -3,6 +3,7 @@ package com.company.project.service;
 import com.company.project.core.Service;
 import com.company.project.core.ServiceException;
 import com.company.project.model.Member;
+import com.company.project.model.MemberUpdateVO;
 
 import java.util.List;
 
@@ -25,4 +26,8 @@ public interface MemberService extends Service<Member> {
     void updateDim(Member member);
 
     void deleteMember(String id);
+
+    void updateFiled(MemberUpdateVO member);
+
+    void updateMember(Member member);
 }

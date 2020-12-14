@@ -5,10 +5,7 @@ import com.company.project.core.ServiceException;
 import com.company.project.dao.AttrMapper;
 import com.company.project.dao.AttrvalueMapper;
 import com.company.project.dao.MemberMapper;
-import com.company.project.model.DataType;
-import com.company.project.model.Member;
-import com.company.project.model.MemberType;
-import com.company.project.model.StatusType;
+import com.company.project.model.*;
 import com.company.project.service.MemberService;
 import com.company.project.utils.SnowID;
 import org.apache.commons.lang3.StringUtils;
@@ -107,5 +104,15 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
             attrvalueMapper.deleteByMemberid(id, member.getUnicode() + ",%");//删除属性值
             memberMapper.delMemberByUnicode(id, member.getUnicode() + ",%");//删除维度
         }
+    }
+
+    @Override
+    public void updateFiled(MemberUpdateVO member) {
+        memberMapper.updateFiled(member.getCode(),member.getDimid(),member.getField(),member.getValue());
+    }
+
+    @Override
+    public void updateMember(Member member) {
+        memberMapper.updateMember(member.getCode(),member.getDimid(),member.getName(),member.getMembertype(),member.getWeight());
     }
 }

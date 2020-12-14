@@ -48,7 +48,7 @@ public class Member {
     /**
      * 数据类型:0数值,1货币,2整数,3时间类型,4文本,5下拉列表,6手动上卷,7自动上卷
      */
-    private Integer datatype;
+    private Integer datatype=0;
 
     /**
      * 成员类型,0维度,1成员,2共享成员
@@ -58,12 +58,12 @@ public class Member {
     /**
      * 成员状态,0正常,1只读,2冻结
      */
-    private Integer status;
+    private Integer status=0;
 
     /**
      * 权重
      */
-    private Float weight;
+    private Float weight=0F;
 
     /**
      * 唯一编码

@@ -6,8 +6,7 @@ import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
 import com.company.project.model.*;
 import com.company.project.service.MemberService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.company.project.utils.MemberUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,9 +70,15 @@ public class MemberController {
         return ResultGenerator.genSuccessResult();
     }
 
+    @RequestMapping("/updateField")
+    public Result updateField(MemberUpdateVO Member) {
+        MemberService.updateFiled(Member);
+        return ResultGenerator.genSuccessResult();
+    }
+
     @RequestMapping("/updateMember")
     public Result updateMember(Member Member) {
-        MemberService.update(Member);
+        MemberService.updateMember(Member);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -84,7 +89,7 @@ public class MemberController {
     }
 
     @RequestMapping("/listMemmbers")
-    public Result list(@RequestParam String dimid,@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer limit) {
+    public Result list(@RequestParam String dimid, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer limit) {
 //        PageHelper.startPage(page, limit);
         Condition condition = new Condition(Member.class);
         Example.Criteria criteria = condition.createCriteria();
@@ -92,11 +97,12 @@ public class MemberController {
         criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
         List<Member> list = MemberService.findByCondition(condition);
         List<MemberVo> res = new ArrayList<>(list.size());
-        list.forEach(item ->{
+        list.forEach(item -> {
             MemberVo vo = new MemberVo();
-            BeanUtil.copyProperties(item,vo);
-            vo.setDatatypeDetail(DataType.getStr(item.getDatatype()));
-            vo.setStatusDetail(StatusType.getStr(item.getStatus()));
+            BeanUtil.copyProperties(item, vo);
+            vo.setDatatypedetail(DataType.getStr(item.getDatatype()));
+            vo.setStatusdetail(StatusType.getStr(item.getStatus()));
+            vo.setCodedetail(MemberUtil.getCodeDetail(item));
             res.add(vo);
         });
 

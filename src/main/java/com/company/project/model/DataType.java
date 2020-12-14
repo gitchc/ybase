@@ -11,7 +11,7 @@ public class DataType {
     public static final int AUTOROLLUP = 6;//自动上卷
     public static final int MAROLLUP = 7;//手动上卷
 
-    public static final String[] typeStrs = new String[]{"数据", "货币", "整数", "时间戳", "文本", "下拉列表", "自动上卷", "手动上卷"};
+    public static final String[] typeStrs = new String[]{"数值", "货币", "整数", "时间戳", "文本", "下拉列表", "自动上卷", "手动上卷"};
 
     public static String getStr(int code) {
         return typeStrs[code];
