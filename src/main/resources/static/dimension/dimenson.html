@@ -158,9 +158,9 @@
             }
         },
         attr: function () {
-            var id = this.getDimid();
-            if (id) {
-                openFullDialog("属性信息", 'attr.html');
+            var dimid = this.getDimid();
+            if (dimid) {
+                parent.openUrlDialog("属性信息", '/static/dimension/attr.html?dimid='+dimid,'60%','70%');
             }
         },
         getDimid: function () {

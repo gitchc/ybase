@@ -173,7 +173,7 @@ function openUrlDialog(title, url, width, height, fn) {
     layer.open({
         type: 2, // page层
         area: [width, height],
-        title: title,
+        title: false,
         shade: 0.3, // 遮罩透明度
         maxmin: false,
         moveType: 1, // 拖拽风格，0是默认，1是传统拖动
