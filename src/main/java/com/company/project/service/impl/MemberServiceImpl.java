@@ -72,7 +72,6 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         Integer maxPos = memberMapper.getMaxPosition(pid);
         Integer nextPos = maxPos == null ? 1 : maxPos + 1;
         member.setPosition(nextPos);
-        member.setDimid(Pmember.getDimid().equals("-1") ? Pmember.getId() : Pmember.getId());
         member.setGeneration(Pmember.getGeneration() + 1);
         member.setUnicode(Pmember.getUnicode() + "," + member.getCode());
         member.setUnipos(Pmember.getUnipos() + "." + member.getPosition());
