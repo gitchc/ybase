@@ -7,6 +7,7 @@ import com.company.project.core.ServiceException;
 import com.company.project.model.*;
 import com.company.project.service.MemberService;
 import com.company.project.utils.MemberUtil;
+import com.company.project.utils.SortUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,14 +91,14 @@ public class MemberController {
 
     @RequestMapping("/listMemmbers")
     public Result list(@RequestParam String dimid, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer limit) {
-//        PageHelper.startPage(page, limit);
         Condition condition = new Condition(Member.class);
         Example.Criteria criteria = condition.createCriteria();
         criteria.andEqualTo("dimid", dimid);
         criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
         List<Member> list = MemberService.findByCondition(condition);
-        List<MemberVo> res = new ArrayList<>(list.size());
-        list.forEach(item -> {
+        List<Member> finalshow = SortUtils.sort(list);
+        List<MemberVo> res = new ArrayList<>(finalshow.size());
+        finalshow.forEach(item -> {
             MemberVo vo = new MemberVo();
             BeanUtil.copyProperties(item, vo);
             vo.setDatatypedetail(DataType.getStr(item.getDatatype()));
@@ -106,7 +107,6 @@ public class MemberController {
             res.add(vo);
         });
 
-//        PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(res);
     }
 }

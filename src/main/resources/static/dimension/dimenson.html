@@ -217,8 +217,11 @@
         //聚合按钮切换
         form.on('switch(rollup)', function (data) {
             var dimid = $(data.elem).attr('dimid');
-            var datatype = this.checked ? 6 : 7;
-            fetchPost("/member/switchDim", {dimid: dimid, datatype: datatype});
+            var datatype = this.checked ? DATATYPES.MANAUTO.value : DATATYPES.AUTO.value;//自动上卷 还是手动上卷
+            showConfirm("提示", "切换,会把该维度下面所有的上卷节点类型都变更,确定切换么?", () => {
+                fetchPost("/member/switchDim", {dimid: dimid, datatype: datatype});
+            });
+
         });
         //维度点击事件
         $("#dimform").on("click", ".dimlabel", function () {
@@ -233,7 +236,7 @@
                 , data = obj.data //得到所在行所有键值
                 , field = obj.field; //得到字段
             // layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
-            fetchPost("/member/updateMember", {code: data.code, field: obj.field, value: value, dimid: dimid})
+            fetchPost("/member/updateField", {code: data.code, field: obj.field, value: value, dimid: dimid})
         });
         //监听行单击事件（双击事件为：rowDouble）
         table.on('row(membertable)', function (obj) {
@@ -244,9 +247,19 @@
         });
     };
 
-    var MEMBERTYPES = {
+    const MEMBERTYPES = {
         DIM: 0,
         MEMBER: 1
+    };
+    const DATATYPES = {
+        NUM: {value: 0, name: "数值"},
+        // COIN:{value:1, name: "货币"},
+        // INT:{value:2,name:"整数"},
+        // DATE:{value:3,name:"日期戳"},
+        // TXT:{value:4,name:"文本"},
+        // LIST:{value:5,name:"下拉列表"},
+        MANAUTO: {value: 10, name: "手动上卷"},
+        AUTO: {value: 11, name: "自动上卷"}
     };
     //成员工具栏操作区域
     var memberBtnevent = {
@@ -258,14 +271,14 @@
                     pid: memberid,
                     name: "",
                     code: "",
-                    datatype: 0,
+                    datatype: DATATYPES.NUM.value, //默认数值
                     weight: 1,
-                    membertype: MEMBERTYPES.MEMBER
+                    membertype: MEMBERTYPES.MEMBER//默认成员
                 };
                 openPromptDialog("新增成员", '450px', '350px', memberBtnevent.initDetail(member, false), function () {
-                   var nmembner = form.val('memberInitForm');
-                    member.name = nmembner.name;
+                    var nmembner = form.val('memberInitForm');
                     member.code = nmembner.code;
+                    member.name = nmembner.name ? nmembner.name : nmembner.code;
                     member.weight = nmembner.weight;
                     member.datatype = nmembner.datatype;
                     fetchPost("/member/addMember", member, memberBtnevent.reloadMembers)
@@ -278,7 +291,7 @@
                 fetchGet("/member/detail?id=" + memberid, function (member) {
                     openPromptDialog("修改成员", '450px', '350px', memberBtnevent.initDetail(member, true), function () {
                         var nmembner = form.val('memberInitForm');
-                        member.name = nmembner.name;
+                        member.name = nmembner.name ? nmembner.name : nmembner.code;
                         member.weight = nmembner.weight;
                         member.datatype = nmembner.datatype;
                         fetchPost("/member/updateMember", member, memberBtnevent.reloadMembers)
@@ -287,30 +300,20 @@
 
             }
         },
-        dataTypes: [
-            {value: 0, name: "数值"},
-            /*{value:1,name:"货币"},
-            {value:2,name:"整数"},
-            {value:3,name:"日期戳"},
-            {value:4,name:"文本"},
-            {value:5,name:"下拉列表"},*/
-            {value: 6, name: "手动上卷"},
-            {value: 7, name: "自动上卷"}
-        ],
         initDetail: function (member, isedit) { //拼接维度信息
             var disab = isedit ? "class='layui-input layui-disabled' disabled" : "class='layui-input'";
             var datatype = member.datatype;
             var content = '<form class="layui-form"  lay-filter="memberInitForm">' +
                 '<div class="layui-form-item">' +
-                '<label class="layui-form-label" >名称</label>' +
-                '<div class="layui-input-inline">' +
-                '<input type="text" name="name" class="layui-input" lay-verify="required" value="' + member.name + '">' +
-                '</div>' +
-                '</div>' +
-                '<div class="layui-form-item">' +
                 '<label class="layui-form-label" >编码</label>' +
                 '<div class="layui-input-inline">' +
                 '<input type="text" name="code"  lay-verify="required" ' + disab + ' value="' + member.code + '">' +
+                '</div>' +
+                '</div>' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label" >名称</label>' +
+                '<div class="layui-input-inline">' +
+                '<input type="text" name="name" class="layui-input"  value="' + member.name + '">' +
                 '</div>' +
                 '</div>' +
                 '<div class="layui-form-item">' +
@@ -323,7 +326,7 @@
                 '<label class="layui-form-label">数据类型</label>' +
                 ' <div class="layui-input-inline"> ' +
                 '<select name="datatype" >';
-            this.dataTypes.forEach((item, index, array) => {
+            Object.values(DATATYPES).forEach((item, index, array) => {
                 var selectable = item.value == datatype ? "selected" : "";
                 content += "<option value='" + item.value + "' " + selectable + ">" + item.name + "</option>";
             });
@@ -368,11 +371,11 @@
             , id: 'membertable'
             , height: 'full-85'
             , cols: [[ //标题栏
-                {field: 'codedetail', title: '编码', minWidth: 120}
-                , {field: 'name', title: '名称', minWidth: 120, edit: 'text'}
+                {field: 'codedetail', title: '编码', width: 250}
+                , {field: 'name', title: '名称', width: 150, align: 'center', edit: 'text'}
                 , {field: 'weight', title: '权重', width: 80, align: 'center', edit: 'text'}
-                , {field: 'datatypedetail', title: '数据类型', width: 120, align: 'center'}
-                , {field: 'statusdetail', title: '成员状态', width: 120, align: 'center'}
+                , {field: 'datatypedetail', title: '数据类型', align: 'center', width: 120,}
+                , {field: 'statusdetail', title: '成员状态', align: 'center', width: 120,}
             ]]
             , url: '/member/listMemmbers?dimid=' + dimid
             , parseData: function (res) { //res 即为原始返回的数据
@@ -405,12 +408,12 @@
             },
             no: function (index) {
                 layer.close(index);
-            }, success: function (layro,index) {
+            }, success: function (layro, index) {
                 layro.addClass('layui-form');
-                layro.find(".layui-layer-btn0").attr('lay-filter',formid).attr("lay-submit","");
-                form.render('',formid);
+                layro.find(".layui-layer-btn0").attr('lay-filter', formid).attr("lay-submit", "");
+                form.render('', formid);
                 form.render();
-                form.on('submit('+formid+')', function (data) {
+                form.on('submit(' + formid + ')', function (data) {
                     yesFn(data.field);
                     layer.close(index);
                 });

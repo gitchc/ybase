@@ -46,7 +46,7 @@ public class Member {
     private Integer generation;
 
     /**
-     * 数据类型:0数值,1货币,2整数,3时间类型,4文本,5下拉列表,6手动上卷,7自动上卷
+     * 数据类型:0数值,1货币,2整数,3时间类型,4文本,5下拉列表,10手动上卷,11自动上卷
      */
     private Integer datatype=0;
 

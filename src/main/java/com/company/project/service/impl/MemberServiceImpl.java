@@ -58,14 +58,18 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     public void addMember(Member member) {
         member.setId(SnowID.nextID());
         String pid = member.getPid();
+        String dimid = member.getDimid();
         if (StringUtils.isBlank(pid)) {
-            String dimid = member.getDimid();
             pid = dimid;
             member.setPid(dimid);
         }
         Member Pmember = memberMapper.selectByPrimaryKey(pid);
         if (Pmember == null) {
             throw new ServiceException("父节点不存在");
+        }
+        if (Pmember.getDatatype() != DataType.AUTOROLLUP || Pmember.getDatatype() != DataType.MAROLLUP) {//父项不为汇聚改一下
+            Member dim = memberMapper.selectByPrimaryKey(dimid);
+            memberMapper.updateFiled(Pmember.getCode(), member.getDimid(), "datatype", dim.getDatatype() + "");
         }
         member.setStatus(StatusType.NORMAL);
         member.setWeight(member.getWeight() == null ? 1L : member.getWeight());
@@ -85,6 +89,11 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Override
     public void switchDim(Member member) {
         memberMapper.switchDim(member.getDimid(), member.getDatatype());
+        Integer olddatatype = 10;
+        if (member.getDatatype() == 10) {
+            olddatatype = 11;
+        }
+        memberMapper.switchMember(member.getDimid(), olddatatype, member.getDatatype());
     }
 
     @Override
@@ -110,11 +119,11 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
 
     @Override
     public void updateFiled(MemberUpdateVO member) {
-        memberMapper.updateFiled(member.getCode(),member.getDimid(),member.getField(),member.getValue());
+        memberMapper.updateFiled(member.getCode(), member.getDimid(), member.getField(), member.getValue());
     }
 
     @Override
     public void updateMember(Member member) {
-        memberMapper.updateMember(member.getCode(),member.getDimid(),member.getName(),member.getMembertype(),member.getWeight());
+        memberMapper.updateMember(member.getCode(), member.getDimid(), member.getName(), member.getDatatype(), member.getWeight());
     }
 }
