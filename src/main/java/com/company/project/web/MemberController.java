@@ -1,17 +1,22 @@
 package com.company.project.web;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.core.ServiceException;
-import com.company.project.model.Member;
+import com.company.project.model.*;
 import com.company.project.service.MemberService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tk.mybatis.mapper.entity.Condition;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -78,11 +83,24 @@ public class MemberController {
         return ResultGenerator.genSuccessResult(Member);
     }
 
-    @RequestMapping("/list")
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        PageHelper.startPage(page, size);
-        List<Member> list = MemberService.findAll();
-        PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+    @RequestMapping("/listMemmbers")
+    public Result list(@RequestParam String dimid,@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer limit) {
+//        PageHelper.startPage(page, limit);
+        Condition condition = new Condition(Member.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("dimid", dimid);
+        criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
+        List<Member> list = MemberService.findByCondition(condition);
+        List<MemberVo> res = new ArrayList<>(list.size());
+        list.forEach(item ->{
+            MemberVo vo = new MemberVo();
+            BeanUtil.copyProperties(item,vo);
+            vo.setDatatypeDetail(DataType.getStr(item.getDatatype()));
+            vo.setStatusDetail(StatusType.getStr(item.getStatus()));
+            res.add(vo);
+        });
+
+//        PageInfo pageInfo = new PageInfo(list);
+        return ResultGenerator.genSuccessResult(res);
     }
 }
