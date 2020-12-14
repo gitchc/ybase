@@ -194,7 +194,7 @@ function openUrlDialog(title, url, width, height, fn) {
  * ***********打开全屏窗口********* *************************** title:标题 url:地址
  * width:宽度 height:高度 fn:点确定之后的回调函数
  ******************************************************************************/
-function openFullDialog(url, title, width, height) {
+function openFullDialog(title,url,width, height) {
     var index = layer.open({
         type: 2, // page层
         area: [width, height],
