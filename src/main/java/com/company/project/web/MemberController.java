@@ -64,7 +64,7 @@ public class MemberController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @RequestMapping("/deleteMember")
+    @RequestMapping("/delMember")
     public Result deleteMember(@RequestParam String id) {
         MemberService.deleteMember(id);
         return ResultGenerator.genSuccessResult();

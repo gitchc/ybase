@@ -64,6 +64,9 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
             member.setPid(dimid);
         }
         Member Pmember = memberMapper.selectByPrimaryKey(pid);
+        if (Pmember == null) {
+            throw new ServiceException("父节点不存在");
+        }
         member.setStatus(StatusType.NORMAL);
         member.setWeight(member.getWeight() == null ? 1L : member.getWeight());
         Integer maxPos = memberMapper.getMaxPosition(pid);

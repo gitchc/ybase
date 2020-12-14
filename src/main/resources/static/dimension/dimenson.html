@@ -32,9 +32,6 @@
         display: none;
     }
 
-    .layui-select-title, .layui-form-select {
-        width: 240px
-    }
 
 </style>
 <body>
@@ -92,8 +89,8 @@
                     </div>
                 </div>
                 <div class="layui-row" id="righttable">
-                <table class="layui-hide" id="membertable" lay-filter="membertable">
-                </table>
+                    <table class="layui-hide" id="membertable" lay-filter="membertable">
+                    </table>
                 </div>
             </div>
         </div>
@@ -231,15 +228,15 @@
             memberBtnevent.initMembers();
         });
         //监听单元格编辑
-        table.on('edit(membertable)', function(obj){
+        table.on('edit(membertable)', function (obj) {
             var value = obj.value //得到修改后的值
-                ,data = obj.data //得到所在行所有键值
-                ,field = obj.field; //得到字段
+                , data = obj.data //得到所在行所有键值
+                , field = obj.field; //得到字段
             // layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
-             fetchPost("/member/updateMember", {code:data.code,field:obj.field,value:value,dimid:dimid})
+            fetchPost("/member/updateMember", {code: data.code, field: obj.field, value: value, dimid: dimid})
         });
         //监听行单击事件（双击事件为：rowDouble）
-        table.on('row(membertable)', function(obj){
+        table.on('row(membertable)', function (obj) {
             var data = obj.data;
             //标注选中样式
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
@@ -266,11 +263,12 @@
                     membertype: MEMBERTYPES.MEMBER
                 };
                 openPromptDialog("新增成员", '450px', '350px', memberBtnevent.initDetail(member, false), function () {
-                    member.name = $('#name').val();
-                    member.code = $('#code').val();
-                    member.datatype = $('#datatype').val();
-                    member.weight = $('#weight').val();
-                    fetchPost("/member/addMember", member, this.initMembers)
+                   var nmembner = form.val('memberInitForm');
+                    member.name = nmembner.name;
+                    member.code = nmembner.code;
+                    member.weight = nmembner.weight;
+                    member.datatype = nmembner.datatype;
+                    fetchPost("/member/addMember", member, memberBtnevent.reloadMembers)
                 });
             }
         },
@@ -279,10 +277,11 @@
             if (dimid && memberid) {
                 fetchGet("/member/detail?id=" + memberid, function (member) {
                     openPromptDialog("修改成员", '450px', '350px', memberBtnevent.initDetail(member, true), function () {
-                        member.name = $('#name').val();
-                        member.datatype = $('#datatype').val();
-                        member.weight = $('#weight').val();
-                        fetchPost("/member/updateMember", member, this.initMembers)
+                        var nmembner = form.val('memberInitForm');
+                        member.name = nmembner.name;
+                        member.weight = nmembner.weight;
+                        member.datatype = nmembner.datatype;
+                        fetchPost("/member/updateMember", member, memberBtnevent.reloadMembers)
                     });
                 });
 
@@ -299,31 +298,31 @@
             {value: 7, name: "自动上卷"}
         ],
         initDetail: function (member, isedit) { //拼接维度信息
-            var disab = isedit ? "disabled" : "";
+            var disab = isedit ? "class='layui-input layui-disabled' disabled" : "class='layui-input'";
             var datatype = member.datatype;
-            var content = '<form class="layui-form" id="memberInitForm">' +
+            var content = '<form class="layui-form"  lay-filter="memberInitForm">' +
                 '<div class="layui-form-item">' +
-                '<label class="layui-form-label">名称</label>' +
+                '<label class="layui-form-label" >名称</label>' +
                 '<div class="layui-input-inline">' +
-                '<input type="text" id="name" class="layui-layer-input" value="' + member.name + '">' +
-                '</div>' +
-                '</div>' +
-                '<div class="layui-form-item">' +
-                '<label class="layui-form-label">编码</label>' +
-                '<div class="layui-input-inline">' +
-                '<input type="text" id="code" class="layui-layer-input"  ' + disab + ' value="' + member.code + '">' +
+                '<input type="text" name="name" class="layui-input" lay-verify="required" value="' + member.name + '">' +
                 '</div>' +
                 '</div>' +
                 '<div class="layui-form-item">' +
-                '<label class="layui-form-label">权重</label>' +
+                '<label class="layui-form-label" >编码</label>' +
                 '<div class="layui-input-inline">' +
-                '<input type="text" id="weight" class="layui-layer-input" value="' + member.weight + '">' +
+                '<input type="text" name="code"  lay-verify="required" ' + disab + ' value="' + member.code + '">' +
+                '</div>' +
+                '</div>' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label" >权重</label>' +
+                '<div class="layui-input-inline">' +
+                '<input type="text" name="weight" class="layui-input" lay-verify="required" value="' + member.weight + '">' +
                 '</div>' +
                 '</div>' +
                 '<div class="layui-form-item">' +
                 '<label class="layui-form-label">数据类型</label>' +
                 ' <div class="layui-input-inline"> ' +
-                '<select id="datatype" >';
+                '<select name="datatype" >';
             this.dataTypes.forEach((item, index, array) => {
                 var selectable = item.value == datatype ? "selected" : "";
                 content += "<option value='" + item.value + "' " + selectable + ">" + item.name + "</option>";
@@ -339,7 +338,7 @@
         del: function () {
             if (memberid) {
                 showConfirm("提示", "确定删除么?", function () {
-                    fetchget("/member/delMember?id=" + memberid, this.initMembers);
+                    fetchGet("/member/delMember?id=" + memberid, memberBtnevent.reloadMembers);
                 });
             }
         },
@@ -351,41 +350,48 @@
             return dimid;
         },
         initMembers: function () {
-            mocktable();
+            reloadTable();
+        },
+        reloadMembers: function () {
+            reloadTable();
         }
     }
 
-    function mocktable(){
+    function reloadTable() {
+        memberid = "";
+        $('#righttable').empty();
+        $('#righttable').append('<table class="layui-hide" id="membertable" lay-filter="membertable">\n' +
+            '                </table>');
         //展示已知数据
-        table.render({
+        var tableoptions = {
             elem: '#membertable'
-            ,id:'membertable'
-            ,height: 'full-85'
-            ,cols: [[ //标题栏
+            , id: 'membertable'
+            , height: 'full-85'
+            , cols: [[ //标题栏
                 {field: 'codedetail', title: '编码', minWidth: 120}
-                ,{field: 'name', title: '名称', minWidth: 120,edit: 'text'}
-                ,{field: 'weight', title: '权重', width: 80,align: 'center',edit: 'text'}
-                ,{field: 'datatypedetail', title: '数据类型', width: 120,align: 'center'}
-                ,{field: 'statusdetail', title: '成员状态', width: 120,align: 'center'}
+                , {field: 'name', title: '名称', minWidth: 120, edit: 'text'}
+                , {field: 'weight', title: '权重', width: 80, align: 'center', edit: 'text'}
+                , {field: 'datatypedetail', title: '数据类型', width: 120, align: 'center'}
+                , {field: 'statusdetail', title: '成员状态', width: 120, align: 'center'}
             ]]
-            ,url:'/member/listMemmbers?dimid='+dimid
-            ,parseData: function(res) { //res 即为原始返回的数据
+            , url: '/member/listMemmbers?dimid=' + dimid
+            , parseData: function (res) { //res 即为原始返回的数据
                 return {
-                    "code": res.code==200?0:res.code, //解析接口状态
+                    "code": res.code == 200 ? 0 : res.code, //解析接口状态
                     "msg": res.message, //解析提示文本
                     "count": res.data.length, //解析数据长度
                     "data": res.data //解析数据列表
                 };
             }
-            //,skin: 'line' //表格风格
-            //,page: true //是否显示分页
-            //,limits: [5, 7, 10]
-            //,limit: 5 //每页默认显示的数量
-        });
+        };
+        table.render(tableoptions);
+
     }
 
     function openPromptDialog(title, width, height, content, yesFn) {// div组件打开弹窗
+        var formid = 'memberInitForm';
         layer.open({
+            id: formid,
             type: 1, // page层
             area: [width, height],
             title: title,
@@ -395,14 +401,19 @@
             skin: 'layui-layer-prompt',
             btn: ['确定', '取消'],
             yes: function (index) {
-                if (yesFn)
-                    yesFn();
-                layer.close(index);
+
             },
             no: function (index) {
                 layer.close(index);
-            }, success: function () {
-                form.render('select');
+            }, success: function (layro,index) {
+                layro.addClass('layui-form');
+                layro.find(".layui-layer-btn0").attr('lay-filter',formid).attr("lay-submit","");
+                form.render('',formid);
+                form.render();
+                form.on('submit('+formid+')', function (data) {
+                    yesFn(data.field);
+                    layer.close(index);
+                });
             },
             content: content
         });
