@@ -177,11 +177,11 @@
                 '                </table>');
             fetchGet("/member/listDim", function (data) {
                 data.forEach((item, index, array) => {
-                    var check = item.datatype == 6 ? 'checked' : '';
+                    var check = item.datatype == DATATYPES.AUTO.value ? 'checked' : '';
                     $('#dimform').append(' <div class="layui-row"> ' +
                         '<div class=" layui-col-md8" ><label dimid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
                         '                   class="layui-form-label dimlabel">' + item.name + '</label> </div> \n' +
-                        ' <div class=" layui-col-md2">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="卷积|平面" lay-filter="rollup" ' + check + '></div></div>');
+                        ' <div class=" layui-col-md2">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="聚合|手动" lay-filter="rollup" ' + check + '></div></div>');
                 })
                 form.render();
                 restInitVars();
@@ -217,7 +217,7 @@
         //聚合按钮切换
         form.on('switch(rollup)', function (data) {
             var dimid = $(data.elem).attr('dimid');
-            var datatype = this.checked ? DATATYPES.MANAUTO.value : DATATYPES.AUTO.value;//自动上卷 还是手动上卷
+            var datatype = this.checked ? DATATYPES.AUTO.value : DATATYPES.MANAUTO.value;//自动上卷 还是手动上卷
             showConfirm("提示", "切换,会把该维度下面所有的上卷节点类型都变更,确定切换么?", () => {
                 fetchPost("/member/switchDim", {dimid: dimid, datatype: datatype});
             });
