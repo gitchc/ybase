@@ -13,4 +13,6 @@ public interface CubeService extends Service<Cube> {
     void deleteCubeById(String id);
 
     void saveCube(Cube cube);
+
+    void reloadData(String id);
 }

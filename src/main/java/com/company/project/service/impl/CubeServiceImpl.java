@@ -55,6 +55,12 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         }
     }
 
+    @Override
+    public void reloadData(String id) {
+        Cube cube = findById(id);
+        //todo reloadcube cube.getcode
+    }
+
     private void updateCube(Cube cube) {
         update(cube);
         //todo reloadcube

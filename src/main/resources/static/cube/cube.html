@@ -217,7 +217,8 @@
         },
         reloadCubeData: function (cubeid) {
             showConfirm("重新加载数据", "可能耗时比较长,是否重新加载?", () => {
-                alert("功能实装");
+                fetchGet("/cube/reloadData?id="+cubeid)
+                alert("功能未实装");
             });
         }
     }

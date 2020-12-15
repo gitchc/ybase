@@ -38,6 +38,12 @@ public class CubeController {
         return ResultGenerator.genSuccessResult();
     }
 
+    @RequestMapping("/reloadData")
+    public Result reloadData(@RequestParam String id) {
+        CubeService.reloadData(id);
+        return ResultGenerator.genSuccessResult();
+    }
+
 
     @RequestMapping("/update")
     public Result update(Cube Cube) {
