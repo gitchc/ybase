@@ -41,6 +41,7 @@ DROP TABLE IF EXISTS Cube;
 CREATE TABLE Cube(
 id bigint primary key not null comment '雪花id',
 cubename varchar(255) comment'cube名称',
+cubecode varchar(255) comment'cube编码',
 dimids text comment'包含的id信息',
 loadsql text comment'加载SQL',
 postion int comment'cube排序',

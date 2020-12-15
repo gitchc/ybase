@@ -1,7 +1,7 @@
 package com.company.project.service;
 import com.company.project.model.Attr;
 import com.company.project.core.Service;
-import com.company.project.model.ColVo;
+import com.company.project.model.ColVO;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface AttrService extends Service<Attr> {
 
-    List<ColVo> getAttrByDimid(String dimid);
+    List<ColVO> getAttrByDimid(String dimid);
 
     void insertAttr(Attr attr);
 }

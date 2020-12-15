@@ -16,7 +16,7 @@
     <result column="membertype" jdbcType="INTEGER" property="membertype" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="weight" jdbcType="REAL" property="weight" />
-    <result column="uniquecode" jdbcType="LONGVARCHAR" property="uniquecode" />
-    <result column="uniqueposition" jdbcType="LONGVARCHAR" property="uniqueposition" />
+    <result column="unicode" jdbcType="LONGVARCHAR" property="uniquecode" />
+    <result column="unipos" jdbcType="LONGVARCHAR" property="uniqueposition" />
   </resultMap>
 </mapper>

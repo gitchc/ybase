@@ -11,15 +11,16 @@ import java.util.List;
 
 public interface MemberMapper extends Mapper<Member> {
     @Select("select max(position) from Member where pid = #{pid}")
-    Integer getMaxPosition(@Param("pid") String pid);
+    Integer getMaxPosition(String pid);
 
     @Select("select * from Member where membertype=0")
     List<Member> selectAllDim();
 
     @Update("update Member set datatype=#{datatype} where id = #{id}")
     void switchDim(String id, Integer datatype);
+
     @Update("update Member set datatype=#{newdatatype} where dimid = #{dimid} and datatype = #{olddatatype}")
-    void switchMember(String dimid, Integer olddatatype,Integer newdatatype);
+    void switchMember(String dimid, Integer olddatatype, Integer newdatatype);
 
     @Delete("delete from Member where dimid= #{dimid} or id = #{dimid}")
     void delDim(String dimid);

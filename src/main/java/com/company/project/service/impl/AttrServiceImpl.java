@@ -4,7 +4,7 @@ import com.company.project.core.AbstractService;
 import com.company.project.core.ServiceException;
 import com.company.project.dao.AttrMapper;
 import com.company.project.model.Attr;
-import com.company.project.model.ColVo;
+import com.company.project.model.ColVO;
 import com.company.project.service.AttrService;
 import com.company.project.utils.SnowID;
 import org.springframework.stereotype.Service;
@@ -25,15 +25,15 @@ public class AttrServiceImpl extends AbstractService<Attr> implements AttrServic
     private AttrMapper attrMapper;
 
     @Override
-    public List<ColVo> getAttrByDimid(String dimid) {
-        List<ColVo> cols = new ArrayList<>();
+    public List<ColVO> getAttrByDimid(String dimid) {
+        List<ColVO> cols = new ArrayList<>();
         List<Attr> attrs = attrMapper.getAttrByDimid(dimid);
         if (attrs.size() > 0) {
-            cols.add(new ColVo("code", "编码", 150));
-            cols.add(new ColVo("name", "名称", 150));
+            cols.add(new ColVO("code", "编码", 150));
+            cols.add(new ColVO("name", "名称", 150));
         }
         for (Attr attr : attrs) {
-            ColVo colvo = new ColVo(attr.getAttrname(),attr.getId());
+            ColVO colvo = new ColVO(attr.getAttrname(),attr.getId());
             cols.add(colvo);
         }
         return cols;

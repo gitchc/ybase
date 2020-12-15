@@ -3,7 +3,7 @@ package com.company.project.web;
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.model.Attr;
-import com.company.project.model.ColVo;
+import com.company.project.model.ColVO;
 import com.company.project.service.AttrService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,7 +47,7 @@ public class AttrController {
 
     @RequestMapping("/list")
     public Result list(@RequestParam String dimid, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<ColVo> attrs = AttrService.getAttrByDimid(dimid);
+        List<ColVO> attrs = AttrService.getAttrByDimid(dimid);
         return ResultGenerator.genSuccessResult(attrs);
     }
 }

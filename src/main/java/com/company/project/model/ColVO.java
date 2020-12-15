@@ -3,7 +3,7 @@ package com.company.project.model;
 import lombok.Data;
 
 @Data
-public class ColVo {
+public class ColVO {
     private String field;
     private String title;
     private int width = 100;
@@ -11,14 +11,14 @@ public class ColVo {
     private String fixed = "";
     private String event ;
 
-    public ColVo(String field,String attrid) {
+    public ColVO(String field, String attrid) {
         this.field = field;
         this.title = field;
         this.edit = "text";
         this.event = field+","+attrid;
     }
 
-    public ColVo(String field, String title,int width) {
+    public ColVO(String field, String title, int width) {
         this.field = field;
         this.title = title;
         this.width = width;

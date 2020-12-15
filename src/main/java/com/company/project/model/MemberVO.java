@@ -3,7 +3,7 @@ package com.company.project.model;
 import lombok.Data;
 
 @Data
-public class MemberVo extends Position{
+public class MemberVO extends Position{
     /**
      * 雪花id
      */

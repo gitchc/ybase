@@ -96,16 +96,16 @@ public class MemberController {
         criteria.andEqualTo("dimid", dimid);
         criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
         List<Member> list = MemberService.findByCondition(condition);
-        List<MemberVo> res = new ArrayList<>(list.size());
+        List<MemberVO> res = new ArrayList<>(list.size());
         list.forEach(item -> {
-            MemberVo vo = new MemberVo();
+            MemberVO vo = new MemberVO();
             BeanUtil.copyProperties(item, vo);
             vo.setDatatypedetail(DataType.getStr(item.getDatatype()));
             vo.setStatusdetail(StatusType.getStr(item.getStatus()));
             vo.setCodedetail(MemberUtil.getCodeDetail(item));
             res.add(vo);
         });
-        List<MemberVo> finalRes = SortUtils.sort(res);
+        List<MemberVO> finalRes = SortUtils.sort(res);
         return ResultGenerator.genSuccessResult(finalRes);
     }
 }

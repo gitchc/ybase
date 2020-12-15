@@ -7,9 +7,11 @@
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="cubename" jdbcType="VARCHAR" property="cubename" />
-    <result column="postion" jdbcType="INTEGER" property="postion" />
+    <result column="cubecode" jdbcType="VARCHAR" property="cubecode" />
+    <result column="loadsql" jdbcType="VARCHAR" property="loadsql" />
     <result column="autoload" jdbcType="INTEGER" property="autoload" />
+    <result column="autosql" jdbcType="INTEGER" property="autosql" />
+    <result column="postion" jdbcType="INTEGER" property="postion" />
     <result column="dimids" jdbcType="LONGVARCHAR" property="dimids" />
-    <result column="loadsql" jdbcType="LONGVARCHAR" property="loadsql" />
   </resultMap>
 </mapper>

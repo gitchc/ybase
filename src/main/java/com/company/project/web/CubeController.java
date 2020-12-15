@@ -1,11 +1,9 @@
 package com.company.project.web;
+
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.model.Cube;
 import com.company.project.service.CubeService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +12,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
-* Created by CodeGenerator on 2020-12-15.
-*/
+ * Created by CodeGenerator on 2020-12-15.
+ */
 @RestController
 @RequestMapping("/cube")
 public class CubeController {
@@ -24,7 +22,7 @@ public class CubeController {
 
     @RequestMapping("/insert")
     public Result add(Cube Cube) {
-        CubeService.insert(Cube);
+        CubeService.insertCube(Cube);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -48,9 +46,7 @@ public class CubeController {
 
     @RequestMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        PageHelper.startPage(page, size);
         List<Cube> list = CubeService.findAll();
-        PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+        return ResultGenerator.genSuccessResult(list);
     }
 }
