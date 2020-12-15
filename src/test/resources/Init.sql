@@ -44,8 +44,9 @@ cubename varchar(255) comment'cube名称',
 cubecode varchar(255) comment'cube编码',
 dimids text comment'包含的id信息',
 loadsql text comment'加载SQL',
-postion int comment'cube排序',
-autoload int default 0 comment'状态:0自动加载,1手动加载'
+position int comment'cube排序',
+autoload int default 1 comment'自动load数据:1自动加载,0手动加载',
+autosql  int default 1 comment'自动生成加载sql:1自动自定,0手动指定'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Script表

@@ -41,7 +41,7 @@ public class Cube {
     /**
      * cube排序
      */
-    private Integer postion;
+    private Integer position;
 
     /**
      * 包含的id信息

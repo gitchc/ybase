@@ -9,4 +9,8 @@ import com.company.project.core.Service;
 public interface CubeService extends Service<Cube> {
 
     void insertCube(Cube cube);
+
+    void deleteCubeById(String id);
+
+    void saveCube(Cube cube);
 }

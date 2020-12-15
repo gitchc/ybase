@@ -6,6 +6,7 @@ import com.company.project.dao.CubeMapper;
 import com.company.project.model.Cube;
 import com.company.project.service.CubeService;
 import com.company.project.utils.SnowID;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,9 +30,33 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         } else {
             cube.setId(SnowID.nextID());
             Integer maxpos = CubeMapper.getMaxPosition();
-            cube.setPostion(maxpos == null ? 0 : maxpos + 1);
+            cube.setPosition(maxpos == null ? 0 : maxpos + 1);
             insert(cube);
         }
+        if (cube.getAutoload() == 1) {
+            //todo load数据
+        }
+    }
 
+    @Override
+    public void deleteCubeById(String id) {
+        Cube cube = findById(id);
+        deleteById(id);
+        //todo 卸载cube内存 cube.getcode
+    }
+
+    @Override
+    public void saveCube(Cube cube) {
+        String cubeId = cube.getId();
+        if (StringUtils.isNotBlank(cubeId)) {
+            updateCube(cube);
+        } else {
+            insertCube(cube);
+        }
+    }
+
+    private void updateCube(Cube cube) {
+        update(cube);
+        //todo reloadcube
     }
 }

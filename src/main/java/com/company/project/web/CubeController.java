@@ -26,11 +26,18 @@ public class CubeController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @RequestMapping("/delete")
-    public Result delete(@RequestParam String id) {
-        CubeService.deleteById(id);
+    @RequestMapping("/save")
+    public Result save(Cube Cube) {
+        CubeService.saveCube(Cube);
         return ResultGenerator.genSuccessResult();
     }
+
+    @RequestMapping("/delete")
+    public Result delete(@RequestParam String id) {
+        CubeService.deleteCubeById(id);
+        return ResultGenerator.genSuccessResult();
+    }
+
 
     @RequestMapping("/update")
     public Result update(Cube Cube) {

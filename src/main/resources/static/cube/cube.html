@@ -47,7 +47,7 @@
                             <button type="button" action="add" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe654;</i>
                             </button>
-                            <button type="button" action="del" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <button type="button" action="delete" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe640;</i>
                             </button>
                         </div>
@@ -76,7 +76,8 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">编码</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="cubecode" class="layui-input" lay-verify="required">
+                                <input type="text" name="cubecode" id="cubecode" class="layui-input"
+                                       lay-verify="required">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -145,39 +146,47 @@
     //维度工具栏操作区域
     var eventBtn = {
         add: function () {
-            restInitVars();
             var cube = {
                 cubename: ""
                 , cubecode: ""
-                , cubecode: ""
-                , autoload: "1"//自动加载
-                , dimids: []
+                , autoload: 1//自动加载
+                , autosql: 0
                 , loadsql: ""
 
             };
-            eventBtn.initDetail(cube, false);
-
+            restInitVars();
+            eventBtn.initDetail(cube);
         },
-        initDetail: function (data, isedit) { //拼接维度信息
+        edit: function () {
+            fetchGet("/cube/detail?id=" + cubeid, eventBtn.initDetail);
+        },
+        initDetail: function (data) { //拼接维度信息
             var dimids = data.dimids;
+            var dimArr = [];
+            if (!dimids) {
+                $("#cubecode").removeClass('layui-disabled');
+            } else {
+                dimArr = dimids.split(',');
+                $("#cubecode").addClass('layui-disabled');
+            }
             fetchGet("/member/listDim", function (alldims) {
                 var content = "";
                 alldims.forEach((item, index, array) => {
-                    var check = dimids.includes(item.id) ? 'checked' : '';
-                    content += '<input type="checkbox"  lay-skin="primary"  value="' + item.code + '" title="' + item.name + '" name="dimid" ' + check + '>';
+                    var check = dimArr.includes(item.id) ? 'checked' : '';
+                    content += '<input type="checkbox"  lay-skin="primary"  code="' + item.code + '" value="' + item.id + '" title="' + item.name + '" name="dimid" ' + check + '>';
                 })
-                $('#alldim').empty();
-                $('#alldim').append(content);
+                $('#alldim').replaceWith(content);
                 form.render('', 'cubeform');
+                form.val('cubeform', data);
                 $('#righttable').show();
             });
 
         },
-        del: function () {
+        delete: function () {
             var id = this.getid();
             if (id) {
                 showConfirm("提示", "确定删除么?", function () {
-                    fetchGet("/cube/del?id=" + id, eventBtn.init);
+                    fetchGet("/cube/delete?id=" + id, eventBtn.init);
                 });
             }
         },
@@ -193,10 +202,10 @@
             $('#righttable').hide();
             fetchGet("/cube/list", function (data) {
                 data.forEach((item, index, array) => {
-                    $('#lefttree').append(' <div class="layui-row"> ' +
+                    $('#leftree').append(' <div class="layui-row"> ' +
                         '<div class=" layui-col-md8" ><label cubeid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
-                        '                   class="layui-form-label dimlabel">' + item.name + '</label> </div> \n' +
-                        ' <div class=" layui-col-md2">  <button cubeid = "' + item.id + '" type="button" class="layui-btn" action="reloadCubeData" >Reload</button></div></div>');
+                        '                   class="layui-form-label cubelable">' + item.cubename + '</label> </div> \n' +
+                        ' <div class=" layui-col-md2">  <button cubeid = "' + item.id + '" type="button" class="reloaddata layui-btn layui-btn-sm layui-btn-radius layui-btn-danger" >重新装载数据</button></div></div>');
                 })
                 form.render();
                 restInitVars();
@@ -204,11 +213,11 @@
 
         },
         reload: function () {
-            $('#righttable').hide();
+
         },
-        reloadCubeData: function (ele) {
+        reloadCubeData: function (cubeid) {
             showConfirm("重新加载数据", "可能耗时比较长,是否重新加载?", () => {
-                alert($(ele).attr('cubeid'));
+                alert("功能实装");
             });
         }
     }
@@ -229,18 +238,23 @@
         //左侧按钮事件
         $('#left button').click(function () {
             var action = $(this).attr('action');
-            eventBtn[action](this);
+            eventBtn[action]();
         });
-        //维度点击事件
-        $("#leftree").on("click", ".dimlabel", function () {
-            $('.dimlabel').removeClass("custom-tree-item-clicked");
+        //cube点击事件
+        $("#leftree").on("click", ".cubelable", function () {
+            $('.cubelable').removeClass("custom-tree-item-clicked");
             $(this).addClass("custom-tree-item-clicked");
-            dimid = $(this).attr('dimid');
-            memberBtnevent.initMembers();
+            cubeid = $(this).attr('cubeid');
+            eventBtn.edit();
+        });
+        //重新加载数据
+        $("#leftree").on("click", ".reloaddata", function () {
+            var nowcubeid = $(this).attr('cubeid');
+            eventBtn.reloadCubeData(nowcubeid);
         });
         //监听提交
         form.on('submit(cubeform)', function (data) {
-            var postdata= data.field;
+            var postdata = data.field;
             var arr = new Array();
             $("input:checkbox[name='dimid']:checked").each(function (i) {
                 arr[i] = $(this).val();
@@ -256,7 +270,8 @@
             if (!postdata.autosql) {
                 postdata.autosql = 0;
             }
-            fetchPost("/cube/insert",postdata,eventBtn.init);
+            postdata.id=cubeid;
+            fetchPost("/cube/save", postdata, eventBtn.init);
         });
         //切换指定数据源
         form.on('switch(autosql)', function (data) {
