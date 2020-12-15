@@ -44,9 +44,9 @@ public class Cube {
     private Integer position;
 
     /**
-     * 包含的id信息
+     * 维度的code信息
      */
-    private String dimids;
+    private String dimcodes;
 
 
 }

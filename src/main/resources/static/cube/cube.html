@@ -161,19 +161,19 @@
             fetchGet("/cube/detail?id=" + cubeid, eventBtn.initDetail);
         },
         initDetail: function (data) { //拼接维度信息
-            var dimids = data.dimids;
+            var dimcodes = data.dimcodes;
             var dimArr = [];
-            if (!dimids) {
+            if (!dimcodes) {
                 $("#cubecode").removeClass('layui-disabled');
             } else {
-                dimArr = dimids.split(',');
+                dimArr = dimcodes.split(',');
                 $("#cubecode").addClass('layui-disabled');
             }
             fetchGet("/member/listDim", function (alldims) {
                 var content = "";
                 alldims.forEach((item, index, array) => {
                     var check = dimArr.includes(item.id) ? 'checked' : '';
-                    content += '<input type="checkbox"  lay-skin="primary"  code="' + item.code + '" value="' + item.id + '" title="' + item.name + '" name="dimid" ' + check + '>';
+                    content += '<input type="checkbox"  lay-skin="primary"  value="' + item.code + '" title="' + item.name + '" name="dimcode" ' + check + '>';
                 })
                 $('#alldim').replaceWith(content);
                 form.render('', 'cubeform');
@@ -256,14 +256,14 @@
         form.on('submit(cubeform)', function (data) {
             var postdata = data.field;
             var arr = new Array();
-            $("input:checkbox[name='dimid']:checked").each(function (i) {
+            $("input:checkbox[name='dimcode']:checked").each(function (i) {
                 arr[i] = $(this).val();
             });
             if (arr.length < 2) {
                 showWarn("维度至少选择2个");
                 return false;
             }
-            postdata.dimids = arr.join(",");//将数组合并成字符串
+            postdata.dimcodes = arr.join(",");//将数组合并成字符串
             if (!postdata.autoload) {
                 postdata.autoload = 0;
             }

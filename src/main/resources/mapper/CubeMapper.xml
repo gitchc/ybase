@@ -12,6 +12,6 @@
     <result column="autoload" jdbcType="INTEGER" property="autoload" />
     <result column="autosql" jdbcType="INTEGER" property="autosql" />
     <result column="position" jdbcType="INTEGER" property="postion" />
-    <result column="dimids" jdbcType="LONGVARCHAR" property="dimids" />
+    <result column="dimcodes" jdbcType="LONGVARCHAR" property="dimids" />
   </resultMap>
 </mapper>

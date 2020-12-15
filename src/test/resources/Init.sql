@@ -42,7 +42,7 @@ CREATE TABLE Cube(
 id bigint primary key not null comment '雪花id',
 cubename varchar(255) comment'cube名称',
 cubecode varchar(255) comment'cube编码',
-dimids text comment'包含的id信息',
+dimcodes text comment'维度信息编码',
 loadsql text comment'加载SQL',
 position int comment'cube排序',
 autoload int default 1 comment'自动load数据:1自动加载,0手动加载',
