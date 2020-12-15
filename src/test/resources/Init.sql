@@ -40,12 +40,11 @@ CREATE index index_code  ON attrvalue (attrid,memberCode);
 DROP TABLE IF EXISTS Cube;
 CREATE TABLE Cube(
 id bigint primary key not null comment '雪花id',
+cubename varchar(255) comment'cube名称',
 dimids text comment'包含的id信息',
-facttable varchar(255) comment'实体表名',
-pkcol varchar(255) default 'ID' comment 'id列',
-measurecol varchar(500) default 'VALUE' comment'度量列',
+loadsql text comment'加载SQL',
 postion int comment'cube排序',
-autoload int default 0 comment'状态,0自动加载,1手动加载'
+autoload int default 0 comment'状态:0自动加载,1手动加载'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Script表

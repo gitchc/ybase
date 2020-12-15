@@ -10,4 +10,5 @@ public class AttrValueVO extends Position {
     private String code;
     private String name;
     private String dimid;
+    private String attrid;
 }

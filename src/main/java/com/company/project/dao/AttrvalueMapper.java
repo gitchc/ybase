@@ -29,4 +29,7 @@ public interface AttrvalueMapper extends Mapper<Attrvalue> {
 
     @Delete("delete from attrvalue where attrid in (select id from(select id from attr  where dimid = #{dimid} and attrname=#{attrname})cd) ")
     void deleteByDimIdAndName(String attrname, String dimid);
+
+    @Delete("delete from attrvalue where  attrid = #{attrid} ")
+    void deleteByAttrid(String attrid);
 }

@@ -33,7 +33,7 @@ public class AttrServiceImpl extends AbstractService<Attr> implements AttrServic
             cols.add(new ColVo("name", "名称", 150));
         }
         for (Attr attr : attrs) {
-            ColVo colvo = new ColVo(attr.getAttrname());
+            ColVo colvo = new ColVo(attr.getAttrname(),attr.getId());
             cols.add(colvo);
         }
         return cols;

@@ -52,7 +52,8 @@
 <script src="/static/layuiadmin/layui/layui.js"></script>
 <script src="/static/common/utils.js"></script>
 <script>
-    var FIELD;
+    var FIELD="",ATTRID="";
+
     layui.config({
         base: '/static/layuiadmin/' //静态资源所在路径
     }).extend({
@@ -66,9 +67,9 @@
         bindEvent();
     });
 
-
     function restInitVars() {
-        field = "";
+        FIELD = "";
+        ATTRID = "";
     }
 
     //维度左侧事件
@@ -83,15 +84,20 @@
             var value = obj.value //得到修改后的值
                 , data = obj.data //得到所在行所有键值
                 , field = obj.field; //得到字段
-            FIELD = obj.field;
-            fetchPost("/attrvalue/updateValue", {code: data.code, attrvalue: value, attrname: field, dimid: dimid})
+            fetchPost("/attrvalue/updateValue", {code: data.code, attrvalue: value, attrname: field, dimid: dimid,attrid:ATTRID})
         });
         //监听行单击事件（双击事件为：rowDouble）
         table.on('row(attrtable)', function (obj) {
             var data = obj.data;
             //标注选中样式
             obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
-            FIELD = obj.field;
+        });
+
+        //监听单元格事件
+        table.on('tool(attrtable)', function(obj){
+            let attrids = obj.event.split(',');
+            FIELD=attrids[0];
+            ATTRID=attrids[1];
         });
     };
 
@@ -118,24 +124,21 @@
         },
         del: function () {
             if (FIELD && FIELD != "name" && FIELD != "code") {
-                showConfirm("提示", "确定删除[" + FIELD + "]么?", function () {
-                    fetchPost("/attrvalue/delete", {dimid: dimid, attrname: FIELD}, attrBtnEvent.reloadMembers);
+                showConfirm("提示", "确定删除属性[" + FIELD + "]么?", function () {
+                    fetchPost("/attrvalue/delete", {dimid: dimid, attrname: FIELD,attrid: ATTRID}, attrBtnEvent.init);
                 });
             }
         },
         init: function () {
-            reloadTable();
+            reloadTable(false);
         },
         reload: function () {
-            reloadTable();
+            reloadTable(true);
         }
     }
 
-    function reloadTable() {
+    function reloadTable(reload) {
         restInitVars();
-        $('#righttable').empty();
-        $('#righttable').append('<table class="layui-hide" id="attrtable" lay-filter="attrtable">\n' +
-            '                </table>');
         fetchGet('/attr/list?dimid=' + dimid, (data) => {
             var tableoptions = {};
             if (!data || data.length == 0) {
@@ -165,43 +168,14 @@
                 };
 
             }
-            table.render(tableoptions);
+            if (reload) {
+                table.reload('attrtable', tableoptions);//重载
+            } else {
+                table.render(tableoptions);//初始化
+            }
         });
-
-
     }
 
-    function openPromptDialog(title, width, height, content, yesFn) {// div组件打开弹窗
-        var formid = 'memberInitForm';
-        layer.open({
-            id: formid,
-            type: 1, // page层
-            area: [width, height],
-            title: title,
-            shade: 0.3, // 遮罩透明度
-            moveType: 1, // 拖拽风格，0是默认，1是传统拖动
-            maxmin: false,
-            skin: 'layui-layer-prompt',
-            btn: ['确定', '取消'],
-            yes: function (index) {
-
-            },
-            no: function (index) {
-                layer.close(index);
-            }, success: function (layro, index) {
-                layro.addClass('layui-form');
-                layro.find(".layui-layer-btn0").attr('lay-filter', formid).attr("lay-submit", "");
-                form.render('', formid);
-                form.render();
-                form.on('submit(' + formid + ')', function (data) {
-                    yesFn(data.field);
-                    layer.close(index);
-                });
-            },
-            content: content
-        });
-        return layer;
-    }
 </script>
 </body>
 </html>
