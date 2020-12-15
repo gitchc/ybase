@@ -53,12 +53,12 @@ autosql  int default 1 comment'自动生成加载sql:1自动自定,0手动指定
 DROP TABLE IF EXISTS Script;
 CREATE TABLE Script(
 id bigint primary key not null comment '雪花id',
-scrpitContent text comment '脚本信息',
-scrpitName varchar(255) comment '脚本名称',
-status int default 0 comment'状态,0正常,1不执行',
-lastStatus int default 0 comment '上次执行状态,0未执行,1执行成功,2执行失败',
+name varchar(255) comment '脚本名称',
+content text comment '脚本信息',
+laststatus int default 0 comment '上次执行状态,0未执行,1执行成功,2执行失败',
 lastupdate timestamp default now() comment '更新时间',
-updateuser varchar(255) comment '更新人'
+updateuser varchar(255) comment '更新人',
+version int default 0 comment '版本信息'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

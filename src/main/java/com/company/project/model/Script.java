@@ -2,7 +2,6 @@ package com.company.project.model;
 
 import lombok.Data;
 
-import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,19 +19,12 @@ public class Script {
     /**
      * 脚本名称
      */
-    @Column(name = "scrpitName")
-    private String scrpitname;
-
-    /**
-     * 状态,0正常,1不执行
-     */
-    private int status;
+    private String name;
 
     /**
      * 上次执行状态,0未执行,1执行成功,2执行失败
      */
-    @Column(name = "lastStatus")
-    private int laststatus;
+    private Integer laststatus;
 
     /**
      * 更新时间
@@ -47,8 +39,8 @@ public class Script {
     /**
      * 脚本信息
      */
-    @Column(name = "scrpitContent")
-    private String scrpitcontent;
-
+    private String content;
+    //版本信息
+    private int version;
 
 }

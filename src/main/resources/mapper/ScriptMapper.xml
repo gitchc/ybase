@@ -6,11 +6,10 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="scrpitName" jdbcType="VARCHAR" property="scrpitname" />
-    <result column="status" jdbcType="TINYINT" property="status" />
-    <result column="lastStatus" jdbcType="TINYINT" property="laststatus" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="laststatus" jdbcType="INTEGER" property="laststatus" />
     <result column="lastupdate" jdbcType="TIMESTAMP" property="lastupdate" />
     <result column="updateuser" jdbcType="VARCHAR" property="updateuser" />
-    <result column="scrpitContent" jdbcType="LONGVARCHAR" property="scrpitcontent" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
 </mapper>

@@ -1,20 +1,20 @@
 package com.company.project.web;
+
 import com.company.project.core.Result;
 import com.company.project.core.ResultGenerator;
 import com.company.project.model.Script;
 import com.company.project.service.ScriptService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 /**
-* Created by CodeGenerator on 2020-12-10.
-*/
+ * Created by CodeGenerator on 2020-12-15.
+ */
 @RestController
 @RequestMapping("/script")
 public class ScriptController {
@@ -22,8 +22,8 @@ public class ScriptController {
     private ScriptService ScriptService;
 
     @RequestMapping("/insert")
-    public Result insert(Script Script) {
-        ScriptService.insert(Script);
+    public Result add(Script Script) {
+        ScriptService.insertScript(Script);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -33,9 +33,15 @@ public class ScriptController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @RequestMapping("/update")
-    public Result update(Script Script) {
-        ScriptService.update(Script);
+    @RequestMapping("/updateName")
+    public Result updateName(Script Script) {
+        ScriptService.updateName(Script);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @RequestMapping("/updateContent")
+    public Result updateContent(Script Script) {
+        ScriptService.updateContent(Script);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -47,9 +53,9 @@ public class ScriptController {
 
     @RequestMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        PageHelper.startPage(page, size);
-        List<Script> list = ScriptService.findAll();
-        PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+        Condition condition = new Condition(Script.class);
+        condition.orderBy("name asc");
+        List<Script> list = ScriptService.findByCondition(condition);
+        return ResultGenerator.genSuccessResult(list);
     }
 }
