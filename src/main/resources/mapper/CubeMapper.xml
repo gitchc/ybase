@@ -6,11 +6,10 @@
       WARNING - @mbg.generated
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="facttable" jdbcType="VARCHAR" property="facttable" />
-    <result column="pkcol" jdbcType="VARCHAR" property="pkcol" />
-    <result column="measurecol" jdbcType="VARCHAR" property="measurecol" />
+    <result column="cubename" jdbcType="VARCHAR" property="cubename" />
     <result column="postion" jdbcType="INTEGER" property="postion" />
-    <result column="autoload" jdbcType="TINYINT" property="autoload" />
+    <result column="autoload" jdbcType="INTEGER" property="autoload" />
     <result column="dimids" jdbcType="LONGVARCHAR" property="dimids" />
+    <result column="loadsql" jdbcType="LONGVARCHAR" property="loadsql" />
   </resultMap>
 </mapper>

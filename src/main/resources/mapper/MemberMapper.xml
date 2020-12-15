@@ -12,9 +12,9 @@
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="position" jdbcType="INTEGER" property="position" />
     <result column="generation" jdbcType="INTEGER" property="generation" />
-    <result column="datatype" jdbcType="TINYINT" property="datatype" />
-    <result column="membertype" jdbcType="TINYINT" property="membertype" />
-    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="datatype" jdbcType="INTEGER" property="datatype" />
+    <result column="membertype" jdbcType="INTEGER" property="membertype" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="weight" jdbcType="REAL" property="weight" />
     <result column="uniquecode" jdbcType="LONGVARCHAR" property="uniquecode" />
     <result column="uniqueposition" jdbcType="LONGVARCHAR" property="uniqueposition" />

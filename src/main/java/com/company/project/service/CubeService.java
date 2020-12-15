@@ -4,7 +4,7 @@ import com.company.project.core.Service;
 
 
 /**
- * Created by CodeGenerator on 2020-12-10.
+ * Created by CodeGenerator on 2020-12-15.
  */
 public interface CubeService extends Service<Cube> {
 

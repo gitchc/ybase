@@ -11,12 +11,12 @@ import javax.annotation.Resource;
 
 
 /**
- * Created by CodeGenerator on 2020-12-10.
+ * Created by CodeGenerator on 2020-12-15.
  */
 @Service
 @Transactional
 public class CubeServiceImpl extends AbstractService<Cube> implements CubeService {
     @Resource
-    private CubeMapper cubeMapper;
+    private CubeMapper CubeMapper;
 
 }

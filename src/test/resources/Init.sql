@@ -58,3 +58,10 @@ lastStatus int default 0 comment '上次执行状态,0未执行,1执行成功,2�
 lastupdate timestamp default now() comment '更新时间',
 updateuser varchar(255) comment '更新人'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE sss1(
+id integer auto_increment primary key not null,
+name1 varchar (255) not null,
+value decimal(19,6)
+)
