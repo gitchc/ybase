@@ -19,6 +19,10 @@
         height: calc(100% - 10px);
     }
 
+    #editor {
+        height: calc(100% - 70px);
+    }
+
     .layrow, .layui-card {
         height: calc(100% - 5px);
     }
@@ -32,7 +36,17 @@
         display: none;
     }
 
+    .init {
+        background-color: #2F4056;
+    }
 
+    .pass {
+        background-color: #5FB878;
+    }
+
+    .notpass {
+        background-color: #FF5722;
+    }
 </style>
 <body>
 <div id="dimlayout">
@@ -76,9 +90,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="layui-row" id="righttable" style="display: none">
-                    <div id="editor">some text</div>
-                </div>
+                <div id="editor"></div>
             </div>
         </div>
 
@@ -89,7 +101,18 @@
 
 <script src="/static/layuiadmin/layui/layui.js"></script>
 <script src="/static/common/utils.js"></script>
+<script src="/static/thirdparty/ace/ace.js"></script>
+<script src="/static/thirdparty/ace/ext-language_tools.js"></script>
 <script>
+    ace.require('ace/ext/language_tools');
+    var editor = ace.edit('editor');
+    editor.session.setMode('ace/mode/java');
+    editor.setTheme('ace/theme/tomorrow');
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
     layui.config({
         base: '/static/layuiadmin/' //静态资源所在路径
     }).extend({
@@ -99,7 +122,36 @@
         //渲染
         bindEvent();
         btnEvent.init();
+        ACE.init();
     });
+    var ACE = {
+        init: function () {
+            const completers = [
+                {
+                    caption: 'wordValue',
+                    value: 'wordValue(String name)',
+                    score: 100,
+                    meta: '自定义函数'
+                }
+            ];
+
+            editor.completers.push({
+                getCompletions: function (editors, session, pos, prefix, callback) {
+                    callback(null, completers);
+                }
+            });
+        }, setValue: function (id) {
+            fetchGet("/script/detail?id=" + id, function (script) {
+                editor.setValue(script.content);
+            });
+        }, getValue: function () {
+            return editor.getValue();
+        }, clear: function () {
+            editor.setValue("");
+        }
+    };
+
+
     var scriptid;
     //维度工具栏操作区域
     var btnEvent = {
@@ -140,20 +192,27 @@
         },
         init: function () {
             $('#leftree').empty();
-            $('#righttable').hide();
             fetchGet("/script/list", function (data) {
                 data.forEach((item, index, array) => {
+                    var clas = "";
+                    if (item.laststatus == 0) {
+                        clas = "init";
+                    } else if (item.laststatus == 1) {
+                        clas = "pass";
+                    } else {
+                        clas = "notpass";
+                    }
+
                     $('#leftree').append(' <div class="layui-row"> ' +
-                        '<div class=" layui-col-md8" ><label id = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
+                        '<div class=" layui-col-md6" ><label id = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
                         '                   class="layui-form-label treelable">' + item.name + '</label> </div> \n' +
-                        ' <div class=" layui-col-md2">  <button id = "' + item.id + '" type="button" class="run layui-btn layui-btn-sm layui-btn-radius layui-btn-danger" >执行脚本</button></div></div>');
+                        ' <div class="layui-col-md2"> <button id = "' + item.id + '" type="button" class="run layui-btn layui-btn-sm layui-btn-radius " >执行脚本</button></div>' +
+                        '<div class="layui-col-md2" style="font-weight: bold">&nbsp;状态:&nbsp;<div id="' + item.id + '" class="' + clas + ' layui-btn layui-btn-sm layui-btn-radius">&nbsp;&nbsp;&nbsp;</div></div>'
+                    );
                 })
                 form.render();
             });
             restInitVars();
-        },
-        reload: function () {
-
         },
         run: function (scriptid) {
             showConfirm("重新加载数据", "可能耗时比较长,是否重新加载?", () => {
@@ -161,13 +220,20 @@
                 alert("功能未实装");
             });
         }, save: function () {
-            fetchPost("/script/updateContent", {id: id, content: "content"}, btnEvent.init)
+            var id = this.getid();
+            if (id) {
+                var content = ACE.getValue();
+                fetchPost("/script/updateContent", {id: id, content: content}, function () {
+                    tipsInfo("保存成功");
+                });
+            }
         }
     }
 
 
     function restInitVars() {
         scriptid = "";
+        ACE.clear();
     }
 
     //维度左侧事件
@@ -187,22 +253,17 @@
             var action = $(this).attr('action');
             btnEvent[action]();
         });
-        //cube点击事件
+        //script点击事件
         $("#leftree").on("click", ".treelable", function () {
             $('.treelable').removeClass("custom-tree-item-clicked");
             $(this).addClass("custom-tree-item-clicked");
             scriptid = $(this).attr('id');
+            ACE.setValue(scriptid);
         });
         //重新加载数据
         $("#leftree").on("click", ".run", function () {
             var nowid = $(this).attr('id');
             btnEvent.run(nowid);
-        });
-        //监听提交
-        form.on('submit(scriptform)', function (data) {
-            var postdata = data.field;
-            postdata.id = scriptid;
-            fetchPost("/script/save", postdata, btnEvent.init);
         });
     };
 

@@ -47,7 +47,7 @@ function showWarn(msg, title) {
 
 
 // 保存
-function msgInfo(msg, time) {
+function tipsInfo(msg, time) {
     if (!time) {
         time = 1500
     }
@@ -58,7 +58,7 @@ function msgInfo(msg, time) {
 }
 
 // 警告提示层
-function msgWarn(msg, time) {
+function tipsWarn(msg, time) {
     if (!time) {
         time = 1500
     }
@@ -69,7 +69,7 @@ function msgWarn(msg, time) {
 }
 
 // 错误提示
-function msgError(msg, time) {
+function tipsError(msg, time) {
     if (!time) {
         time = 1500
     }
