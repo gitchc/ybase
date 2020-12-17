@@ -80,7 +80,11 @@ public class JavaClassUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new ScriptException(e.getMessage());
+            String error = e.getMessage();
+            if (error == null) {
+                error = e.toString();
+            }
+            throw new ScriptException(error);
         }
         return result;
     }

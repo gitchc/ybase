@@ -17,4 +17,7 @@ public interface ScriptMapper extends Mapper<Script> {
 
     @Select("select * from script where name=#{name}")
     Script getScriptByName(String name);
+
+    @Update("update script set laststatus=#{laststatus} where id=#{id}")
+    void updateStatus(String id, int laststatus);
 }

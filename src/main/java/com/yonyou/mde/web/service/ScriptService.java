@@ -1,6 +1,11 @@
 package com.yonyou.mde.web.service;
+import com.yonyou.mde.web.model.Completer;
 import com.yonyou.mde.web.model.Script;
 import com.yonyou.mde.web.core.Service;
+import com.yonyou.mde.web.model.ScriptVo;
+
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -14,4 +19,7 @@ public interface ScriptService extends Service<Script> {
 
     void updateContent(Script script);
 
+    Map<String, Object> run(ScriptVo vo);
+
+    List<Completer> getKeywords();
 }

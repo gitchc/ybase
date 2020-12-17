@@ -41,11 +41,13 @@
     }
 
     .pass {
-        background-color: #5FB878;
+        background-color: #5FB878 !important;
+        color: white;
     }
 
     .notpass {
-        background-color: #FF5722;
+        background-color: #FF5722 !important;
+        color: white;
     }
 </style>
 <body>
@@ -67,6 +69,13 @@
                             <button type="button" action="delete" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe640;</i>
                             </button>
+                            <button type="button" action="runall" class="layui-btn layui-btn-primary layui-btn-sm">
+                                <i class="layui-icon">&#xe628;</i>
+                            </button>
+                            <button type="button" action="search" class="layui-btn layui-btn-primary layui-btn-sm">
+                                <i class="layui-icon">&#xe615;</i>
+                            </button>
+
                         </div>
                     </div>
                 </div>
@@ -126,20 +135,14 @@
     });
     var ACE = {
         init: function () {
-            const completers = [
-                {
-                    caption: 'wordValue',
-                    value: 'wordValue(String name)',
-                    score: 100,
-                    meta: '自定义函数'
-                }
-            ];
-
-            editor.completers.push({
-                getCompletions: function (editors, session, pos, prefix, callback) {
-                    callback(null, completers);
-                }
+            fetchGet("/script/keywords", function (completers) {
+                editor.completers.push({
+                    getCompletions: function (editors, session, pos, prefix, callback) {
+                        callback(null, completers);
+                    }
+                });
             });
+
         }, setValue: function (id) {
             fetchGet("/script/detail?id=" + id, function (script) {
                 editor.setValue(script.content);
@@ -164,6 +167,13 @@
                 fetchPost("/script/insert", script, btnEvent.init);
             });
 
+        },
+        search: function () {
+            showPrompt("过滤脚本关键词", function (keyword) {
+                if (keyword) {
+                    btnEvent.init(keyword);
+                }
+            });
         },
         edit: function () {
             var id = this.getid();
@@ -190,9 +200,10 @@
             }
             return scriptid;
         },
-        init: function () {
+        init: function (keyword) {
+            keyword = keyword ? keyword : "";
             $('#leftree').empty();
-            fetchGet("/script/list", function (data) {
+            fetchGet("/script/list?keyword=" + keyword, function (data) {
                 data.forEach((item, index, array) => {
                     var clas = "";
                     if (item.laststatus == 0) {
@@ -202,24 +213,63 @@
                     } else {
                         clas = "notpass";
                     }
-
                     $('#leftree').append(' <div class="layui-row"> ' +
-                        '<div class=" layui-col-md6" ><label id = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
-                        '                   class="layui-form-label treelable">' + item.name + '</label> </div> \n' +
-                        ' <div class="layui-col-md2"> <button id = "' + item.id + '" type="button" class="run layui-btn layui-btn-sm layui-btn-radius " >执行脚本</button></div>' +
-                        '<div class="layui-col-md2" style="font-weight: bold">&nbsp;状态:&nbsp;<div id="' + item.id + '" class="' + clas + ' layui-btn layui-btn-sm layui-btn-radius">&nbsp;&nbsp;&nbsp;</div></div>'
+                        '<div class=" layui-col-md7" >' +
+                        '<label scrpitid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
+                        '                   class="layui-form-label treelable">' + item.name + '</label> ' +
+                        '</div> \n' +
+                        ' <div class="layui-col-md2"> ' +
+                        '<button scrpitid = "' + item.id + '" type="button" class="run layui-btn layui-btn-sm layui-btn-radius " >执行</button>' +
+                        '</div>' +
+                        '<div class="layui-col-md3" style="font-weight: bold">&nbsp;状态:&nbsp;' +
+                        '<div id="' + item.id + '" class="' + clas + ' layui-btn script layui-btn-sm layui-btn-radius">&nbsp;&nbsp;&nbsp;' +
+                        '</div>' +
+                        '</div>' +
+                        '</div>'
                     );
                 })
                 form.render();
             });
             restInitVars();
         },
-        run: function (scriptid) {
-            showConfirm("重新加载数据", "可能耗时比较长,是否重新加载?", () => {
-                fetchGet("/script/reloadData?id=" + scriptid)
-                alert("功能未实装");
+        run: function (id) {
+
+            $.ajax({
+                url: "/script/run",
+                data: {id: id},
+                type: "Post",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code == 200 && data.data.code != -1) {
+                        $('#' + id).text("DONE");
+                        $('#' + id).removeClass('notpass');
+                        $('#' + id).addClass('pass');
+                        if (data.data.msg) {
+                            $('#' + id).attr("title", data.data.msg);
+                            showInfo(data.data.msg);
+                        }
+                    } else {
+                        $('#' + id).text("ERROR");
+                        $('#' + id).removeClass('pass');
+                        $('#' + id).addClass('notpass');
+                        $('#' + id).attr("title", data.data.msg || data.message);
+                        showWarn(data.data.msg || data.message);
+                    }
+                },
+                error: function (data) {
+                    showError('错误码:' + data.code + ",错误信息:" + data.message);
+                }
+
             });
-        }, save: function () {
+        }, runall: function () {
+            showConfirm("执行脚本", "执行当前的所有脚本可能耗时比较长,是否执行?", () => {
+                $(".script").each(function (i) {
+                    var id = $(this).attr("id");
+                    btnEvent.run(id);
+                });
+            });
+        }
+        , save: function () {
             var id = this.getid();
             if (id) {
                 var content = ACE.getValue();
@@ -257,12 +307,12 @@
         $("#leftree").on("click", ".treelable", function () {
             $('.treelable').removeClass("custom-tree-item-clicked");
             $(this).addClass("custom-tree-item-clicked");
-            scriptid = $(this).attr('id');
+            scriptid = $(this).attr('scrpitid');
             ACE.setValue(scriptid);
         });
         //重新加载数据
         $("#leftree").on("click", ".run", function () {
-            var nowid = $(this).attr('id');
+            var nowid = $(this).attr('scrpitid');
             btnEvent.run(nowid);
         });
     };

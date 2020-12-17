@@ -560,7 +560,7 @@ public interface IScript {
      * @param filesPath    附件地址
      * @return
      */
-    public boolean sendMail(String address, String title,
+    public boolean SendMail(String address, String title,
                             String content, String otherAddress, String... filesPath);
 
     //根据条件合并组
