@@ -13,9 +13,11 @@ import java.util.Map;
  */
 public interface AttrvalueService extends Service<Attrvalue> {
 
-    List<Map<String,String>> getAllAttrValues(String dimid);
+    List<Map<String, String>> getAllAttrValues(String dimid);
 
     void updateValue(AttrValueVO attrValueVO);
 
     void deleteByDimIdAndName(AttrValueVO attrValueVO);
+
+    Map<String, Map<String, Object>> getAttrValues(String dimid);
 }

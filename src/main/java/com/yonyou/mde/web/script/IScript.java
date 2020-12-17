@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public interface IScript {
 
-    public Map<String, Object> execute(Map<String, Object> vars) throws ScriptException;
+    public Map<String, Object> execute(Map<String, Object> vars) throws Exception;
 
     public long getVersion();
     public void setVersion(long version);

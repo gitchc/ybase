@@ -14,8 +14,8 @@ import java.util.Map;
  * @Date:First Created 2020/12/16
  */
 public class JavaClassUtils {
-    public static final int run = 1;
-    public static final int check = 0;
+    private static final int run = 1;
+    private static final int check = 0;
     private static Map<String, IScript> beans = new HashMap<>();
     public static final String[] importClass = new String[]{
             "import cn.hutool.db.*;"
@@ -47,7 +47,7 @@ public class JavaClassUtils {
         stringBuilder.append("\n");
         stringBuilder.append("public class " + classname + " extends BaseScript {\n");
         stringBuilder.append("@Override\n");
-        stringBuilder.append("public Map<String, Object> execute(Map<String, Object> vars) throws ScriptException {\n");
+        stringBuilder.append("public Map<String, Object> execute(Map<String, Object> vars) throws Exception {\n");
         stringBuilder.append("initVars(vars);\n");
         stringBuilder.append(source);
         stringBuilder.append("   \nreturn getResults();\n" + "    } \n }");
@@ -56,11 +56,12 @@ public class JavaClassUtils {
 
     //检查java语法是否通过，执行java代码
     private static Map<String, Object> runOrCheckClass(String className, String source, long version, int type, Map<String, Object> varMap) throws ScriptException {
+
         Map<String, Object> result = new HashMap<>();
         try {
             IScript script = beans.get(className);
             boolean reloadClass = false;
-            if (script != null && script.getVersion() != version) {
+            if (script == null || script.getVersion() != version) {
                 reloadClass = true;
             }
             if (type == check || reloadClass) {
@@ -73,8 +74,8 @@ public class JavaClassUtils {
                     script.setVersion(version);
                     setBeanToFactory(className, script);
                 }
-
-            } else if (type == run) {
+            }
+            if (type == run) {
                 script = beans.get(className);
                 result = script.getClass().newInstance().execute(varMap);
             }
@@ -98,7 +99,7 @@ public class JavaClassUtils {
         runOrCheckClass(classname, getFullJavaScript(classname, script.getContent()), script.getVersion(), check, null);
     }
 
-    public static Map<String, Object> run(Script script, Map<String, Object> vars) throws ScriptException {
+    public static Map<String, Object> Run(Script script, Map<String, Object> vars) throws ScriptException {
         String classname = "Y" + script.getId();
         return runOrCheckClass(classname, getFullJavaScript(classname, script.getContent()), script.getVersion(), run, vars);
     }

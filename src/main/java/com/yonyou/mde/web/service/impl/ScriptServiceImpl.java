@@ -100,6 +100,6 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
         if (vars == null) {
             vars = new HashMap<>();
         }
-        return JavaClassUtils.run(script, vars);
+        return JavaClassUtils.Run(script, vars);
     }
 }

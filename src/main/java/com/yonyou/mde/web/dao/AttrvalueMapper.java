@@ -32,4 +32,7 @@ public interface AttrvalueMapper extends Mapper<Attrvalue> {
 
     @Delete("delete from attrvalue where  attrid = #{attrid} ")
     void deleteByAttrid(String attrid);
+
+    @Select("select a.memberCode,b.attrName,a.attrValue from attrvalue a left join attr b on a.attrid = b.id where dimid = #{dimid}")
+    List<AttrValueVO> getAttrValues(String dimid);
 }

@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.yonyou.mde.web.core.AbstractService;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.AttrMapper;
@@ -7,7 +8,9 @@ import com.yonyou.mde.web.dao.AttrvalueMapper;
 import com.yonyou.mde.web.dao.MemberMapper;
 import com.yonyou.mde.web.model.*;
 import com.yonyou.mde.web.service.MemberService;
+import com.yonyou.mde.web.utils.MemberUtils;
 import com.yonyou.mde.web.utils.SnowID;
+import com.yonyou.mde.web.utils.SortUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +18,8 @@ import tk.mybatis.mapper.entity.Condition;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -126,4 +131,36 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     public void updateMember(Member member) {
         memberMapper.updateMember(member.getCode(), member.getDimid(), member.getName(), member.getDatatype(), member.getWeight());
     }
+
+    @Override
+    public List<MemberVO> getMemberVOsBydimid(String dimid) {
+        Condition condition = new Condition(Member.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("dimid", dimid);
+        criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
+        List<Member> list = findByCondition(condition);
+        List<MemberVO> res = new ArrayList<>(list.size());
+        list.forEach(item -> {
+            MemberVO vo = new MemberVO();
+            BeanUtil.copyProperties(item, vo);
+            vo.setDatatypedetail(DataType.getStr(item.getDatatype()));
+            vo.setStatusdetail(StatusType.getStr(item.getStatus()));
+            vo.setCodedetail(MemberUtils.getCodeDetail(item));
+            res.add(vo);
+        });
+        List<MemberVO> finalRes = SortUtils.sort(res);
+        return finalRes;
+    }
+
+    @Override
+    public List<Member> getMembersBydimid(String id) {
+        Condition condition = new Condition(Member.class);
+        Example.Criteria criteria = condition.createCriteria();
+        criteria.andEqualTo("dimid", id);
+        criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
+        List<Member> list = findByCondition(condition);
+        List<Member> finalRes = SortUtils.sortMember(list);
+        return finalRes;
+    }
+
 }

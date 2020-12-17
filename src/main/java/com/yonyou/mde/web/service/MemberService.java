@@ -4,6 +4,7 @@ import com.yonyou.mde.web.core.Service;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.MemberUpdateVO;
+import com.yonyou.mde.web.model.MemberVO;
 
 import java.util.List;
 
@@ -30,4 +31,8 @@ public interface MemberService extends Service<Member> {
     void updateFiled(MemberUpdateVO member);
 
     void updateMember(Member member);
+
+    List<MemberVO> getMemberVOsBydimid(String dimid);
+
+    List<Member> getMembersBydimid(String id);
 }

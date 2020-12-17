@@ -9,7 +9,7 @@ import com.yonyou.mde.web.model.Attr;
 import com.yonyou.mde.web.model.AttrValueVO;
 import com.yonyou.mde.web.model.Attrvalue;
 import com.yonyou.mde.web.service.AttrvalueService;
-import com.yonyou.mde.web.utils.MemberUtil;
+import com.yonyou.mde.web.utils.MemberUtils;
 import com.yonyou.mde.web.utils.SnowID;
 import com.yonyou.mde.web.utils.SortUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,10 +50,26 @@ public class AttrvalueServiceImpl extends AbstractService<Attrvalue> implements 
                 attrsMap.put("name", item.getName());
                 finalattrs.add(attrsMap);
             }
-            attrsMap.put(item.getAttrname(), MemberUtil.toString(item.getAttrvalue()));
+            attrsMap.put(item.getAttrname(), MemberUtils.toString(item.getAttrvalue()));
         }
 
         return finalattrs;
+    }
+
+    @Override
+    public Map<String, Map<String, Object>> getAttrValues(String dimid) {
+        List<AttrValueVO> allAttrValues = attrvalueMapper.getAttrValues(dimid); //获取所有属性
+        Map<String, Map<String, Object>> results = new HashMap<>();
+        for (AttrValueVO allAttrValue : allAttrValues) {
+            String membercode = allAttrValue.getCode();
+            Map<String, Object> attrs = results.get(membercode);
+            if (attrs == null) {
+                attrs = new HashMap<>();
+                results.put(membercode, attrs);
+            }
+            attrs.put(allAttrValue.getAttrname(), allAttrValue.getAttrvalue());
+        }
+        return results;
     }
 
     @Override

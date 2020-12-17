@@ -240,7 +240,11 @@
                 type: "Post",
                 dataType: "json",
                 success: function (data) {
-                    if (data.code == 200 && data.data.code != -1) {
+                    var isError = false;
+                    if (data.code == 200) {
+                        if (data.data && data.data.code==-1) {
+                             isError = true;
+                        }
                         $('#' + id).text("DONE");
                         $('#' + id).removeClass('notpass');
                         $('#' + id).addClass('pass');
@@ -252,8 +256,8 @@
                         $('#' + id).text("ERROR");
                         $('#' + id).removeClass('pass');
                         $('#' + id).addClass('notpass');
-                        $('#' + id).attr("title", data.data.msg || data.message);
-                        showWarn(data.data.msg || data.message);
+                        $('#' + id).attr("title", !isError?data.message : data.data.msg);
+                        showWarn(!isError?data.message : data.data.msg);
                     }
                 },
                 error: function (data) {

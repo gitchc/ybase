@@ -106,7 +106,7 @@
                             </div>
                         </div>
                         <div class="layui-form-item">
-                            <label class="layui-form-label">指定数据</label>
+                            <label class="layui-form-label">默认SQL</label>
                             <div class="layui-input-inline">
                                 <input type="checkbox" name="autosql" value="1" lay-skin="switch" lay-filter="autosql"
                                        lay-text="ON|OFF">
@@ -155,7 +155,7 @@
                 cubename: ""
                 , cubecode: ""
                 , autoload: 1//自动加载
-                , autosql: 0
+                , autosql: 1//自动生成sql
                 , loadsql: ""
 
             };
@@ -166,19 +166,19 @@
             fetchGet("/cube/detail?id=" + cubeid, eventBtn.initDetail);
         },
         initDetail: function (data) { //拼接维度信息
-            var dimcodes = data.dimcodes;
+            var dimids = data.dimids;
             var dimArr = [];
-            if (!dimcodes) {
+            if (!dimids) {
                 $("#cubecode").removeClass('layui-disabled');
             } else {
-                dimArr = dimcodes.split(',');
+                dimArr = dimids.split(',');
                 $("#cubecode").addClass('layui-disabled');
             }
             fetchGet("/member/listDim", function (alldims) {
                 var content = "";
                 alldims.forEach((item, index, array) => {
                     var check = dimArr.includes(item.id) ? 'checked' : '';
-                    content += '<input type="checkbox"  lay-skin="primary"  value="' + item.code + '" title="' + item.name + '" name="dimcode" ' + check + '>';
+                    content += '<input type="checkbox"  lay-skin="primary"  value="' + item.id + '" title="' + item.name + '" name="dimcode" ' + check + '>';
                 })
                 $('#alldim').replaceWith(content);
                 form.render('', 'cubeform');
@@ -217,10 +217,6 @@
             });
 
         }, save: function () {
-            if (!cubeid) {
-                tipsWarn("请先选择一个模型");
-                return;
-            }
             $('#save').click();
         },
         reload: function () {
@@ -229,7 +225,6 @@
         reloadCubeData: function (cubeid) {
             showConfirm("重新加载数据", "可能耗时比较长,是否重新加载?", () => {
                 fetchGet("/cube/reloadData?id="+cubeid)
-                alert("功能未实装");
             });
         },
         attr: function () {
@@ -286,19 +281,19 @@
                 showWarn("维度至少选择2个");
                 return false;
             }
-            postdata.dimcodes = arr.join(",");//将数组合并成字符串
+            postdata.dimids = arr.join(",");//将数组合并成字符串
             if (!postdata.autoload) {
-                postdata.autoload = 0;
+                postdata.autoload = 1;
             }
             if (!postdata.autosql) {
-                postdata.autosql = 0;
+                postdata.autosql = 1;
             }
             postdata.id=cubeid;
             fetchPost("/cube/save", postdata, eventBtn.init);
         });
         //切换指定数据源
         form.on('switch(autosql)', function (data) {
-            if (this.checked) {
+            if (!this.checked) {
                 $('#showsql').show();
             } else {
                 $('#showsql').hide();

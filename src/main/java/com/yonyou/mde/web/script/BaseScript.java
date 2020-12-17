@@ -66,7 +66,7 @@ public class BaseScript implements IScript {
     }
 
     @Override
-    public Map<String, Object> execute(Map<String, Object> vars) throws ScriptException {
+    public Map<String, Object> execute(Map<String, Object> vars) throws Exception {
         return null;
     }
 
@@ -318,7 +318,7 @@ public class BaseScript implements IScript {
     }
 
     @Override
-    public boolean sendMail(String address, String title, String content, String otherAddress, String... filesPath) {
+    public boolean SendMail(String address, String title, String content, String otherAddress, String... filesPath) {
         return false;
     }
 
