@@ -238,7 +238,7 @@ function fetchPost(url, data, successFn) {
                     successFn(data.data);
                 }
             } else {
-                showError('错误码:' + data.code + ",错误信息:" + data.message);
+                showWarn(data.message);
             }
         },
         error: function (data) {

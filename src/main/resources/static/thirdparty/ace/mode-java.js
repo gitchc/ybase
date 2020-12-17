@@ -816,13 +816,13 @@ var JavaHighlightRules = function() {
 
 
     var langClasses = (
-        "Enum|StrictMath|Package|Compiler|"+
+        "Enum|"+
         "Runtime|StringBuilder|Math|"+
         "ThreadLocal|"+
         "Long|Integer|Short|Byte|Double|Number|Float|"+
         "Character|Boolean|StringBuffer|"+
-        "Iterable|Runnable|Thread||"+
-        "Exception|Error|System|ClassLoader|"+
+        "Iterable|Thread||"+
+        "Exception|System|ClassLoader|"+
         "Class|String|Object"
     );
 

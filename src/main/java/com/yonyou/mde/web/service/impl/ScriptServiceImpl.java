@@ -5,6 +5,7 @@ import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Script;
 import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;
+import com.yonyou.mde.web.utils.classloder.JavaClassUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,10 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
     public void updateContent(Script script) {
         String nowuser = "admin";
         ScriptMapper.updateContent(script.getId(), script.getContent(), nowuser);
+        checkContent(script);
     }
 
-
+    public void checkContent(Script script){
+        JavaClassUtils.Check(script);
+    }
 }

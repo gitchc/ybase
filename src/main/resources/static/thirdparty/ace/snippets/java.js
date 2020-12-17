@@ -178,12 +178,8 @@ snippet main\n\
 	}\n\
 ##\n\
 ## Print Methods\n\
-snippet print\n\
-	System.out.print(\"${1:Message}\");\n\
-snippet printf\n\
-	System.out.printf(\"${1:Message}\", ${2:args});\n\
-snippet println\n\
-	System.out.println(${1});\n\
+snippet Print\n\
+	Print(\"${1:Message}\");\n\
 ##\n\
 ## Render Methods\n\
 snippet ren\n\

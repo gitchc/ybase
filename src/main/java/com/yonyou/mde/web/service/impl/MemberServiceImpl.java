@@ -5,7 +5,6 @@ import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.AttrMapper;
 import com.yonyou.mde.web.dao.AttrvalueMapper;
 import com.yonyou.mde.web.dao.MemberMapper;
-import com.company.project.model.*;
 import com.yonyou.mde.web.model.*;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.utils.SnowID;
