@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.Script;
+package com.yonyou.mde.web.script;
 
 import com.yonyou.mde.web.core.ScriptException;
 

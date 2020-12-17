@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.Script.Utils;
+package com.yonyou.mde.web.script.Utils;
 
 import java.util.HashMap;
 import java.util.Map;

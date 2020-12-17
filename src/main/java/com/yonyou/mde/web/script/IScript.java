@@ -1,7 +1,7 @@
-package com.yonyou.mde.web.Script;
+package com.yonyou.mde.web.script;
 
 import cn.hutool.db.Entity;
-import com.yonyou.mde.web.Script.Utils.DB;
+import com.yonyou.mde.web.script.Utils.DB;
 import com.yonyou.mde.web.core.ScriptException;
 
 import java.util.Date;

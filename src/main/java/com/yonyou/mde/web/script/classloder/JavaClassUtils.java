@@ -1,8 +1,8 @@
-package com.yonyou.mde.web.utils.classloder;
+package com.yonyou.mde.web.script.classloder;
 
-import com.yonyou.mde.web.Script.IScript;
 import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.model.Script;
+import com.yonyou.mde.web.script.IScript;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
@@ -32,8 +32,8 @@ public class JavaClassUtils {
             , "import com.yonyou.mde.model.impl.*;"
             , "import com.yonyou.mde.model.result.*;"
             , "import com.yonyou.mde.util.*;"
-            , "import com.yonyou.mde.web.Script.Utils.*;"
-            , "import com.yonyou.mde.web.Script.*;"
+            , "import com.yonyou.mde.web.script.Utils.*;"
+            , "import com.yonyou.mde.web.script.*;"
             , "import com.yonyou.mde.web.core.ScriptException;"
             , "import org.apache.commons.lang3.StringUtils;"
             , "import tech.tablesaw.api.*;"

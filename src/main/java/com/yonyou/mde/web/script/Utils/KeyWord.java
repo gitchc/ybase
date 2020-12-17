@@ -1,7 +1,6 @@
-package com.yonyou.mde.web.Script.Utils;
+package com.yonyou.mde.web.script.Utils;
 
-import cn.hutool.core.util.StrUtil;
-import com.yonyou.mde.web.Script.IScript;
+import com.yonyou.mde.web.script.IScript;
 import com.yonyou.mde.web.model.Completer;
 import sun.plugin.javascript.ReflectUtil;
 

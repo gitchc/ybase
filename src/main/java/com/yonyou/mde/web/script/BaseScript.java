@@ -1,10 +1,10 @@
-package com.yonyou.mde.web.Script;
+package com.yonyou.mde.web.script;
 
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.db.ds.simple.SimpleDataSource;
 import cn.hutool.extra.spring.SpringUtil;
-import com.yonyou.mde.web.Script.Utils.DB;
+import com.yonyou.mde.web.script.Utils.DB;
 import com.yonyou.mde.web.core.ScriptException;
 import lombok.extern.log4j.Log4j2;
 

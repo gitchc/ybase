@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.utils.classloder;
+package com.yonyou.mde.web.script.classloder;
 
 import javax.tools.*;
 import java.io.ByteArrayOutputStream;
