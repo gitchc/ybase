@@ -10,7 +10,6 @@ public class Cube {
      * 雪花id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
 
     /**

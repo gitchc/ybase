@@ -16,9 +16,9 @@ unicode text comment '唯一编码',
 unipos text comment '唯一排序'
 )ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
-CREATE index index_code  ON Member (dimid,code,status);
+CREATE index index_code  ON Member (dimid,code,status,membertype);
 CREATE index index_position  ON Member (position asc);
--- CREATE index index_unicode  ON Member (unicode);
+
 
 -- ATTR表
 DROP TABLE IF EXISTS ATTR;
@@ -27,6 +27,7 @@ id bigint primary key not null comment '雪花id',
 dimid bigint comment'维度id',
 attrName varchar(255)comment'属性名称'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE index index_attr  ON ATTR (dimid,attrName);
 -- ATTRValue表
 DROP TABLE IF EXISTS ATTRValue;
 CREATE TABLE ATTRValue(
@@ -35,7 +36,7 @@ attrid bigint comment '属性id',
 memberCode varchar(255) comment'成员code',
 attrValue varchar(255)comment'属性值'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE index index_code  ON attrvalue (attrid,memberCode);
+CREATE index index_attrvalue  ON attrvalue (attrid,memberCode);
 -- Cube表
 DROP TABLE IF EXISTS Cube;
 CREATE TABLE Cube(
@@ -59,11 +60,5 @@ laststatus int default 0 comment '上次执行状态,0未执行,1执行成功,2�
 lastupdate timestamp default now() comment '更新时间',
 updateuser varchar(255) comment '更新人',
 version int default 0 comment '版本信息'
-)ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE sss1(
-id integer auto_increment primary key not null,
-name1 varchar (255) not null,
-value decimal(19,6)
 )
+
