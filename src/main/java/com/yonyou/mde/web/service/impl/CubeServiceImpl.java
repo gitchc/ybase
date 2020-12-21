@@ -65,7 +65,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
 
     //检查是否已需要重新load数据和模型
     public void ReloadModeAndData(Cube cube, boolean foceReload) {
-        String tableName = "TB" + cube.getId();
+        String tableName = cube.getCubecode();
         String loadSql = cube.getLoadsql();
         if (cube.getAutosql() == 1) {
             loadSql = "";
@@ -73,7 +73,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
             tableName = "";
         }
         if (cube.getAutoload() == 1 || foceReload) {
-            List<Member> dims = memberMapper.selectByIds(cube.getDimids());
+            List<Member> dims = getMemberByIds(cube.getDimids());
             Map<String, List<DimColumn>> allmembers = getMembers(dims);
             try {
                 CubeManager.loadCubeData(dataSourceConfig, cube.getCubecode(), tableName, loadSql, dims, allmembers);
@@ -119,7 +119,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     public void deleteCubeById(String id) {
         Cube cube = findById(id);
         deleteById(id);
-        CubeMapper.dropTable("TB" + cube.getId());
+        CubeMapper.dropTable(cube.getCubecode());
         CubeManager.removeData(cube.getCubecode());
     }
 
@@ -152,10 +152,14 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         }
     }
 
+    public List<Member>getMemberByIds(String dimids){
+        String ndimids = "'" + dimids.replace(",", "','") + "'";
+        return memberMapper.selectByIds(ndimids);
+    }
     private void CheckTable(Cube cube) {
-        String tableName = "TB" + cube.getId();
+        String tableName = cube.getCubecode();
         String dimids = cube.getDimids();
-        List<Member> dims = memberMapper.selectByIds(dimids);
+        List<Member> dims = getMemberByIds(dimids);
         if (cube.getAutosql() == 1) {
             try {
                 MockDataUtils.createTable(dataSource, tableName, dims);

@@ -36,7 +36,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Resource
     private AttrvalueMapper attrvalueMapper;
 
-    public void insertDim(Member member) throws ServiceException {
+    public String insertDim(Member member) throws ServiceException {
         Condition condition = new Condition(Member.class);
         Example.Criteria criteria = condition.createCriteria();
         criteria.andEqualTo("membertype", MemberType.DIM);
@@ -58,9 +58,30 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         Integer nextPos = maxPos == null ? 1 : maxPos + 1;
         member.setPosition(nextPos);
         memberMapper.insert(member);
+        return member.getId();
     }
 
-    public void insertMember(Member member) {
+    @Override
+    public Member insertMember(Member member, Member Pmember) {
+        member.setId(SnowID.nextID());
+        String pid = member.getPid();
+        String dimid = member.getDimid();
+        if (StringUtils.isBlank(pid)) {
+            pid = dimid;
+            member.setPid(dimid);
+        }
+        member.setStatus(StatusType.NORMAL);
+        member.setWeight(member.getWeight() == null ? 1L : member.getWeight());
+      /*  Integer maxPos = memberMapper.getMaxPosition(pid);
+        Integer nextPos = maxPos == null ? 1 : maxPos + 1;
+        member.setPosition(nextPos);*/
+        member.setGeneration(Pmember.getGeneration() + 1);
+        member.setUnicode(Pmember.getUnicode() + "," + member.getCode());
+        member.setUnipos(Pmember.getUnipos() + "." + member.getPosition());
+        memberMapper.insert(member);
+        return member;
+    }
+    public String insertMember(Member member) {
         member.setId(SnowID.nextID());
         String pid = member.getPid();
         String dimid = member.getDimid();
@@ -74,7 +95,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         }
         if (Pmember.getDatatype() != DataType.AUTOROLLUP || Pmember.getDatatype() != DataType.MAROLLUP) {//父项不为汇聚改一下
             Member dim = memberMapper.selectByPrimaryKey(dimid);
-            memberMapper.updateFiled(Pmember.getCode(), member.getDimid(), "datatype", dim.getDatatype() + "");
+            memberMapper.updateFiled(Pmember.getCode(), member.getDimid(), "datatype", dim.getDatatype()+"");
         }
         member.setStatus(StatusType.NORMAL);
         member.setWeight(member.getWeight() == null ? 1L : member.getWeight());
@@ -85,6 +106,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         member.setUnicode(Pmember.getUnicode() + "," + member.getCode());
         member.setUnipos(Pmember.getUnipos() + "." + member.getPosition());
         memberMapper.insert(member);
+        return member.getId();
     }
 
     public List<Member> findAllDim() {
