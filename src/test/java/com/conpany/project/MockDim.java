@@ -1,13 +1,10 @@
 package com.conpany.project;
 
-import cn.hutool.core.util.StrUtil;
 import com.applix.tm1.*;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.utils.MemberUtils;
 import com.yuanian.dac.tabase.entity.TabaseConnectionInfo;
 import com.yuanian.dac.tabase.interfaces.IDatabase;
-import com.yuanian.dac.tabase.interfaces.IDimension;
 import com.yuanian.dac.tabase.main.TabaseCommonConnect;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -78,8 +75,8 @@ public class MockDim extends Tester {
         try {
 
             Member dim = new Member();
-            dim.setCode(MemberUtils.getCode(dimName));
-            dim.setName(MemberUtils.getName(dimName));
+            dim.setCode(MockUtil.getCode(dimName));
+            dim.setName(MockUtil.getName(dimName));
             dim.setDatatype(10);
             String dimid = null;
             try {
@@ -96,8 +93,8 @@ public class MockDim extends Tester {
                 i++;
                 String memberName = child.getName();
                 Member member = new Member();
-                member.setName(MemberUtils.getName(memberName));
-                member.setCode(MemberUtils.getCode(memberName));
+                member.setName(MockUtil.getName(memberName));
+                member.setCode(MockUtil.getCode(memberName));
                 member.setDimid(dimid);
                 if (child.getChildren() == null || child.getChildren().size() == 0) {
                     member.setDatatype(0);
@@ -108,7 +105,7 @@ public class MockDim extends Tester {
                 member.setMembertype(1);
                 member.setPosition(i);
                 Member npmember = memberService.insertMember(member, pmember);
-                System.out.println("成员:" + member.getName()+",编码:"+member.getCode());
+                System.out.println("成员:" + member.getName() + ",编码:" + member.getCode());
                 createMeb(dimid, npmember, vo);
             }
         } catch (Exception e) {
@@ -122,14 +119,14 @@ public class MockDim extends Tester {
             i++;
             String memberName = child.getName();
             Member member = new Member();
-            member.setName(MemberUtils.getName(memberName));
-            member.setCode(MemberUtils.getCode(memberName));
+            member.setName(MockUtil.getName(memberName));
+            member.setCode(MockUtil.getCode(memberName));
             member.setDimid(dimid);
             member.setDatatype(0);
             member.setPid(pmember.getId());
             member.setMembertype(1);
             member.setPosition(i);
-            System.out.println("成员:" + member.getName()+",编码:"+member.getCode());
+            System.out.println("成员:" + member.getName() + ",编码:" + member.getCode());
             Member npmember = memberService.insertMember(member, pmember);
             if (child.getChildren().size() > 0) {
                 createMeb(dimid, npmember, child);

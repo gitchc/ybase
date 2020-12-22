@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.utils;
 
+import cn.hutool.extra.pinyin.PinyinUtil;
 import com.yonyou.mde.web.model.Member;
 
 public class MemberUtils {

@@ -1,12 +1,8 @@
 package com.conpany.project;
 
-import com.applix.tm1.*;
-import com.yonyou.mde.web.core.ServiceException;
-import com.yonyou.mde.web.dao.CubeMapper;
+import com.applix.tm1.TM1Server;
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.service.CubeService;
-import com.yonyou.mde.web.utils.MemberUtils;
 import com.yuanian.dac.tabase.entity.TabaseConnectionInfo;
 import com.yuanian.dac.tabase.interfaces.IDatabase;
 import com.yuanian.dac.tabase.interfaces.IDimension;
@@ -16,7 +12,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

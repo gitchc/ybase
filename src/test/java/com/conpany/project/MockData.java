@@ -4,7 +4,6 @@ import cn.hutool.core.io.file.FileReader;
 import cn.hutool.db.Db;
 import com.applix.tm1.TM1Server;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.utils.MemberUtils;
 import com.yonyou.mde.web.utils.SnowID;
 import com.yuanian.dac.tabase.entity.TabaseConnectionInfo;
 import com.yuanian.dac.tabase.interfaces.IDatabase;
@@ -162,7 +161,7 @@ public class MockData extends Tester {
                     } else {
                         sqls.append("'");
                         splits[i1] = splits[i1].replaceFirst("\"", "");
-                        sqls.append(MemberUtils.getCode(splits[i1]));
+                        sqls.append(MockUtil.getCode(splits[i1]));
                         sqls.append("'");
                     }
                 }
