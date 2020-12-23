@@ -14,7 +14,7 @@ public interface CubeMapper extends Mapper<Cube> {
     @Select("select max(position) from cube ")
     Integer getMaxPosition();
 
-    @Select("select * from cube where autoload = 1")
+    @Select("select * from cube where autoload = 1 order by position")
     List<Cube> getAutoLoadCues();
     @Update("drop table ${table}")
     void dropTable(String table);

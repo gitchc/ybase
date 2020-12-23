@@ -1,5 +1,8 @@
 package com.yonyou.mde.web.service.DataService;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.FileWriter;
+import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
 import com.yonyou.mde.MdeInit;
 import com.yonyou.mde.api.MultiDimModelApi;
@@ -86,10 +89,21 @@ public class CubeAction {
         FactTableConfig factTableConfig = FactTableConfig.builder().cubeName(cubeName).tableName(tableName).pkColumnName("id")
                 .measureColumnName("value").dimensions(dimensions).build();
         factTableConfig.setLoadSql(loadSql);
-        log.info("cubeName:"+cubeName);
-        log.info("tableName:" + tableName);
-        log.info(JSONUtil.toJsonStr(dimCodes));
-        log.info(JSONUtil.toJsonStr(members));
+        String dirPath = "D:\\mock\\meta\\" + cubeName+"\\";
+        String dimPath = dirPath + "dim.json";
+        String dimInfoPath = dirPath + "dimInfo.json";
+        String loadSqlPath = dirPath+"loadsql.txt";
+        System.out.println(dirPath);
+        FileUtil.touch(dimPath);
+        FileUtil.touch(dimInfoPath);
+        FileUtil.touch(loadSql);
+        FileWriter writer = new FileWriter(dimPath);
+        writer.write(JSONUtil.toJsonStr(dimCodes));
+        FileWriter writer1 = new FileWriter(dimInfoPath);
+        writer1.write(JSONUtil.toJsonStr(members));
+        FileWriter writer2 = new FileWriter(loadSqlPath);
+        writer2.write(loadSql);
+        ZipUtil.zip(dirPath);
        /* DataSourceInfo info = new DataSourceInfo();
         info.setUrl(config.getUrl());
         info.setUsername(config.getUsername());

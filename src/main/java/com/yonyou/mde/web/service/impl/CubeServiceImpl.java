@@ -162,6 +162,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
 
     @Override
     public void saveCube(Cube cube) {
+        cube.setCubecode(cube.getCubecode().trim());
         String cubeId = cube.getId();
         if (StringUtils.isNotBlank(cubeId)) {
             updateCube(cube);
