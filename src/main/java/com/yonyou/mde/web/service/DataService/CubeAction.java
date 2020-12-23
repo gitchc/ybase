@@ -57,7 +57,7 @@ public class CubeAction {
         configuration.setWriteBackByBiz(true);
         configuration.setInstanceId("1");
         configuration.setModelReplicaNum(2);
-        configuration.setCubeInitializer((cubeName) ->{
+        configuration.setCubeInitializer((cubeName) -> {
             try {
                 loadModel();
             } catch (MdeException e) {
@@ -68,6 +68,7 @@ public class CubeAction {
         MultiDimModelApi.addModel(cubeName);
     }
 
+    //根据Cube信息加载模型
     public void loadModel() throws MdeException {
         //所有维度
         List<String> dimCodes = new ArrayList<>();
@@ -89,10 +90,24 @@ public class CubeAction {
         FactTableConfig factTableConfig = FactTableConfig.builder().cubeName(cubeName).tableName(tableName).pkColumnName("id")
                 .measureColumnName("value").dimensions(dimensions).build();
         factTableConfig.setLoadSql(loadSql);
-        String dirPath = "D:\\mock\\meta\\" + cubeName+"\\";
+//        CreateLoadFile(dimCodes);//造数据文件
+        DataSourceInfo info = new DataSourceInfo();
+        info.setUrl(config.getUrl());
+        info.setUsername(config.getUsername());
+        info.setSchema(config.getSchema());
+        info.setPassword(config.getPassword());
+        DefaultLoaderConfig config = new DefaultLoaderConfig(info, cubeName, factTableConfig, false);
+        // 加载维度信息
+        config.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
+        DataLoaderTemplate.getInstance().loadModel(config);
+    }
+
+    //创建Load文件,方便测试
+    private void CreateLoadFile(List<String> dimCodes) {
+        String dirPath = "D:\\mock\\meta\\" + cubeName + "\\";
         String dimPath = dirPath + "dim.json";
         String dimInfoPath = dirPath + "dimInfo.json";
-        String loadSqlPath = dirPath+"loadsql.txt";
+        String loadSqlPath = dirPath + "loadsql.txt";
         System.out.println(dirPath);
         FileUtil.touch(dimPath);
         FileUtil.touch(dimInfoPath);
@@ -104,15 +119,6 @@ public class CubeAction {
         FileWriter writer2 = new FileWriter(loadSqlPath);
         writer2.write(loadSql);
         ZipUtil.zip(dirPath);
-       /* DataSourceInfo info = new DataSourceInfo();
-        info.setUrl(config.getUrl());
-        info.setUsername(config.getUsername());
-        info.setSchema(config.getSchema());
-        info.setPassword(config.getPassword());
-        DefaultLoaderConfig config = new DefaultLoaderConfig(info, cubeName, factTableConfig, false);
-        // 加载维度信息
-        config.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
-        DataLoaderTemplate.getInstance().loadModel(config);*/
     }
 
     public static void main(String[] args) {
