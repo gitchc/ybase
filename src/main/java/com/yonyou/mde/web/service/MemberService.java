@@ -39,4 +39,5 @@ public interface MemberService extends Service<Member> {
     List<Member> getMembersBydimid(String id);
 
     List<String> getMemberCodesByDimid(String id);
+
 }

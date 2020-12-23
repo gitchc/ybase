@@ -6,7 +6,6 @@ import com.yonyou.mde.web.model.Member;
 import com.yuanian.dac.tabase.entity.TabaseConnectionInfo;
 import com.yuanian.dac.tabase.interfaces.IDatabase;
 import com.yuanian.dac.tabase.main.TabaseCommonConnect;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -31,7 +30,7 @@ public class MockDim extends Tester {
         cofig.setPort("5495");
         cofig.setUsername("admin");
         cofig.setPassword("apple");
-        cofig.setDatabase("SSS");
+        cofig.setDatabase(dababase);
         TabaseCommonConnect commonConnect = new TabaseCommonConnect(cofig);//用户做连接缓存，允许同一个用户并发可以考虑对象的hash值
         IDatabase database = commonConnect.getDataBase();//封装对象，封装对象里面可以通过.getNativeObj()方法获取到TM1原生对象
         server = database.getNativeObj();
@@ -87,27 +86,8 @@ public class MockDim extends Tester {
             }
             System.out.println("开始同步维度:" + dim.getName());
             Member pmember = memberService.findById(dimid);
-            TreeVo vo = getDimTreeWithoutFilter(dimName, "", "");
-            int i = 0;
-            for (TreeVo child : vo.getChildren()) {//第一层成员直接创建成员,否则后面查父项=pid查不到
-                i++;
-                String memberName = child.getName();
-                Member member = new Member();
-                member.setName(MockUtil.getName(memberName));
-                member.setCode(MockUtil.getCode(memberName));
-                member.setDimid(dimid);
-                if (child.getChildren() == null || child.getChildren().size() == 0) {
-                    member.setDatatype(0);
-                } else {
-                    member.setDatatype(10);
-                }
-                member.setPid(dimid);
-                member.setMembertype(1);
-                member.setPosition(i);
-                Member npmember = memberService.insertMember(member, pmember);
-                System.out.println("成员:" + member.getName() + ",编码:" + member.getCode());
-                createMeb(dimid, npmember, vo);
-            }
+            TreeVo vo = getDimTreeWithoutFilter(dimName);
+            createMeb(dimid, pmember, vo);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,6 +107,9 @@ public class MockDim extends Tester {
             member.setMembertype(1);
             member.setPosition(i);
             System.out.println("成员:" + member.getName() + ",编码:" + member.getCode());
+            if (child.getChildren().size() > 0) {
+                member.setDatatype(10);
+            }
             Member npmember = memberService.insertMember(member, pmember);
             if (child.getChildren().size() > 0) {
                 createMeb(dimid, npmember, child);
@@ -134,18 +117,11 @@ public class MockDim extends Tester {
         }
     }
 
-    private TreeVo getDimTreeWithoutFilter(String dimname, String subsetName, String aliasName) throws Exception {
-        TM1Subset tm1Subset;
+    private TreeVo getDimTreeWithoutFilter(String dimname) throws Exception {
         TM1Dimension dimension = server.getDimension(dimname);
-        if (StringUtils.isBlank(subsetName)) {
-            tm1Subset = dimension.createSubset();
-            TM1Val val = tm1Subset.getAll();
-            if (!val.isError()) {
-            }
-
-        } else {
-            TM1Subset subset = dimension.getSubset(subsetName);
-            tm1Subset = subset.duplicate();
+        TM1Subset tm1Subset = dimension.createSubset();
+        TM1Val val = tm1Subset.getAll();
+        if (!val.isError()) {
         }
         int elementCount = tm1Subset.getElementCount();
         for (int i = 1; i <= elementCount; i++) {
@@ -162,7 +138,6 @@ public class MockDim extends Tester {
         treeResult.setId("-1");
         treeResult.setText(dimname);
         treeResult.setName(dimname);
-        TM1Attribute attribute = null;
         int maxlevel = dimension.getLevelsCount() + 10;
         TreeVo[] vos = new TreeVo[maxlevel];
         TM1Element[] elementLeves = new TM1Element[maxlevel];
@@ -171,9 +146,6 @@ public class MockDim extends Tester {
             TM1Val displayelement = tm1Subset.elementDisplay(i);
             int level = tm1Subset.subsetElementDisplayLevel(displayelement);
             TM1Element element = tm1Subset.getElement(i);
-            if (attribute == null && StringUtils.isNotBlank(aliasName)) {
-                attribute = element.getAttribute(aliasName);
-            }
             String elename = element.getName().getString();
             TreeVo treeData = new TreeVo(elename, elename);
             treeData.addAttribute("datatype", "1");
@@ -182,8 +154,8 @@ public class MockDim extends Tester {
                 treeData.addAttribute("weight", "1");
             } else {
                 vos[level - 1].addChildren(treeData);
-                TM1Val val = elementLeves[level - 1].getComponentWeight(element);
-                treeData.addAttribute("weight", val.getString());
+                TM1Val val2 = elementLeves[level - 1].getComponentWeight(element);
+                treeData.addAttribute("weight", val2.getString());
             }
             treeData.addAttribute("level", level + 2 + "");
             vos[level] = treeData;

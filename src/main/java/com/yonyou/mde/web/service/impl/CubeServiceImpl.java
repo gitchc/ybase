@@ -124,10 +124,11 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         Map<String, List<DimColumn>> result = new HashMap<>();
         for (Member dim : dims) {
             String dimId = dim.getId();
-            List<DimColumn> dimColumns = result.get(dimId);
+            String dimcode = dim.getCode();
+            List<DimColumn> dimColumns = result.get(dimcode);
             if (dimColumns == null) {
                 dimColumns = new ArrayList<>();
-                result.put(dimId, dimColumns);
+                result.put(dimcode, dimColumns);
             }
             List<Member> members = memberService.getMembersBydimid(dimId);
             members = SortUtils.sortMember(members);

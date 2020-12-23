@@ -3,6 +3,7 @@ package com.yonyou.mde.web.dao;
 import com.yonyou.mde.web.core.Mapper;
 import com.yonyou.mde.web.model.Member;
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -38,4 +39,5 @@ public interface MemberMapper extends Mapper<Member> {
 
     @Select("select distinct code from Member where datatype <>10 and datatype<>11 and dimid=#{dimid}")
     List<String> getMemberCodesByDimid(String dimid);
+
 }

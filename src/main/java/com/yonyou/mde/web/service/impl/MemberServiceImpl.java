@@ -81,6 +81,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         memberMapper.insert(member);
         return member;
     }
+
     public String insertMember(Member member) {
         member.setId(SnowID.nextID());
         String pid = member.getPid();
@@ -95,7 +96,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         }
         if (Pmember.getDatatype() != DataType.AUTOROLLUP || Pmember.getDatatype() != DataType.MAROLLUP) {//父项不为汇聚改一下
             Member dim = memberMapper.selectByPrimaryKey(dimid);
-            memberMapper.updateFiled(Pmember.getCode(), member.getDimid(), "datatype", dim.getDatatype()+"");
+            memberMapper.updateFiled(Pmember.getCode(), member.getDimid(), "datatype", dim.getDatatype() + "");
         }
         member.setStatus(StatusType.NORMAL);
         member.setWeight(member.getWeight() == null ? 1L : member.getWeight());
@@ -189,5 +190,6 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     public List<String> getMemberCodesByDimid(String dimid) {
         return memberMapper.getMemberCodesByDimid(dimid);
     }
+
 
 }

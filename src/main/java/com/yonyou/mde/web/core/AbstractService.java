@@ -1,15 +1,12 @@
 package com.yonyou.mde.web.core;
 
 
-import com.yonyou.mde.web.dao.SqlMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Condition;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -19,8 +16,6 @@ public abstract class AbstractService<T> implements Service<T> {
 
     @Autowired
     protected Mapper<T> mapper;
-    @Autowired
-    protected SqlMapper sqlMapper;
 
     private Class<T> modelClass;    // 当前泛型真实类型的Class
 
@@ -78,33 +73,15 @@ public abstract class AbstractService<T> implements Service<T> {
         return mapper.selectAll();
     }
 
-    public String getSingle(String sql) {
-        List<LinkedHashMap<String, Object>> selectResult = sqlMapper.select(sql);
-        if (selectResult.isEmpty())
-            return "";
-        else {
-            return selectResult.get(0).values().iterator().next().toString();
-        }
-    }
-
-    public LinkedHashMap<String, Object> getOne(String sql) {
-        return sqlMapper.select(sql).get(0);
-    }
-
-    public List<LinkedHashMap<String, Object>> query(String sql) {
-        return sqlMapper.select(sql);
-    }
-
-    public boolean execute(String sql) {
+    @Override
+    public boolean executeSql(String sql) {
         try {
-            sqlMapper.select(sql);
+            mapper.executeSql(sql);
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
 
-    public boolean executeBatch(List<String> sql) {
-        return this.execute(StringUtils.join(sql, ';'));
-    }
 }

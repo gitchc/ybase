@@ -24,6 +24,7 @@ public class MockDataUtils {
     @Resource
     private MemberService service;
     private static final int batchsize = 10000;//10w一提交
+
     //创造表
     public static void createTable(DataSource dataSource, String tableName, List<Member> dims) throws Exception {
 
@@ -37,18 +38,17 @@ public class MockDataUtils {
             querytable = "select * from user_tables where table_name =upper(?)";
         }
         List<Entity> tablecount = db.query(querytable, tableName);
-        if (tablecount.size() == 0) {//判断表是否存在,不存在则创建表
-            String createSql = getCreateTabseSql(tableName, dims);
-            db.execute(createSql);
-        } else {
+        if (tablecount.size() > 0) {//判断表是否存在,不存在则创建表
             log.warn(tableName + "表已经存在,Drop掉");
             db.execute("drop table " + tableName);
         }
+        String createSql = getCreateTabseSql(tableName, dims);
+        db.execute(createSql);
     }
 
     //创造数据
     private void MockDataFinal(String tableName, List<String> dims, Map<String, List<String>> memberMaps, int mocksize, boolean isRandom) {
-        service.execute("truncate " + tableName);
+        service.executeSql("truncate " + tableName);
         if (dims.size() <= 2) {
             throw new ScriptException("使用造数函数,维度数量不能少于3个!");
         }
@@ -96,14 +96,14 @@ public class MockDataUtils {
                         }
                         sqls.append(")");
                         if (mocksize > 0 && max >= mocksize) {
-                            service.execute(sqls.toString());
-                            log.info("已提交:{}提交数据", max);
+                            service.executeSql(sqls.toString());
+                            log.info("{}已提交:{}提交数据", tableName, max);
                             sqls.setLength(0);
                             return;
                         }
                         if (i == batchsize) {
-                            service.execute(sqls.toString());
-                            log.info("已提交:{}提交数据", max);
+                            service.executeSql(sqls.toString());
+                            log.info("{}已提交:{}提交数据", tableName, max);
                             sqls.setLength(0);
                             i = 0;
                         }
@@ -114,8 +114,8 @@ public class MockDataUtils {
                         }
                     }
                     if (sqls.length() > 0) {
-                        service.execute(sqls.toString());
-                        log.info("已提交:{}提交数据", max);
+                        service.executeSql(sqls.toString());
+                        log.info("{}已提交:{}提交数据", tableName, max);
                     }
                 }
             }

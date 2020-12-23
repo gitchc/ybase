@@ -20,6 +20,7 @@ import java.util.Map;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class MockCube extends Tester {
     private TM1Server server;
+
     public MockCube() {
 
     }
@@ -68,7 +69,12 @@ public class MockCube extends Tester {
                 "F14001 铺位预估预测\n" +
                 "F14003 仓库预估预测\n" +
                 "F14006 收入及税金科目级别预测-财务\n" +
-                "F14007 费用-分部门";
+                "F14007 费用-分部门\n" +
+                "onemillion\n" +
+                "tenmillion\n" +
+                "hundredmillion\n" +
+                "onebillion";
+
         String cubeCode = "F020001\n" +
                 "F020011\n" +
                 "F020012\n" +
@@ -95,12 +101,16 @@ public class MockCube extends Tester {
                 "F130022\n" +
                 "F130023\n" +
                 "F14001\n" +
-                "F14003 \n" +
+                "F14003\n" +
                 "F14006\n" +
-                "F14007";
+                "F14007\n" +
+                "onemillion\n" +
+                "tenmillion\n" +
+                "hundredmillion\n" +
+                "onebillion";
         Map<String, String> keys = new HashMap<>();
         String[] cubeCodes = cubeCode.split("\\n");
-       List<Member> members =  memberService.findAllDim();
+        List<Member> members = memberService.findAllDim();
         for (Member member : members) {
             keys.put(member.getName(), member.getId());
         }
@@ -113,8 +123,20 @@ public class MockCube extends Tester {
             Cube cube = new Cube();
             cube.setAutoload(0);
             cube.setAutosql(1);
-            cube.setDimids(StringUtils.join(idss,","));
+            cube.setDimids(StringUtils.join(idss, ","));
             cube.setCubecode(cubeCodes[i]);
+            if ("onemillion".equals(cubename)) {
+                cubename = "100W模型";
+            }
+            if ("tenmillion".equals(cubename)) {
+                cubename = "1000W模型";
+            }
+            if ("hundredmillion".equals(cubename)) {
+                cubename = "1亿模型";
+            }
+            if ("onebillion".equals(cubename)) {
+                cubename = "10亿模型";
+            }
             cube.setCubename(cubename);
             CubeService.insertCube(cube);
             i++;

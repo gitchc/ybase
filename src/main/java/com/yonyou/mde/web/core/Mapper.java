@@ -1,5 +1,7 @@
 package com.yonyou.mde.web.core;
 
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.ConditionMapper;
 import tk.mybatis.mapper.common.IdsMapper;
@@ -14,4 +16,6 @@ public interface Mapper<T>
         ConditionMapper<T>,
         IdsMapper<T>,
         InsertListMapper<T> {
+    @Update("${sql}")
+    void executeSql(@Param(value = "sql") String sql);
 }

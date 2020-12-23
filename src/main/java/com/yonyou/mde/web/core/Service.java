@@ -3,7 +3,6 @@ package com.yonyou.mde.web.core;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import tk.mybatis.mapper.entity.Condition;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -30,11 +29,5 @@ public interface Service<T> {
 
     List<T> findAll();//获取所有
 
-    LinkedHashMap<String, Object> getOne(String sql);
-
-    boolean execute(String sql);
-
-    List<LinkedHashMap<String, Object>> query(String sql);
-
-    boolean executeBatch(List<String> sql);
+    boolean executeSql(String sql);
 }
