@@ -62,7 +62,7 @@ public class Member {
     /**
      * 权重
      */
-    private Float weight=0F;
+    private Float weight=1F;
 
     /**
      * 唯一编码

@@ -18,6 +18,7 @@ import com.yonyou.mde.model.dataloader.entity.Dimension;
 import com.yonyou.mde.model.dim.DimCacheManager;
 import com.yonyou.mde.model.processor.DefalutRowGenerator;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
+import com.yonyou.mde.web.model.Dim;
 import com.yonyou.mde.web.model.Member;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
@@ -90,8 +91,9 @@ public class CubeAction {
         FactTableConfig factTableConfig = FactTableConfig.builder().cubeName(cubeName).tableName(tableName).pkColumnName("id")
                 .measureColumnName("value").dimensions(dimensions).build();
         factTableConfig.setLoadSql(loadSql);
-//        CreateLoadFile(dimCodes);//造数据文件
-        DataSourceInfo info = new DataSourceInfo();
+        CreateLoadFile(dimCodes);//造数据文件
+
+       /* DataSourceInfo info = new DataSourceInfo();
         info.setUrl(config.getUrl());
         info.setUsername(config.getUsername());
         info.setSchema(config.getSchema());
@@ -99,7 +101,7 @@ public class CubeAction {
         DefaultLoaderConfig config = new DefaultLoaderConfig(info, cubeName, factTableConfig, false);
         // 加载维度信息
         config.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
-        DataLoaderTemplate.getInstance().loadModel(config);
+        DataLoaderTemplate.getInstance().loadModel(config);*/
     }
 
     //创建Load文件,方便测试
@@ -112,8 +114,12 @@ public class CubeAction {
         FileUtil.touch(dimPath);
         FileUtil.touch(dimInfoPath);
         FileUtil.touch(loadSql);
+        List<Dim> dimensions = new ArrayList<>();
+        for (String dimCode : dimCodes) {
+            dimensions.add(new Dim(dimCode, false));
+        }
         FileWriter writer = new FileWriter(dimPath);
-        writer.write(JSONUtil.toJsonStr(dimCodes));
+        writer.write(JSONUtil.toJsonStr(dimensions));
         FileWriter writer1 = new FileWriter(dimInfoPath);
         writer1.write(JSONUtil.toJsonStr(members));
         FileWriter writer2 = new FileWriter(loadSqlPath);
