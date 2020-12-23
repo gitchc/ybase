@@ -66,8 +66,8 @@ public class MockDataUtils {
                 for (String se : secnode) {
                     memberMaps.put(SecondeName, Arrays.asList(se));
                     List<String[]> members = new ArrayList<>();
-                    for (Map.Entry<String, List<String>> entry : memberMaps.entrySet()) {
-                        List<String> value = entry.getValue();
+                    for (String dim : dims) {
+                        List<String> value = memberMaps.get(dim);
                         String[] strings = value.toArray(new String[value.size()]);
                         members.add(strings);
                     }
@@ -137,7 +137,7 @@ public class MockDataUtils {
         for (Member dim : dims) {
             createsql.append(dim.getCode() + " varchar(100),\n");
         }
-        createsql.append("value decimal(19,6)\n");
+        createsql.append("value decimal(19,6),txtvalue varchar(1000)\n");
         createsql.append(")");
         return createsql.toString();
     }

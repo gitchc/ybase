@@ -108,8 +108,8 @@ public class MockCube extends Tester {
                 "tenmillion\n" +
                 "hundredmillion\n" +
                 "onebillion";
-        Map<String, String> keys = new HashMap<>();
         String[] cubeCodes = cubeCode.split("\\n");
+        Map<String, String> keys = new HashMap<>();
         List<Member> members = memberService.findAllDim();
         for (Member member : members) {
             keys.put(member.getName(), member.getId());

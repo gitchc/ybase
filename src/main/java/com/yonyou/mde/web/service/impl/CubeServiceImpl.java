@@ -114,8 +114,14 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         }
         String dimids = cube.getDimids();
         List<Member> dims = getMemberByIds(dimids);
-        for (Member dim : dims) {
-            codes.add(dim.getCode());
+        for (String dimid : dimids.split(",")) {
+            for (Member dim : dims) {
+                if (dim.getId().equals(dimid)) {
+                    codes.add(dim.getCode());
+                    break;
+                }
+            }
+
         }
         return codes;
     }
@@ -146,6 +152,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                 dimColumn.setCode(code);
                 dimColumn.setPkParent(pkParent);
                 dimColumn.setCodeParent(pkParent);
+                dimColumn.setWeight(member.getWeight());
                 dimColumn.setExtraParam(attrValues.get(id)); //设置属性
                 dimColumns.add(dimColumn);
             }

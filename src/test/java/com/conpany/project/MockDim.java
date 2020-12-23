@@ -72,7 +72,6 @@ public class MockDim extends Tester {
 
     private void TabaseDimToPLN(String dimName) {
         try {
-
             Member dim = new Member();
             dim.setCode(MockUtil.getCode(dimName));
             dim.setName(MockUtil.getName(dimName));
