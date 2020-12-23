@@ -3,22 +3,31 @@ package com.yonyou.mde.web.script;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.db.ds.simple.SimpleDataSource;
-import cn.hutool.extra.spring.SpringUtil;
 import com.yonyou.mde.web.script.Utils.DB;
-import com.yonyou.mde.web.core.ScriptException;
+import com.yonyou.mde.web.service.CubeService;
+import com.yonyou.mde.web.utils.MockDataUtils;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Log4j2
+@Component
 public class BaseScript implements IScript {
+    @Resource
+    CubeService cubeService;
+    @Resource
+    MockDataUtils mockDataUtils;
+
     private Map<String, Object> vars;
     private long version;
     private Map<String, Object> results = new HashMap<>();
 
-    public BaseScript() {//动态注入注解
+ /*   public BaseScript() {//动态注入注解
         Field[] fields = BaseScript.class.getDeclaredFields();
         List<Field[]> fieldlist = new ArrayList<>();
         fieldlist.add(fields);
@@ -43,7 +52,7 @@ public class BaseScript implements IScript {
                 }
             }
         }
-    }
+    }*/
 
     @Override
     public long getVersion() {
@@ -354,11 +363,17 @@ public class BaseScript implements IScript {
 
     @Override
     public void MockRandomData(String cubeCode, int size) {
-
+        Map<String, List<String>> cubeMembers = cubeService.getCubeMembers(cubeCode);
+        List<String> dims = cubeService.getDimCodes(cubeCode);
+        mockDataUtils.MockRandomData( cubeCode, dims, cubeMembers, size);
     }
 
     @Override
-    public void MockData(String cubeCode, int size, double value) {
+    public void MockData(String cubeCode, int size) {
+
+        Map<String, List<String>> cubeMembers = cubeService.getCubeMembers(cubeCode);
+        List<String> dims = cubeService.getDimCodes(cubeCode);
+        mockDataUtils.MockData( cubeCode, dims, cubeMembers, size);
 
     }
 

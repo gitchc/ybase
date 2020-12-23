@@ -18,4 +18,7 @@ public interface CubeMapper extends Mapper<Cube> {
     List<Cube> getAutoLoadCues();
     @Update("drop table ${table}")
     void dropTable(String table);
+
+    @Select("select * from cube order by position")
+    List<Cube> getAll();
 }

@@ -605,9 +605,9 @@ public interface IScript {
      *
      * @param cubeCode 多维库编码
      * @param size     总共造多少数
-     * @param value    固定值
+     *    固定值1
      */
-    public void MockData(String cubeCode, int size, double value);
+    public void MockData(String cubeCode, int size);
 
 
 }

@@ -1,8 +1,10 @@
 package com.yonyou.mde.web.service;
+
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.core.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -11,6 +13,8 @@ import java.util.List;
 public interface CubeService extends Service<Cube> {
 
     void insertCube(Cube cube);
+
+    List<String> getDimCodes(String cubeCode);
 
     void deleteCubeById(String id);
 
@@ -21,4 +25,9 @@ public interface CubeService extends Service<Cube> {
     List<Cube> getAutoLoadCubes();
 
     void loadAutoCube();
+
+    Map<String, List<String>> getCubeMembers(String cubecode);
+
+    List<Cube> getAll();
+
 }

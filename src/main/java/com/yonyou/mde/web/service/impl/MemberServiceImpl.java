@@ -185,4 +185,9 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         return finalRes;
     }
 
+    @Override
+    public List<String> getMemberCodesByDimid(String dimid) {
+        return memberMapper.getMemberCodesByDimid(dimid);
+    }
+
 }

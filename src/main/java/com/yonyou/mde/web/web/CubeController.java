@@ -59,7 +59,7 @@ public class CubeController {
 
     @RequestMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<Cube> list = CubeService.findAll();
+        List<Cube> list = CubeService.getAll();
         return ResultGenerator.genSuccessResult(list);
     }
 }

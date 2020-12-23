@@ -36,7 +36,7 @@ public class MockCube extends Tester {
         cofig.setPort("5495");
         cofig.setUsername("admin");
         cofig.setPassword("apple");
-        cofig.setDatabase("SSS");
+        cofig.setDatabase(dababase);
         TabaseCommonConnect commonConnect = new TabaseCommonConnect(cofig);//用户做连接缓存，允许同一个用户并发可以考虑对象的hash值
         IDatabase database = commonConnect.getDataBase();//封装对象，封装对象里面可以通过.getNativeObj()方法获取到TM1原生对象
         server = database.getNativeObj();

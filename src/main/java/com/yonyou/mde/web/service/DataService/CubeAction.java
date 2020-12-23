@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.service.DataService;
 
+import cn.hutool.json.JSONUtil;
 import com.yonyou.mde.MdeInit;
 import com.yonyou.mde.api.MultiDimModelApi;
 import com.yonyou.mde.config.MdeConfiguration;
@@ -16,6 +17,7 @@ import com.yonyou.mde.model.processor.DefalutRowGenerator;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
 import com.yonyou.mde.web.model.Member;
 import lombok.Data;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Data
+@Log4j2
 public class CubeAction {
     private DataSourceConfig config;
     private String cubeName;
@@ -83,7 +86,11 @@ public class CubeAction {
         FactTableConfig factTableConfig = FactTableConfig.builder().cubeName(cubeName).tableName(tableName).pkColumnName("id")
                 .measureColumnName("value").dimensions(dimensions).build();
         factTableConfig.setLoadSql(loadSql);
-        DataSourceInfo info = new DataSourceInfo();
+        log.info("cubeName:"+cubeName);
+        log.info("tableName:" + tableName);
+        log.info(JSONUtil.toJsonStr(dimCodes));
+        log.info(JSONUtil.toJsonStr(members));
+       /* DataSourceInfo info = new DataSourceInfo();
         info.setUrl(config.getUrl());
         info.setUsername(config.getUsername());
         info.setSchema(config.getSchema());
@@ -91,7 +98,7 @@ public class CubeAction {
         DefaultLoaderConfig config = new DefaultLoaderConfig(info, cubeName, factTableConfig, false);
         // 加载维度信息
         config.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
-        DataLoaderTemplate.getInstance().loadModel(config);
+        DataLoaderTemplate.getInstance().loadModel(config);*/
     }
 
     public static void main(String[] args) {

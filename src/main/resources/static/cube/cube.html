@@ -23,6 +23,10 @@
         height: calc(100% - 5px);
     }
 
+    .leftpd{
+        height: calc(100% - 70px);
+        overflow: auto;
+    }
     #dimlayout {
         padding: 10px 10px 0px 10px;
 
@@ -30,6 +34,9 @@
 
     .hide {
         display: none;
+    }
+    .layui-form-item .layui-input-inline{
+        width: 400px;
     }
 
 
@@ -57,7 +64,7 @@
 
                     </div>
                 </div>
-                <div class="layui-row">
+                <div class="layui-row leftpd">
                     <form class="layui-form" id="leftree">
 
                     </form>
@@ -180,7 +187,7 @@
                     var check = dimArr.includes(item.id) ? 'checked' : '';
                     content += '<input type="checkbox"  lay-skin="primary"  value="' + item.id + '" title="' + item.name + '" name="dimcode" ' + check + '>';
                 })
-                $('#alldim').replaceWith(content);
+                $('#alldim').html(content);
                 form.render('', 'cubeform');
                 form.val('cubeform', data);
                 $('#righttable').show();
@@ -283,10 +290,10 @@
             }
             postdata.dimids = arr.join(",");//将数组合并成字符串
             if (!postdata.autoload) {
-                postdata.autoload = 1;
+                postdata.autoload = 0;
             }
             if (!postdata.autosql) {
-                postdata.autosql = 1;
+                postdata.autosql = 0;
             }
             postdata.id=cubeid;
             fetchPost("/cube/save", postdata, eventBtn.init);

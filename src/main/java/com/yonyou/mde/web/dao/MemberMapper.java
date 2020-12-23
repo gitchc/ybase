@@ -12,7 +12,7 @@ public interface MemberMapper extends Mapper<Member> {
     @Select("select max(position) from Member where pid = #{pid}")
     Integer getMaxPosition(String pid);
 
-    @Select("select * from Member where membertype=0")
+    @Select("select * from Member where membertype=0 order by position")
     List<Member> selectAllDim();
 
     @Update("update Member set datatype=#{datatype} where id = #{id}")
@@ -36,4 +36,6 @@ public interface MemberMapper extends Mapper<Member> {
     @Update("update Member set name=#{name},datatype=#{datatype},weight=#{weight} where code = #{code} and dimid=#{dimid}")
     void updateMember(String code, String dimid, String name, Integer datatype, Float weight);
 
+    @Select("select distinct code from Member where datatype <>10 and datatype<>11 and dimid=#{dimid}")
+    List<String> getMemberCodesByDimid(String dimid);
 }

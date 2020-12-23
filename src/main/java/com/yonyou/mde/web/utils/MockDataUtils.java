@@ -1,22 +1,28 @@
 package com.yonyou.mde.web.utils;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
-import cn.hutool.db.ds.simple.SimpleDataSource;
-import com.google.common.base.Stopwatch;
+import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.service.MemberService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 
 @Log4j2
+@Component
 public class MockDataUtils {
+    @Resource
+    private MemberService service;
     private static final int batchsize = 10000;//10w一提交
 
     //创造表
@@ -41,62 +47,90 @@ public class MockDataUtils {
     }
 
     //创造数据
-    public static void MockData(DataSource dataSource, String tableName, Map<String, String[]> memebrs, int mocksize) {
-        try {
-            Db db = Db.use(dataSource);
-            db.execute("truncate " + tableName);
-            List<String> dims = new ArrayList<>();
-            List<String[]> members = new ArrayList<>();
-            for (Map.Entry<String, String[]> entry : memebrs.entrySet()) {
-                dims.add(entry.getKey());
-                members.add(entry.getValue());
-            }
-            MuiltCross cross = new MuiltCross(members);
-            int i = 0;
-            int max = 0;
-            Stopwatch stopwatch = Stopwatch.createStarted();
-            StringBuilder sqls = new StringBuilder();
-            while (cross.hasNext()) {
-                i++;
-                max++;
-                String[] elems = (String[]) cross.next();
-                if (sqls.length() == 0) {
-                    sqls.append("insert into " + tableName + " (" + StringUtils.join(elems, ",") + ") values (");
-                } else {
-                    sqls.append(",(");
+    private void MockDataFinal(String tableName, List<String> dims, Map<String, List<String>> memberMaps, int mocksize, boolean isRandom) {
+        service.execute("truncate " + tableName);
+        if (dims.size() <= 2) {
+            throw new ScriptException("使用造数函数,维度数量不能少于3个!");
+        }
+        String firstCode = dims.get(0);
+        List<String> firstList = memberMaps.get(firstCode);
+        String SecondeName = dims.get(1);
+        List<String> secnode = memberMaps.get(SecondeName);
+        String thirdName = dims.get(2);
+        List<String> thirds = memberMaps.get(thirdName);
+        int max = 0;
+        for (String th : thirds) {
+            memberMaps.put(thirdName, Arrays.asList(th));
+            for (String f : firstList) {
+                memberMaps.put(firstCode, Arrays.asList(f));
+                for (String se : secnode) {
+                    memberMaps.put(SecondeName, Arrays.asList(se));
+                    List<String[]> members = new ArrayList<>();
+                    for (Map.Entry<String, List<String>> entry : memberMaps.entrySet()) {
+                        List<String> value = entry.getValue();
+                        String[] strings = value.toArray(new String[value.size()]);
+                        members.add(strings);
+                    }
+                    MuiltCross cross = new MuiltCross(members);
+                    int i = 0;
+                    int minmax = 0;
+                    StringBuilder sqls = new StringBuilder();
+                    while (cross.hasNext()) {
+                        i++;
+                        max++;
+                        minmax++;
+                        String[] elems = (String[]) cross.next();
+                        if (sqls.length() == 0) {
+                            sqls.append("insert into " + tableName + " (id," + StringUtils.join(dims, ",") + ",value) values (");
+                        } else {
+                            sqls.append(",(");
+                        }
+                        sqls.append(SnowID.nextID());//id
+                        sqls.append(",");
+                        sqls.append("'" + StringUtils.join(elems, "','") + "'");
+                        sqls.append(",");
+                        if (isRandom) {
+                            sqls.append(RandomUtil.randomDouble(0, 10000));
+                        } else {
+                            sqls.append(1);
+                        }
+                        sqls.append(")");
+                        if (mocksize > 0 && max >= mocksize) {
+                            service.execute(sqls.toString());
+                            log.info("已提交:{}提交数据", max);
+                            sqls.setLength(0);
+                            return;
+                        }
+                        if (i == batchsize) {
+                            service.execute(sqls.toString());
+                            log.info("已提交:{}提交数据", max);
+                            sqls.setLength(0);
+                            i = 0;
+                        }
+                        if (minmax == 1000000) {
+                            log.info("切换笛卡尔积组合,{},{},{}", f, se, th);
+                            cross = null;
+                            break;
+                        }
+                    }
+                    if (sqls.length() > 0) {
+                        service.execute(sqls.toString());
+                        log.info("已提交:{}提交数据", max);
+                    }
                 }
-                sqls.append(SnowID.nextID());//id
-                sqls.append(",");
-                sqls.append("'" + StringUtils.join(elems, "','") + "'");
-                sqls.append(",");
-                sqls.append(1);
-                sqls.append(")");
-                if (mocksize > 0 && max >= mocksize) {
-                    db.execute(sqls.toString());
-                    log.info("已提交:{}提交数据", max);
-                    sqls.setLength(0);
-                    break;
-                }
-                if (i == batchsize) {
-                    db.execute(sqls.toString());
-                    log.info("已提交:{}提交数据", max);
-                    sqls.setLength(0);
-                    i = 0;
-                }
             }
-            if (sqls.length() > 0) {
-                db.execute(sqls.toString());
-                log.info("已提交:{}提交数据", max);
-            }
-            log.info("耗时:{}ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
-            stopwatch.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
+    public void MockData(String tableName, List<String> dims, Map<String, List<String>> memebrs, int mocksize) {
+        MockDataFinal(tableName, dims, memebrs, mocksize, false);
+    }
 
-    private static String getCreateTabseSql(String tableName,  List<Member> dims) {
+    public void MockRandomData(String tableName, List<String> dims, Map<String, List<String>> memebrs, int mocksize) {
+        MockDataFinal(tableName, dims, memebrs, mocksize, true);
+    }
+
+    private static String getCreateTabseSql(String tableName, List<Member> dims) {
         StringBuilder createsql = new StringBuilder("create table " + tableName + " (");
         createsql.append("id bigint primary key not null,\n");
 

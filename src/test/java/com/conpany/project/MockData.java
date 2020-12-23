@@ -1,7 +1,6 @@
 package com.conpany.project;
 
 import cn.hutool.core.io.file.FileReader;
-import cn.hutool.db.Db;
 import com.applix.tm1.TM1Server;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.utils.SnowID;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +25,6 @@ import java.util.Map;
 @Log4j2
 public class MockData extends Tester {
     private TM1Server server;
-    Db db;
 
     @BeforeAll
     public void init() {
@@ -42,11 +39,10 @@ public class MockData extends Tester {
         cofig.setPort("5495");
         cofig.setUsername("admin");
         cofig.setPassword("apple");
-        cofig.setDatabase("SSS");
+        cofig.setDatabase(dababase);
         TabaseCommonConnect commonConnect = new TabaseCommonConnect(cofig);//用户做连接缓存，允许同一个用户并发可以考虑对象的hash值
         IDatabase database = commonConnect.getDataBase();//封装对象，封装对象里面可以通过.getNativeObj()方法获取到TM1原生对象
         server = database.getNativeObj();
-        db = Db.use(dataSource);
         String cubestrs = "" +
                 "F020001 铺位基础信息表（商场）中转\n" +
                 "F02001 铺位基础信息表（商场）\n" +
@@ -123,7 +119,7 @@ public class MockData extends Tester {
             int total = 0;
             int maxi = 0;
             String dubcode = cubeCodes[i];
-            db.execute("delete from "+dubcode+" where 1=1");
+            memberService.execute("truncate  " + dubcode);
             FileReader fileReader = new FileReader("D:\\mock\\" + cubename + ".cma");
             List<String> dimcodes = new ArrayList<>();
             for (String dimensionName : database.getCubeByName(cubename).getDimensionNames()) {
@@ -156,7 +152,7 @@ public class MockData extends Tester {
                         if (!NumberUtils.isNumber(split)) {
                             sqls.append(0);
                         } else {
-                            sqls.append(new BigDecimal(splits[i1]).setScale(2, RoundingMode.HALF_UP).doubleValue());
+                            sqls.append(new BigDecimal(split).add(new BigDecimal(0.4)).multiply(new BigDecimal(0.85)).setScale(2, RoundingMode.HALF_UP).doubleValue());
                         }
                     } else {
                         sqls.append("'");
@@ -170,8 +166,8 @@ public class MockData extends Tester {
                 maxi++;
                 if (maxi == maxsize) {
                     try {
-                        db.execute(sqls.toString());
-                    } catch (SQLException throwables) {
+                        memberService.execute(sqls.toString());
+                    } catch (Exception throwables) {
                         throwables.printStackTrace();
                         System.out.println(sqls.toString());
                         throw new Exception("xxx");
@@ -183,7 +179,7 @@ public class MockData extends Tester {
 
             }
             if (sqls.length() > 0) {
-                db.execute(sqls.toString());
+                memberService.execute(sqls.toString());
                 sqls.setLength(0);
                 log.info(cubename + "--" + dubcode + ":最后提交:{}提交数据", total);
             }
