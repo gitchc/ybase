@@ -22,7 +22,7 @@ public abstract class Tester {
     protected com.yonyou.mde.web.service.CubeService CubeService;
     @Resource
     BaseScript baseScript;
-    String dababase = "IN-EPM";
+    String dababase = "DD";
 }
 
 
