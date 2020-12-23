@@ -84,7 +84,7 @@ public class CubeAction {
         }
 
         if (StringUtils.isBlank(loadSql)) {
-            this.loadSql = "select " + StringUtils.join(dimCodes, ",") + ",value from " + tableName;
+            this.loadSql = "select " + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName;
         } else {
             this.tableName = getTableName(loadSql);
         }
