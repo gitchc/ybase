@@ -24,9 +24,9 @@ public class MockDataUtils {
     @Resource
     private MemberService service;
     private static final int batchsize = 10000;//10w一提交
-
     //创造表
     public static void createTable(DataSource dataSource, String tableName, List<Member> dims) throws Exception {
+
         Db db = Db.use(dataSource);
         String querytable = "";
         if (DBUtil.isMysql(dataSource)) {
