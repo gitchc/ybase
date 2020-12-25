@@ -19,10 +19,10 @@ import static com.yonyou.mde.web.core.ProjectConstant.*;
  */
 public class CodeGenerator {
     //JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/console?serverTimezone=UTC";
-    private static final String JDBC_USERNAME = "console";
-    private static final String JDBC_PASSWORD = "console";
-    private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
+    private static final String JDBC_URL = "jdbc:postgresql://10.167.2.11:5432/mdelib";
+    private static final String JDBC_USERNAME = "mde";
+    private static final String JDBC_PASSWORD = "mde@1988";
+    private static final String JDBC_DIVER_CLASS_NAME = "org.postgresql.Driver";
 
     private static final String PROJECT_PATH = System.getProperty("user.dir");//项目在硬盘上的基础路径
     private static final String TEMPLATE_FILE_PATH = PROJECT_PATH + "/src/test/resources/generator/template";//模板位置
@@ -34,11 +34,11 @@ public class CodeGenerator {
     private static final String PACKAGE_PATH_SERVICE_IMPL = packageConvertPath(SERVICE_IMPL_PACKAGE);//生成的Service实现存放路径
     private static final String PACKAGE_PATH_CONTROLLER = packageConvertPath(CONTROLLER_PACKAGE);//生成的Controller存放路径
 
-    private static final String AUTHOR = "CodeGenerator";//@author
+    private static final String AUTHOR = "chenghch";//@author
     private static final String DATE = new SimpleDateFormat("yyyy-MM-dd").format(new Date());//@date
 
     public static void main(String[] args) {
-        genCode("Script");
+        genCode("tst");
         //genCodeByCustomModelName("输入表名","输入自定义Model名称");
     }
 
@@ -143,7 +143,7 @@ public class CodeGenerator {
             data.put("author", AUTHOR);
             String modelNameUpperCamel = StringUtils.isEmpty(modelName) ? tableNameConvertUpperCamel(tableName) : modelName;
             data.put("modelNameUpperCamel", modelNameUpperCamel);
-            data.put("modelNameLowerCamel", tableNameConvertLowerCamel(tableName));
+            data.put("modelNameLowerCamel", LowerCamel(tableName));
             data.put("basePackage", BASE_PACKAGE);
 
             File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE + modelNameUpperCamel + "Service.java");
@@ -175,8 +175,8 @@ public class CodeGenerator {
             data.put("author", AUTHOR);
             String modelNameUpperCamel = StringUtils.isEmpty(modelName) ? tableNameConvertUpperCamel(tableName) : modelName;
             data.put("baseRequestMapping", modelNameConvertMappingPath(modelNameUpperCamel));
-            data.put("modelNameUpperCamel", StrUtil.upperFirst(modelNameUpperCamel));
-            data.put("modelNameLowerCamel", modelNameUpperCamel);
+            data.put("modelNameUpperCamel", modelNameUpperCamel);
+            data.put("modelNameLowerCamel", LowerCamel(modelNameUpperCamel));
             data.put("basePackage", BASE_PACKAGE);
 
             File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_CONTROLLER + modelNameUpperCamel + "Controller.java");
@@ -201,8 +201,8 @@ public class CodeGenerator {
         return cfg;
     }
 
-    private static String tableNameConvertLowerCamel(String tableName) {
-        return StrUtil.toCamelCase(tableName);
+    private static String LowerCamel(String tableName) {
+        return StrUtil.lowerFirst(tableName);
     }
 
     private static String tableNameConvertUpperCamel(String tableName) {
