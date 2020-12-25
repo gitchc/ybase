@@ -91,9 +91,10 @@ public class CubeAction {
         FactTableConfig factTableConfig = FactTableConfig.builder().cubeName(cubeName).tableName(tableName).pkColumnName("id")
                 .measureColumnName("value").dimensions(dimensions).build();
         factTableConfig.setLoadSql(loadSql);
-        CreateLoadFile(dimCodes);//造数据文件
 
-       /* DataSourceInfo info = new DataSourceInfo();
+//        CreateLoadFile(dimCodes);//造数据文件
+
+        DataSourceInfo info = new DataSourceInfo();
         info.setUrl(config.getUrl());
         info.setUsername(config.getUsername());
         info.setSchema(config.getSchema());
@@ -101,7 +102,7 @@ public class CubeAction {
         DefaultLoaderConfig config = new DefaultLoaderConfig(info, cubeName, factTableConfig, false);
         // 加载维度信息
         config.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
-        DataLoaderTemplate.getInstance().loadModel(config);*/
+        DataLoaderTemplate.getInstance().loadModel(config);
     }
 
     //创建Load文件,方便测试
@@ -130,8 +131,8 @@ public class CubeAction {
     public static void main(String[] args) {
     }
 
+    private static final Pattern pattern = Pattern.compile("(.*from\\s)(\\w*)(.*)");
     private String getTableName(String loadSql) {
-        Pattern pattern = Pattern.compile("(.*from\\s)(\\w*)(.*)");
         Matcher matcher = pattern.matcher(loadSql);
         if (matcher.find()) {
             return matcher.group(2).trim();
