@@ -3,6 +3,7 @@ package com.conpany.project;
 
 import com.yonyou.mde.web.Application;
 import com.yonyou.mde.web.script.BaseScript;
+import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.MemberService;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,7 +20,7 @@ public abstract class Tester {
     @Resource
     protected MemberService memberService;
     @Resource
-    protected com.yonyou.mde.web.service.CubeService CubeService;
+    protected CubeService cubeService;
     @Resource
     BaseScript baseScript;
     String dababase = "DD";

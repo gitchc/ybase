@@ -37,7 +37,7 @@ import java.util.Map;
 @Transactional
 public class CubeServiceImpl extends AbstractService<Cube> implements CubeService {
     @Resource
-    private CubeMapper CubeMapper;
+    private CubeMapper cubeMapper;
     @Resource
     private MemberMapper memberMapper;
     @Resource
@@ -52,12 +52,12 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     @Override
     public void insertCube(Cube cube) {
         String id = SnowID.nextID();
-        Cube oldcube = CubeMapper.getCubeByCode(cube.getCubecode());
+        Cube oldcube = cubeMapper.getCubeByCode(cube.getCubecode());
         if (oldcube != null) {
             throw new ServiceException("模型编码不能重复!");
         } else {
             cube.setId(id);
-            Integer maxpos = CubeMapper.getMaxPosition();
+            Integer maxpos = cubeMapper.getMaxPosition();
             cube.setPosition(maxpos == null ? 0 : maxpos + 1);
             insert(cube);
         }
@@ -88,7 +88,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     //获取Cube的所有成员
     public Map<String,List<String>> getCubeMembers(String cubecode){
         Map<String, List<String>> cubeMap = new HashMap<>();
-        Cube cube = CubeMapper.getCubeByCode(cubecode);
+        Cube cube = cubeMapper.getCubeByCode(cubecode);
         if (cube == null) {
             throw new ScriptException(cubecode+"不存在!");
         }
@@ -102,13 +102,13 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
 
     @Override
     public List<Cube> getAll() {
-        return CubeMapper.getAll();
+        return cubeMapper.getAll();
     }
 
     @Override
     public List<String> getDimCodes(String cubeCode) {
         List<String> codes = new ArrayList<>();
-        Cube cube = CubeMapper.getCubeByCode(cubeCode);
+        Cube cube = cubeMapper.getCubeByCode(cubeCode);
         if (cube == null) {
             throw new ScriptException(cubeCode+"不存在!");
         }
@@ -163,7 +163,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     public void deleteCubeById(String id) {
         Cube cube = findById(id);
         deleteById(id);
-        CubeMapper.dropTable(cube.getCubecode());
+        cubeMapper.dropTable(cube.getCubecode());
         CubeManager.removeData(cube.getCubecode());
     }
 
@@ -187,7 +187,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
 
     @Override
     public List<Cube> getAutoLoadCubes() {
-        return CubeMapper.getAutoLoadCues();
+        return cubeMapper.getAutoLoadCues();
     }
     //加载启动需要加载的cube
     @Override

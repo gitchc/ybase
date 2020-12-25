@@ -138,7 +138,7 @@ public class MockCube extends Tester {
                 cubename = "10亿模型";
             }
             cube.setCubename(cubename);
-            CubeService.insertCube(cube);
+            cubeService.insertCube(cube);
             i++;
         }
     }

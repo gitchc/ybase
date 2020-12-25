@@ -108,7 +108,7 @@ public class MockData extends Tester {
             String dubcode = cubeCodes[i];
             memberService.executeSql("truncate  " + dubcode);
             FileReader fileReader = new FileReader("D:\\mock\\data\\" + cubename + ".cma");
-            List<String> dimcodes = CubeService.getDimCodes(dubcode);
+            List<String> dimcodes = cubeService.getDimCodes(dubcode);
             String cols = "id," + StringUtils.join(dimcodes, ",") + ",value";
             int oldlength = -1;
             StringBuilder sqls = new StringBuilder();
