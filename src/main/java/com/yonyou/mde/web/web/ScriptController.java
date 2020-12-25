@@ -24,41 +24,41 @@ import java.util.Map;
 @RequestMapping("/script")
 public class ScriptController {
     @Resource
-    private ScriptService ScriptService;
+    private ScriptService scriptService;
 
     @RequestMapping("/insert")
-    public Result add(Script Script) {
-        ScriptService.insertScript(Script);
+    public Result add(Script script) {
+        scriptService.insertScript(script);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/delete")
     public Result delete(@RequestParam String id) {
-        ScriptService.deleteById(id);
+        scriptService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/updateName")
-    public Result updateName(Script Script) {
-        ScriptService.updateName(Script);
+    public Result updateName(Script script) {
+        scriptService.updateName(script);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/updateContent")
-    public Result updateContent(Script Script) {
-        ScriptService.updateContent(Script);
+    public Result updateContent(Script script) {
+        scriptService.updateContent(script);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/run")
     public Result run(ScriptVo vo) {
-        Map<String, Object> res = ScriptService.run(vo);
+        Map<String, Object> res = scriptService.run(vo);
         return ResultGenerator.genSuccessResult(res);
     }
 
     @RequestMapping("/detail")
     public Result detail(@RequestParam String id) {
-        Script Script = ScriptService.findById(id);
+        Script Script = scriptService.findById(id);
         return ResultGenerator.genSuccessResult(Script);
     }
 
@@ -75,13 +75,13 @@ public class ScriptController {
             Example.Criteria criteria = condition.createCriteria();
             criteria.andLike("name", keyword);
         }
-        List<Script> list = ScriptService.findByCondition(condition);
+        List<Script> list = scriptService.findByCondition(condition);
         return ResultGenerator.genSuccessResult(list);
     }
 
     @RequestMapping("/keywords")
     public Result keywords() {
-        List<Completer> kewords = ScriptService.getKeywords();
+        List<Completer> kewords = scriptService.getKeywords();
         return ResultGenerator.genSuccessResult(kewords);
     }
 }

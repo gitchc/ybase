@@ -146,7 +146,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     }
 
     @Override
-    public void updateFiled(MemberUpdateVO member) {
+    public void updateFiled(MemberFiled member) {
         memberMapper.updateFiled(member.getCode(), member.getDimid(), member.getField(), member.getValue());
     }
 

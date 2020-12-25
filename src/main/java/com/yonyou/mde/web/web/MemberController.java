@@ -4,7 +4,7 @@ import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.model.MemberUpdateVO;
+import com.yonyou.mde.web.model.MemberFiled;
 import com.yonyou.mde.web.model.MemberVO;
 import com.yonyou.mde.web.service.MemberService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,72 +21,72 @@ import java.util.List;
 @RequestMapping("/member")
 public class MemberController {
     @Resource
-    private MemberService MemberService;
+    private MemberService memberService;
 
     @RequestMapping("/insertDim")
-    public Result insertDim(Member Member) throws ServiceException {
-        MemberService.insertDim(Member);
+    public Result insertDim(Member member) throws ServiceException {
+        memberService.insertDim(member);
         return ResultGenerator.genSuccessResult();
 
     }
 
     @RequestMapping("/listDim")
     public Result listDim() {
-        List<Member> list = MemberService.findAllDim();
+        List<Member> list = memberService.findAllDim();
         return ResultGenerator.genSuccessResult(list);
     }
 
     @RequestMapping("/switchDim")
-    public Result switchDim(Member Member) {
-        MemberService.switchDim(Member);
+    public Result switchDim(Member member) {
+        memberService.switchDim(member);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/delDim")
     public Result delDim(@RequestParam String id) {
-        MemberService.delDim(id);
+        memberService.delDim(id);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/updateDim")
-    public Result updateDim(Member Member) {
-        MemberService.updateDim(Member);
+    public Result updateDim(Member member) {
+        memberService.updateDim(member);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/insertMember")
-    public Result insert(Member Member) {
-        MemberService.insertMember(Member);
+    public Result insert(Member member) {
+        memberService.insertMember(member);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/delMember")
     public Result deleteMember(@RequestParam String id) {
-        MemberService.deleteMember(id);
+        memberService.deleteMember(id);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/updateField")
-    public Result updateField(MemberUpdateVO Member) {
-        MemberService.updateFiled(Member);
+    public Result updateField(MemberFiled filed) {
+        memberService.updateFiled(filed);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/updateMember")
-    public Result updateMember(Member Member) {
-        MemberService.updateMember(Member);
+    public Result updateMember(Member member) {
+        memberService.updateMember(member);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/detail")
     public Result detail(@RequestParam String id) {
-        Member Member = MemberService.findById(id);
+        Member Member = memberService.findById(id);
         return ResultGenerator.genSuccessResult(Member);
     }
 
     @RequestMapping("/listMemmbers")
     public Result list(@RequestParam String dimid, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer limit) {
-        List<MemberVO> finalRes = MemberService.getMemberVOsBydimid(dimid);
+        List<MemberVO> finalRes = memberService.getMemberVOsBydimid(dimid);
         return ResultGenerator.genSuccessResult(finalRes);
     }
 }

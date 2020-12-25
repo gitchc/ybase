@@ -23,7 +23,7 @@ public class MockDataByCode extends Tester {
 //        ThreadUtil.execute(() -> {
 //            baseScript.MockData("onemillion", 1000000);
 //        });
-//        baseScript.MockData("tenmillion", 10000000);
+        baseScript.MockData("tenmillion", 10000000);
 //        baseScript.MockData("hundredmillion", 100000000);
 //        baseScript.MockData("onebillion", 1000000000);
 //        ThreadUtil.waitForDie();

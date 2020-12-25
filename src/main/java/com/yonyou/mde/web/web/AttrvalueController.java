@@ -22,47 +22,47 @@ import java.util.Map;
 @RequestMapping("/attrvalue")
 public class AttrvalueController {
     @Resource
-    private AttrvalueService AttrvalueService;
+    private AttrvalueService attrvalueService;
 
     @RequestMapping("/insert")
-    public Result insert(Attrvalue Attrvalue) {
-        AttrvalueService.insert(Attrvalue);
+    public Result insert(Attrvalue attrvalue) {
+        attrvalueService.insert(attrvalue);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/delete")
-    public Result delete(AttrValueVO AttrValueVO) {
-        AttrvalueService.deleteByDimIdAndName(AttrValueVO);
+    public Result delete(AttrValueVO attrValueVO) {
+        attrvalueService.deleteByDimIdAndName(attrValueVO);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/update")
-    public Result update(Attrvalue Attrvalue) {
-        AttrvalueService.update(Attrvalue);
+    public Result update(Attrvalue attrvalue) {
+        attrvalueService.update(attrvalue);
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping("/updateValue")
-    public Result updateValue(AttrValueVO AttrValueVO) {
-        AttrvalueService.updateValue(AttrValueVO);
+    public Result updateValue(AttrValueVO attrValueVO) {
+        attrvalueService.updateValue(attrValueVO);
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping("/detail")
     public Result detail(@RequestParam String id) {
-        Attrvalue Attrvalue = AttrvalueService.findById(id);
+        Attrvalue Attrvalue = attrvalueService.findById(id);
         return ResultGenerator.genSuccessResult(Attrvalue);
     }
 
     @RequestMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
-        List<Attrvalue> list = AttrvalueService.findAll();
+        List<Attrvalue> list = attrvalueService.findAll();
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 
     @RequestMapping("/listAttrValues")
     public Result list(@RequestParam String dimid, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer limit) {
-        List<Map<String, String>> res = AttrvalueService.getAllAttrValues(dimid);
+        List<Map<String, String>> res = attrvalueService.getAllAttrValues(dimid);
         return ResultGenerator.genSuccessResult(res);
     }
 }

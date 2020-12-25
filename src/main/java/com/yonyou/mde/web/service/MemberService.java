@@ -3,7 +3,7 @@ package com.yonyou.mde.web.service;
 import com.yonyou.mde.web.core.Service;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.model.MemberUpdateVO;
+import com.yonyou.mde.web.model.MemberFiled;
 import com.yonyou.mde.web.model.MemberVO;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public interface MemberService extends Service<Member> {
 
     void deleteMember(String id);
 
-    void updateFiled(MemberUpdateVO member);
+    void updateFiled(MemberFiled member);
 
     void updateMember(Member member);
 

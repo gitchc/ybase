@@ -19,35 +19,35 @@ import java.util.List;
 @RequestMapping("/attr")
 public class AttrController {
     @Resource
-    private AttrService AttrService;
+    private AttrService attrService;
 
     @RequestMapping("/insert")
-    public Result insert(Attr Attr) {
-        AttrService.insertAttr(Attr);
+    public Result insert(Attr attr) {
+        attrService.insertAttr(attr);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/delete")
     public Result delete(@RequestParam String id) {
-        AttrService.deleteById(id);
+        attrService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/update")
-    public Result update(Attr Attr) {
-        AttrService.update(Attr);
+    public Result update(Attr attr) {
+        attrService.update(attr);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/detail")
     public Result detail(@RequestParam String id) {
-        Attr Attr = AttrService.findById(id);
+        Attr Attr = attrService.findById(id);
         return ResultGenerator.genSuccessResult(Attr);
     }
 
     @RequestMapping("/list")
     public Result list(@RequestParam String dimid, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<ColVO> attrs = AttrService.getAttrByDimid(dimid);
+        List<ColVO> attrs = attrService.getAttrByDimid(dimid);
         return ResultGenerator.genSuccessResult(attrs);
     }
 }
