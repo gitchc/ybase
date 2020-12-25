@@ -3,7 +3,6 @@ package com.yonyou.mde.web.utils;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
-import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.service.MemberService;
 import lombok.extern.log4j.Log4j2;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +21,7 @@ import java.util.Map;
 public class MockDataUtils {
     @Resource
     private MemberService service;
-    private static final int batchsize = 10000;//10w一提交
+    private static final int batchsize = 10000;//1w一提交
 
     //创造表
     public static void createTable(DataSource dataSource, String tableName, List<Member> dims) throws Exception {
@@ -46,79 +44,60 @@ public class MockDataUtils {
         db.execute(createSql);
     }
 
+
     //创造数据
     private void MockDataFinal(String tableName, List<String> dims, Map<String, List<String>> memberMaps, int mocksize, boolean isRandom) {
         service.executeSql("truncate " + tableName);
-        if (dims.size() <= 2) {
-            throw new ScriptException("使用造数函数,维度数量不能少于3个!");
-        }
-        String firstCode = dims.get(0);
-        List<String> firstList = memberMaps.get(firstCode);
-        String SecondeName = dims.get(1);
-        List<String> secnode = memberMaps.get(SecondeName);
-        String thirdName = dims.get(2);
-        List<String> thirds = memberMaps.get(thirdName);
-        int max = 0;
-        for (String th : thirds) {
-            memberMaps.put(thirdName, Arrays.asList(th));
-            for (String f : firstList) {
-                memberMaps.put(firstCode, Arrays.asList(f));
-                for (String se : secnode) {
-                    memberMaps.put(SecondeName, Arrays.asList(se));
-                    List<String[]> members = new ArrayList<>();
-                    for (String dim : dims) {
-                        List<String> value = memberMaps.get(dim);
-                        String[] strings = value.toArray(new String[value.size()]);
-                        members.add(strings);
-                    }
-                    MuiltCross cross = new MuiltCross(members);
-                    int i = 0;
-                    int minmax = 0;
-                    StringBuilder sqls = new StringBuilder();
-                    while (cross.hasNext()) {
-                        i++;
-                        max++;
-                        minmax++;
-                        String[] elems = (String[]) cross.next();
-                        if (sqls.length() == 0) {
-                            sqls.append("insert into " + tableName + " (id," + StringUtils.join(dims, ",") + ",value) values (");
-                        } else {
-                            sqls.append(",(");
-                        }
-                        sqls.append(SnowID.nextID());//id
-                        sqls.append(",");
-                        sqls.append("'" + StringUtils.join(elems, "','") + "'");
-                        sqls.append(",");
-                        if (isRandom) {
-                            sqls.append(RandomUtil.randomDouble(0, 10000));
-                        } else {
-                            sqls.append(1);
-                        }
-                        sqls.append(")");
-                        if (mocksize > 0 && max >= mocksize) {
-                            service.executeSql(sqls.toString());
-                            log.info("{}已提交:{}提交数据", tableName, max);
-                            sqls.setLength(0);
-                            return;
-                        }
-                        if (i == batchsize) {
-                            service.executeSql(sqls.toString());
-                            log.info("{}已提交:{}提交数据", tableName, max);
-                            sqls.setLength(0);
-                            i = 0;
-                        }
-                        if (minmax == 1000000) {
-                            log.info("切换笛卡尔积组合,{},{},{}", f, se, th);
-                            cross = null;
-                            break;
-                        }
-                    }
-                    if (sqls.length() > 0) {
-                        service.executeSql(sqls.toString());
-                        log.info("{}已提交:{}提交数据", tableName, max);
-                    }
-                }
+        List<String[]> members = new ArrayList<>();
+        if (mocksize > 10000000) {
+            int smalsize = (int) Math.pow(mocksize, 1D / (dims.size() - 2)) + 1;
+            for (String dim : dims) {
+                List<String> value = memberMaps.get(dim);
+                int last = value.size() > smalsize ? smalsize : value.size();
+                value = value.subList(0, last);
+                String[] strings = value.toArray(new String[value.size()]);
+                members.add(strings);
             }
+        }
+        MuiltCross cross = new MuiltCross(members);
+        int i = 0;
+        int max = 0;
+        StringBuilder sqls = new StringBuilder();
+        while (cross.hasNext()) {
+            i++;
+            max++;
+            String[] elems = (String[]) cross.next();
+            if (sqls.length() == 0) {
+                sqls.append("insert into " + tableName + " (id," + StringUtils.join(dims, ",") + ",value) values (");
+            } else {
+                sqls.append(",(");
+            }
+            sqls.append(SnowID.nextID());//id
+            sqls.append(",");
+            sqls.append("'" + StringUtils.join(elems, "','") + "'");
+            sqls.append(",");
+            if (isRandom) {
+                sqls.append(RandomUtil.randomDouble(0, 10000));
+            } else {
+                sqls.append(1);
+            }
+            sqls.append(")");
+            if (mocksize > 0 && max >= mocksize) {
+                service.executeSql(sqls.toString());
+                log.info("{}已提交:{}提交数据", tableName, max);
+                sqls.setLength(0);
+                return;
+            }
+            if (i == batchsize) {
+                service.executeSql(sqls.toString());
+                log.info("{}已提交:{}提交数据", tableName, max);
+                sqls.setLength(0);
+                i = 0;
+            }
+        }
+        if (sqls.length() > 0) {
+            service.executeSql(sqls.toString());
+            log.info("{}已提交:{}提交数据", tableName, max);
         }
     }
 

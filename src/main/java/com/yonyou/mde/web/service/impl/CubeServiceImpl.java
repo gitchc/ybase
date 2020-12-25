@@ -121,7 +121,6 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                     break;
                 }
             }
-
         }
         return codes;
     }
