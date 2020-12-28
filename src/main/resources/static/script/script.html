@@ -251,6 +251,8 @@
                         if (data.data.msg) {
                             $('#' + id).attr("title", data.data.msg);
                             showInfo(data.data.msg);
+                        }else {
+                            tipsInfo("执行成功!");
                         }
                     } else {
                         $('#' + id).text("ERROR");

@@ -24,8 +24,8 @@ public interface AttrvalueMapper extends Mapper<Attrvalue> {
             "  on b.dimid = c.dimid left join attrvalue d on c.id = d.attrid and b.code =d.memberCode ")
     List<AttrValueVO> getAllAttrValues(String dimid);
 
-    @Select("select * from attrvalue where attrid = #{attrid} and membercode = #{code}")
-    Attrvalue getAttrValue(String attrid, String code);
+    @Select("select * from attrvalue where attrid = #{attrid} and membercode = #{membercode}")
+    Attrvalue getAttrValue(String attrid, String membercode);
 
     @Delete("delete from attrvalue where attrid in (select id from(select id from attr  where dimid = #{dimid} and attrname=#{attrname})cd) ")
     void deleteByDimIdAndName(String attrname, String dimid);
@@ -33,6 +33,6 @@ public interface AttrvalueMapper extends Mapper<Attrvalue> {
     @Delete("delete from attrvalue where  attrid = #{attrid} ")
     void deleteByAttrid(String attrid);
 
-    @Select("select a.memberCode,b.attrName,a.attrValue from attrvalue a left join attr b on a.attrid = b.id where dimid = #{dimid}")
+    @Select("select a.memberCode as code ,b.attrName,a.attrValue from attrvalue a left join attr b on a.attrid = b.id where dimid = #{dimid}")
     List<AttrValueVO> getAttrValues(String dimid);
 }

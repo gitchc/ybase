@@ -149,10 +149,10 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                 DimColumn dimColumn = new DimColumn();//创建模型需要的数据结构
                 dimColumn.setPk(code);
                 dimColumn.setCode(code);
-                dimColumn.setPkParent(pkParent);
-                dimColumn.setCodeParent(pkParent);
+                dimColumn.setParentPk(pkParent);
+                dimColumn.setParentCode(pkParent);
                 dimColumn.setWeight(member.getWeight());
-                dimColumn.setExtraParam(attrValues.get(id)); //设置属性
+                dimColumn.setExtraParam(attrValues.get(code)); //设置属性
                 dimColumns.add(dimColumn);
             }
         }

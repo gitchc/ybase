@@ -10,12 +10,12 @@ import com.yonyou.mde.config.MdeConfiguration;
 import com.yonyou.mde.datasource.DataSourceInfo;
 import com.yonyou.mde.dto.DimColumn;
 import com.yonyou.mde.error.MdeException;
+import com.yonyou.mde.model.Dimension;
 import com.yonyou.mde.model.dataloader.DataLoaderTemplate;
-import com.yonyou.mde.model.dataloader.budget.DefaultLoaderConfig;
-import com.yonyou.mde.model.dataloader.config.FactTableConfig;
+import com.yonyou.mde.model.dataloader.DefaultLoaderConfig;
 import com.yonyou.mde.model.dataloader.config.LoadType;
-import com.yonyou.mde.model.dataloader.entity.Dimension;
 import com.yonyou.mde.model.dim.DimCacheManager;
+import com.yonyou.mde.model.meta.CubeMeta;
 import com.yonyou.mde.model.processor.DefalutRowGenerator;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
 import com.yonyou.mde.web.model.Dim;
@@ -33,7 +33,9 @@ import java.util.regex.Pattern;
 @Data
 @Log4j2
 public class CubeAction {
-    private DataSourceConfig config;
+    protected static final String DEFAULT_MEASURE_COLUMN = "VALUE";
+    protected static final String DEFAULT_TXT_VALUE_COLUMN = "TXTVALUE";
+    private DataSourceInfo info;
     private String cubeName;
     private String tableName;
     private Map<String, List<DimColumn>> members;
@@ -41,36 +43,37 @@ public class CubeAction {
     private List<Member> dims;
 
     public CubeAction(DataSourceConfig config, String cubeName, String tableName, String loadSql, List<Member> dims, Map<String, List<DimColumn>> members) {
-        this.config = config;
         this.cubeName = cubeName;
         this.tableName = tableName;
         this.members = members;
         this.loadSql = loadSql;
         this.dims = dims;
+        DataSourceInfo info = new DataSourceInfo();
+        info.setUrl(config.getUrl());
+        info.setUsername(config.getUsername());
+        info.setSchema(config.getSchema());
+        info.setPassword(config.getPassword());
+        this.info = info;
     }
-
 
     public void loadCubeData() throws MdeException {
         MdeConfiguration configuration = new MdeConfiguration();
         configuration.setDistributed(false);
-        configuration.setProcessor(new DefalutRowGenerator());
-        configuration.setAsyncWrite(true);
-        configuration.setWriteBackByBiz(true);
-        configuration.setInstanceId("1");
-        configuration.setModelReplicaNum(2);
-        configuration.setCubeInitializer((cubeName) -> {
+        configuration.setModelInitializer((cubeName) -> {
             try {
-                loadModel();
+                loadCubeMeta();
             } catch (MdeException e) {
                 e.printStackTrace();
             }
         });
+        configuration.setProcessor(new DefalutRowGenerator());
         MdeInit.init(configuration);
-        MultiDimModelApi.addModel(cubeName);
+        loadCubeMeta();//加载元数据信息
+        MultiDimModelApi.loadModel(cubeName);
     }
 
     //根据Cube信息加载模型
-    public void loadModel() throws MdeException {
+    public void loadCubeMeta() throws MdeException {
         //所有维度
         List<String> dimCodes = new ArrayList<>();
         List<Dimension> dimensions = new ArrayList<>();
@@ -82,27 +85,32 @@ public class CubeAction {
             dimCodes.add(code);
             DimCacheManager.setCubeDimByList(cubeName, code, members.get(code), isRollUp);
         }
-
         if (StringUtils.isBlank(loadSql)) {
-            this.loadSql = "select " + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName;
+            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName;
         } else {
             this.tableName = getTableName(loadSql);
         }
-        FactTableConfig factTableConfig = FactTableConfig.builder().cubeName(cubeName).tableName(tableName).pkColumnName("id")
-                .measureColumnName("value").dimensions(dimensions).build();
-        factTableConfig.setLoadSql(loadSql);
 
 //        CreateLoadFile(dimCodes);//造数据文件
 
-        DataSourceInfo info = new DataSourceInfo();
-        info.setUrl(config.getUrl());
-        info.setUsername(config.getUsername());
-        info.setSchema(config.getSchema());
-        info.setPassword(config.getPassword());
-        DefaultLoaderConfig config = new DefaultLoaderConfig(info, cubeName, factTableConfig, false);
         // 加载维度信息
-        config.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
-        DataLoaderTemplate.getInstance().loadModel(config);
+        DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions),
+                null);
+        configf.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
+        DataLoaderTemplate.getInstance().loadModel(configf);
+    }
+
+    protected CubeMeta createCubeMeta(String cubeName, String factTableName,
+                                      String tablePkColName, List<Dimension> dimensions) {
+        return CubeMeta.builder()
+                .modelName(cubeName)
+                .cubeName(cubeName)
+                .tableName(factTableName)
+                .tablePkColName(tablePkColName)
+                .measureColName(DEFAULT_MEASURE_COLUMN)
+                .txtValueColName(DEFAULT_TXT_VALUE_COLUMN)
+                .dimensions(dimensions).loadSql(loadSql)
+                .build();
     }
 
     //创建Load文件,方便测试
@@ -132,6 +140,7 @@ public class CubeAction {
     }
 
     private static final Pattern pattern = Pattern.compile("(.*from\\s)(\\w*)(.*)");
+
     private String getTableName(String loadSql) {
         Matcher matcher = pattern.matcher(loadSql);
         if (matcher.find()) {

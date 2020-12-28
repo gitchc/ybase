@@ -3,31 +3,35 @@ package com.yonyou.mde.web.script;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.db.ds.simple.SimpleDataSource;
+import cn.hutool.extra.spring.SpringUtil;
+import com.yonyou.mde.error.MdeException;
+import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.script.Utils.DB;
 import com.yonyou.mde.web.service.CubeService;
+import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.utils.MockDataUtils;
+import com.yonyou.mde.web.utils.SnowID;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Component;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
 
 @Log4j2
-@Component
 public class BaseScript implements IScript {
     @Resource
     CubeService cubeService;
     @Resource
     MockDataUtils mockDataUtils;
+    @Resource
+    MemberService memberService;
 
     private Map<String, Object> vars;
     private long version;
     private Map<String, Object> results = new HashMap<>();
 
- /*   public BaseScript() {//动态注入注解
+    public BaseScript() {//动态注入注解
         Field[] fields = BaseScript.class.getDeclaredFields();
         List<Field[]> fieldlist = new ArrayList<>();
         fieldlist.add(fields);
@@ -52,7 +56,7 @@ public class BaseScript implements IScript {
                 }
             }
         }
-    }*/
+    }
 
     @Override
     public long getVersion() {
@@ -79,9 +83,32 @@ public class BaseScript implements IScript {
         return null;
     }
 
+    private String getid(String dimid, String memberName) {
+        return memberService.getMemberIdByCode(dimid, memberName);
+    }
+
+    private String getDimid(String dimname) throws MdeException {
+        String dimid = memberService.getDimidByCode(dimname);
+        if (StringUtils.isBlank(dimid)) {
+            throw new MdeException(dimname + "不存在");
+        }
+        return dimid;
+    }
+
     @Override
-    public Long MemberAdd(String dimName, String memberName, String Pmember) {
-        return null;
+    public String MemberAdd(String dimName, String memberName, String Pmember) throws MdeException {
+        Member member = new Member();
+        String dimid = getDimid(dimName);
+        if (StringUtils.isNotBlank(Pmember)) {
+            String pid = getid(dimid, Pmember);
+            member.setPid(pid);
+        }
+        member.setId(SnowID.nextID());
+        member.setDimid(dimid);
+        member.setName(memberName);
+        member.setCode(memberName);
+        member.setMembertype(1);
+        return memberService.insertMember(member);
     }
 
     @Override
@@ -365,7 +392,7 @@ public class BaseScript implements IScript {
     public void MockRandomData(String cubeCode, int size) {
         Map<String, List<String>> cubeMembers = cubeService.getCubeMembers(cubeCode);
         List<String> dims = cubeService.getDimCodes(cubeCode);
-        mockDataUtils.MockRandomData( cubeCode, dims, cubeMembers, size);
+        mockDataUtils.MockRandomData(cubeCode, dims, cubeMembers, size);
     }
 
     @Override
@@ -373,7 +400,7 @@ public class BaseScript implements IScript {
 
         Map<String, List<String>> cubeMembers = cubeService.getCubeMembers(cubeCode);
         List<String> dims = cubeService.getDimCodes(cubeCode);
-        mockDataUtils.MockData( cubeCode, dims, cubeMembers, size);
+        mockDataUtils.MockData(cubeCode, dims, cubeMembers, size);
 
     }
 

@@ -7,7 +7,9 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface MemberMapper extends Mapper<Member> {
     @Select("select max(position) from Member where pid = #{pid}")
@@ -37,7 +39,12 @@ public interface MemberMapper extends Mapper<Member> {
     @Update("update Member set name=#{name},datatype=#{datatype},weight=#{weight} where code = #{code} and dimid=#{dimid}")
     void updateMember(String code, String dimid, String name, Integer datatype, Float weight);
 
-    @Select("select distinct code from Member where datatype <>10 and datatype<>11 and dimid=#{dimid}")
-    List<String> getMemberCodesByDimid(String dimid);
+    @Select("select  code from Member where datatype <>10 and datatype<>11 and dimid=#{dimid} order by unipos asc")
+    LinkedHashSet<String> getMemberCodesByDimid(String dimid);
 
+    @Select("select  id from Member where membertype=0 and code = #{dimCode}")
+    String getDimIdByCode(@Param(value = "dimCode") String dimCode);
+
+    @Select("select  id from Member where membertype<>0 and dimid = #{dimid} and code=#{code}")
+    String getMemberIdByCode(String dimid, String code);
 }

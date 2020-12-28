@@ -58,6 +58,12 @@ public class MockDataUtils {
                 String[] strings = value.toArray(new String[value.size()]);
                 members.add(strings);
             }
+        } else {
+            for (String dim : dims) {
+                List<String> value = memberMaps.get(dim);
+                String[] strings = value.toArray(new String[value.size()]);
+                members.add(strings);
+            }
         }
         MuiltCross cross = new MuiltCross(members);
         int i = 0;

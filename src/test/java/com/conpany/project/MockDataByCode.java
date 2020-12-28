@@ -2,6 +2,7 @@ package com.conpany.project;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.db.Db;
+import com.yonyou.mde.web.script.BaseScript;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ public class MockDataByCode extends Tester {
 //        ThreadUtil.execute(() -> {
 //            baseScript.MockData("onemillion", 1000000);
 //        });
+        BaseScript baseScript = new BaseScript();
         baseScript.MockData("tenmillion", 10000000);
 //        baseScript.MockData("hundredmillion", 100000000);
 //        baseScript.MockData("onebillion", 1000000000);

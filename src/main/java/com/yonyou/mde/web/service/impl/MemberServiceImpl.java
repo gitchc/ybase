@@ -188,7 +188,17 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
 
     @Override
     public List<String> getMemberCodesByDimid(String dimid) {
-        return memberMapper.getMemberCodesByDimid(dimid);
+        return new ArrayList<>(memberMapper.getMemberCodesByDimid(dimid));
+    }
+
+    @Override
+    public String getDimidByCode(String dimCode) {
+       return memberMapper.getDimIdByCode(dimCode);
+    }
+
+    @Override
+    public String getMemberIdByCode(String dimid, String membercode) {
+        return memberMapper.getMemberIdByCode(dimid,membercode);
     }
 
 

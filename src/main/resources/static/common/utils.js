@@ -175,7 +175,7 @@ function openUrlDialog(title, url, width, height, fn) {
         title: false,
         shade: 0.3, // 遮罩透明度
         maxmin: false,
-        moveType: 1, // 拖拽风格，0是默认，1是传统拖动
+        moveType: 0, // 拖拽风格，0是默认，1是传统拖动
         btn: ['确定', '取消'],
         yes: function (index) {
             if (fn)

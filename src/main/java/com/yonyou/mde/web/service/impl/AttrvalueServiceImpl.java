@@ -46,7 +46,7 @@ public class AttrvalueServiceImpl extends AbstractService<Attrvalue> implements 
             if (attrsMap == null) {
                 attrsMap = new HashMap<>();
                 finalmap.put(code, attrsMap);
-                attrsMap.put("code", item.getCode());
+                attrsMap.put("code", code);
                 attrsMap.put("name", item.getName());
                 finalattrs.add(attrsMap);
             }

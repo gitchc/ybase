@@ -1,6 +1,7 @@
 package com.yonyou.mde.web.script;
 
 import cn.hutool.db.Entity;
+import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.script.Utils.DB;
 import com.yonyou.mde.web.core.ScriptException;
 
@@ -29,7 +30,7 @@ public interface IScript {
      * @param Pmember    父项节点，为空或者传入dimName，增加在维度根节点
      * @return memberid 维度成员id
      */
-    public Long MemberAdd(String dimName, String memberName, String Pmember);
+    public String MemberAdd(String dimName, String memberName, String Pmember) throws MdeException;
 
 
     /**
