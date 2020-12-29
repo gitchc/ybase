@@ -128,7 +128,6 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
                     }
                 }
             }).addPathPatterns("/").excludePathPatterns("/static/");
-            ;
         }
     }
 
