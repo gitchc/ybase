@@ -286,6 +286,10 @@
         });
         //监听提交
         form.on('submit(cubeform)', function (data) {
+            var id = eventBtn.getid();
+            if (!id) {
+                return ;
+            }
             var postdata = data.field;
             var arr = new Array();
             $("input:checkbox[name='dimcode']:checked").each(function (i) {
