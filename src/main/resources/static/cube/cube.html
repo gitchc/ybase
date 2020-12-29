@@ -23,10 +23,11 @@
         height: calc(100% - 5px);
     }
 
-    .leftpd{
+    .leftpd {
         height: calc(100% - 70px);
         overflow: auto;
     }
+
     #dimlayout {
         padding: 10px 10px 0px 10px;
 
@@ -35,7 +36,8 @@
     .hide {
         display: none;
     }
-    .layui-form-item .layui-input-inline{
+
+    .layui-form-item .layui-input-inline {
         width: 400px;
     }
 
@@ -71,7 +73,7 @@
                 </div>
             </div>
         </div>
-        <div class=" layui-col-md9 layrow" >
+        <div class=" layui-col-md9 layrow">
             <div class="layui-card">
                 <div class="layui-row" id="right">
                     <div class="layui-elem-quote layui-quote-nm">
@@ -129,7 +131,9 @@
                         </div>
                         <div class="layui-form-item" style="display: none">
                             <div class="layui-input-block">
-                                <button type="button" class="layui-btn" lay-submit="" id="save" lay-filter="cubeform">保存</button>
+                                <button type="button" class="layui-btn" lay-submit="" id="save" lay-filter="cubeform">
+                                    保存
+                                </button>
                             </div>
                         </div>
                     </form>
@@ -158,16 +162,19 @@
     //维度工具栏操作区域
     var eventBtn = {
         add: function () {
-            var cube = {
-                cubename: ""
-                , cubecode: ""
-                , autoload: 1//自动加载
-                , autosql: 1//自动生成sql
-                , loadsql: ""
+            showPrompt('输入模型编码', function (name) {
+                var cube = {
+                    cubename: name
+                    , cubecode: name
+                    , autoload: 1//自动加载
+                    , autosql: 1//自动生成sql
+                    , loadsql: ""
 
-            };
-            restInitVars();
-            eventBtn.initDetail(cube);
+                };
+                fetchPost("/cube/save", cube, eventBtn.init);
+            });
+
+
         },
         edit: function () {
             fetchGet("/cube/detail?id=" + cubeid, eventBtn.initDetail);
@@ -231,7 +238,7 @@
         },
         reloadCubeData: function (cubeid) {
             showConfirm("重新加载数据", "可能耗时比较长,是否重新加载?", () => {
-                fetchGet("/cube/reloadData?id="+cubeid)
+                fetchGet("/cube/reloadData?id=" + cubeid)
             });
         },
         attr: function () {
@@ -295,7 +302,7 @@
             if (!postdata.autosql) {
                 postdata.autosql = 0;
             }
-            postdata.id=cubeid;
+            postdata.id = cubeid;
             fetchPost("/cube/save", postdata, eventBtn.init);
         });
         //切换指定数据源
