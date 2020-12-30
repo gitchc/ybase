@@ -1,13 +1,14 @@
 package com.yonyou.mde.web.utils;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 /*
-* 笛卡尔积
-* */
+ * 笛卡尔积
+ * */
 public class MuiltCross<T> implements Iterator<T[]> {
     private int[] elementSizes;
     private List<T[]> element;
@@ -17,6 +18,7 @@ public class MuiltCross<T> implements Iterator<T[]> {
     private final int length;
     private int tail = 0;
     private int size = 1;
+
     public MuiltCross(List<T[]> element) {
         if (element == null) {
             throw new NullPointerException();
@@ -50,8 +52,30 @@ public class MuiltCross<T> implements Iterator<T[]> {
         return hasNext;
     }
 
+    public void toNext() {
+        findNext();
+    }
+
     public int cartesianSize() {
         return size;
+    }
+
+    public List<T[]> get(int start, int end) {
+        List<T[]> slices = new ArrayList<>();
+        if (end > size) {
+            end = size;
+        }
+        if (start > end) {
+            return slices;
+        }
+        for (int i = 0; i < end; i++) {
+            if (i < start) {
+                toNext();
+            } else {
+                slices.add(next());
+            }
+        }
+        return slices;
     }
 
     @Override
