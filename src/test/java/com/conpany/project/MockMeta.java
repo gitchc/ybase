@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class MockDim extends Tester {
+public class MockMeta extends Tester {
     private TM1Server server;
 
-    public MockDim() {
+    public MockMeta() {
 
     }
 
@@ -62,7 +62,11 @@ public class MockDim extends Tester {
                 "F14001 铺位预估预测\n" +
                 "F14003 仓库预估预测\n" +
                 "F14006 收入及税金科目级别预测-财务\n" +
-                "F14007 费用-分部门";
+                "F14007 费用-分部门\n" +
+                "onemillion\n" +
+                "tenmillion\n" +
+                "hundredmillion\n" +
+                "onebillion";
         for (String cubename : cubestrs.split("\\n")) {
             for (String dimensionName : database.getCubeByName(cubename).getDimensionNames()) {
                 TabaseDimToPLN(dimensionName);
