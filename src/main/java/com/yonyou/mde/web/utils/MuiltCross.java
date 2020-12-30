@@ -56,7 +56,7 @@ public class MuiltCross<T> implements Iterator<T[]> {
         findNext();
     }
 
-    public int cartesianSize() {
+    public int size() {
         return size;
     }
 

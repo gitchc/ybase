@@ -16,7 +16,8 @@ public class CrossTestUtils {
         StopWatch watch = new StopWatch();
         watch.start("MuiltCross");
         MuiltCross cross = new MuiltCross(list);
-        int start = 1000000;
+        System.out.println(cross.size());
+        int start = 8000000;
         int end = start + 5000;
         List<String[]> re = new ArrayList<>();
         for (int i = 0; i < end; i++) {
