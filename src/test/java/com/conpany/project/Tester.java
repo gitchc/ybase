@@ -23,7 +23,7 @@ public abstract class Tester {
     protected MemberService memberService;
     @Resource
     protected CubeService cubeService;
-    String dababase = "DD";
+    String dababase = "IN-EPM";
 }
 
 

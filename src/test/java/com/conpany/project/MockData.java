@@ -59,7 +59,7 @@ public class MockData extends Tester {
                 "F14003 仓库预估预测\n" +
                 "F14006 收入及税金科目级别预测-财务\n" +
                 "F14007 费用-分部门";
-        String cubeCode = "F020001\n" +
+        String cubeCodes = "F020001\n" +
                 "F020011\n" +
                 "F020012\n" +
                 "F02002\n" +
@@ -89,7 +89,7 @@ public class MockData extends Tester {
                 "F14006\n" +
                 "F14007";
         Map<String, String> keys = new HashMap<>();
-        String[] cubeCodes = cubeCode.split("\\n");
+        String[] cubeCodestrs = cubeCodes.split("\\n");
         List<String> mm = new ArrayList<>();
         List<Member> members = memberService.findAllDim();
 
@@ -105,10 +105,10 @@ public class MockData extends Tester {
             }
             int total = 0;
             int maxi = 0;
-            String dubcode = cubeCodes[i];
-            memberService.executeSql("truncate  " + dubcode);
+            String cubeCode = cubeCodestrs[i];
+            memberService.executeSql("truncate  " + cubeCode);
             FileReader fileReader = new FileReader("D:\\mock\\data\\" + cubename + ".cma");
-            List<String> dimcodes = cubeService.getDimCodes(dubcode);
+            List<String> dimcodes = cubeService.getDimCodes(cubeCode);
             String cols = "id," + StringUtils.join(dimcodes, ",") + ",value";
             int oldlength = -1;
             StringBuilder sqls = new StringBuilder();
@@ -124,7 +124,7 @@ public class MockData extends Tester {
                 }
                 total++;
                 if (sqls.length() == 0) {
-                    sqls.append("insert into " + dubcode + " (" + cols + ") values (");
+                    sqls.append("insert into " + cubeCode + " (" + cols + ") values (");
                 } else {
                     sqls.append(",(");
                 }
@@ -156,7 +156,7 @@ public class MockData extends Tester {
                         System.out.println(sqls.toString());
                         throw new Exception("xxx");
                     }
-                    log.info(cubename + "--" + dubcode + ":已提交:{}提交数据", total);
+                    log.info(cubename + "--" + cubeCode + ":已提交:{}提交数据", total);
                     sqls.setLength(0);
                     maxi = 0;
                 }
@@ -165,9 +165,9 @@ public class MockData extends Tester {
             if (sqls.length() > 0) {
                 memberService.executeSql(sqls.toString());
                 sqls.setLength(0);
-                log.info(cubename + "--" + dubcode + ":最后提交:{}提交数据", total);
+                log.info(cubename + "--" + cubeCode + ":最后提交:{}提交数据", total);
             }
-            mm.add(cubename + "--" + dubcode + "--数据量:+" + total);
+            mm.add(cubename + "--" + cubeCode + "--数据量:+" + total);
             i++;
         }
         for (String s : mm) {
