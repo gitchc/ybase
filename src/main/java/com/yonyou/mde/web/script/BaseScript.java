@@ -8,8 +8,8 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.script.Utils.DB;
 import com.yonyou.mde.web.service.CubeService;
+import com.yonyou.mde.web.service.DataService.MockDataManager;
 import com.yonyou.mde.web.service.MemberService;
-import com.yonyou.mde.web.utils.MockDataUtils;
 import com.yonyou.mde.web.utils.SnowID;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +23,7 @@ public class BaseScript implements IScript {
     @Resource
     CubeService cubeService;
     @Resource
-    MockDataUtils mockDataUtils;
+    MockDataManager mockDataManager;
     @Resource
     MemberService memberService;
 
@@ -392,7 +392,7 @@ public class BaseScript implements IScript {
     public void MockRandomData(String cubeCode, int size) {
         Map<String, List<String>> cubeMembers = cubeService.getCubeMembers(cubeCode);
         List<String> dims = cubeService.getDimCodes(cubeCode);
-        mockDataUtils.MockRandomData(cubeCode, dims, cubeMembers, size);
+        mockDataManager.MockRandomData(cubeCode, dims, cubeMembers, size);
     }
 
     @Override
@@ -400,7 +400,7 @@ public class BaseScript implements IScript {
 
         Map<String, List<String>> cubeMembers = cubeService.getCubeMembers(cubeCode);
         List<String> dims = cubeService.getDimCodes(cubeCode);
-        mockDataUtils.MockData(cubeCode, dims, cubeMembers, size);
+        mockDataManager.MockData(cubeCode, dims, cubeMembers, size);
 
     }
 

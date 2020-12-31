@@ -22,17 +22,18 @@ public class MockDataByCode extends Tester {
     @Test
     public void mockData() throws Exception {
         BaseScript baseScript = new BaseScript();
-        ThreadUtil.execute(() -> {
-            baseScript.MockData("onemillion", 1000000);
-        });
-        ThreadUtil.execute(() -> {
-            baseScript.MockData("tenmillion", 10000000);
-        });
-        ThreadUtil.execute(() -> {
-            baseScript.MockData("hundredmillion", 100000000);
-        });
+//        ThreadUtil.execute(() -> {
+//            baseScript.MockData("onemillion", 1000000);
+//        });
+//        ThreadUtil.execute(() -> {
+//            baseScript.MockData("tenmillion", 10000000);
+//        });
 
-//        baseScript.MockData("onebillion", 1000000000);
-        ThreadUtil.waitForDie();
+//        ThreadUtil.waitForDie();
+//        baseScript.MockData("tenmillion", 10000000);
+            baseScript.MockData("hundredmillion", 100000000-10700000-19850000-20020000);
+//        ThreadUtil.waitForDie();
+        /*  baseScript.MockData("onebillion", 1000000000);*/
+
     }
 }

@@ -1,10 +1,13 @@
-package com.yonyou.mde.web.utils;
+package com.yonyou.mde.web.service.DataService;
 
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.service.MemberService;
+import com.yonyou.mde.web.utils.DBUtil;
+import com.yonyou.mde.web.utils.MuiltCross;
+import com.yonyou.mde.web.utils.SnowID;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -18,13 +21,13 @@ import java.util.Map;
 
 @Log4j2
 @Component
-public class MockDataUtils {
+public class MockDataManager {
     @Resource
     private MemberService service;
-    private static final int batchsize = 10000;//1w一提交
+    private final int batchsize = 10000;//1w一提交
 
     //创造表
-    public static void createTable(DataSource dataSource, String tableName, List<Member> dims) throws Exception {
+    public void createTable(DataSource dataSource, String tableName, List<Member> dims) throws Exception {
 
         Db db = Db.use(dataSource);
         String querytable = "";
@@ -47,14 +50,18 @@ public class MockDataUtils {
 
     //创造数据
     private void MockDataFinal(String tableName, List<String> dims, Map<String, List<String>> memberMaps, int mocksize, boolean isRandom) {
-        service.executeSql("truncate " + tableName);
+//        service.executeSql("truncate " + tableName);
         List<String[]> members = new ArrayList<>();
         if (mocksize > 10000000) {
-            int smalsize = (int) Math.pow(mocksize, 1D / (dims.size() - 2)) + 1;
+            int smalsize = (int) Math.pow(mocksize, 1D / (dims.size() - 2));
             for (String dim : dims) {
                 List<String> value = memberMaps.get(dim);
                 int last = value.size() > smalsize ? smalsize : value.size();
-                value = value.subList(0, last);
+                if (last < 27) {
+                    value = value.subList(0, last);
+                } else {
+                    value = value.subList(20, last + 20);
+                }
                 String[] strings = value.toArray(new String[value.size()]);
                 members.add(strings);
             }
@@ -74,13 +81,13 @@ public class MockDataUtils {
             max++;
             String[] elems = (String[]) cross.next();
             if (sqls.length() == 0) {
-                sqls.append("insert into " + tableName + " (id," + StringUtils.join(dims, ",") + ",value) values (");
+                sqls.append("insert into ").append(tableName).append(" (id,").append(StringUtils.join(dims, ",")).append(",value) values (");
             } else {
                 sqls.append(",(");
             }
             sqls.append(SnowID.nextID());//id
             sqls.append(",");
-            sqls.append("'" + StringUtils.join(elems, "','") + "'");
+            sqls.append("'").append(StringUtils.join(elems, "','")).append("'");
             sqls.append(",");
             if (isRandom) {
                 sqls.append(RandomUtil.randomDouble(0, 10000));
@@ -91,13 +98,13 @@ public class MockDataUtils {
             if (mocksize > 0 && max >= mocksize) {
                 service.executeSql(sqls.toString());
                 log.info("{}已提交:{}提交数据", tableName, max);
-                sqls.setLength(0);
+                sqls = new StringBuilder();
                 return;
             }
             if (i == batchsize) {
                 service.executeSql(sqls.toString());
                 log.info("{}已提交:{}提交数据", tableName, max);
-                sqls.setLength(0);
+                sqls = new StringBuilder();
                 i = 0;
             }
         }
@@ -115,7 +122,7 @@ public class MockDataUtils {
         MockDataFinal(tableName, dims, memebrs, mocksize, true);
     }
 
-    private static String getCreateTabseSql(String tableName, List<Member> dims) {
+    private String getCreateTabseSql(String tableName, List<Member> dims) {
         StringBuilder createsql = new StringBuilder("create table " + tableName + " (");
         createsql.append("id bigint primary key not null,\n");
 

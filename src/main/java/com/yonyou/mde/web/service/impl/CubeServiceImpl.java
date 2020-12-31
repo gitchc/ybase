@@ -14,11 +14,10 @@ import com.yonyou.mde.web.service.AttrvalueService;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeManager;
 import com.yonyou.mde.web.service.MemberService;
-import com.yonyou.mde.web.utils.MockDataUtils;
+import com.yonyou.mde.web.service.DataService.MockDataManager;
 import com.yonyou.mde.web.utils.SnowID;
 import com.yonyou.mde.web.utils.SortUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +47,8 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     private DataSourceConfig dataSourceConfig;
     @Resource
     private AttrvalueService attrvalueService;
-
+    @Resource
+    MockDataManager mockDataManager;
     @Override
     public void insertCube(Cube cube) {
         String id = SnowID.nextID();
@@ -207,7 +207,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         List<Member> dims = getMemberByIds(dimids);
         if (cube.getAutosql() == 1) {
             try {
-                MockDataUtils.createTable(dataSource, tableName, dims);
+                mockDataManager.createTable(dataSource, tableName, dims);
             } catch (Exception e) {
                 e.printStackTrace();
             }
