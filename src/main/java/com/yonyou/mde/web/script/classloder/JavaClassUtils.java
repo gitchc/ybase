@@ -26,7 +26,6 @@ public class JavaClassUtils {
             , "import com.yonyou.mde.error.MdeException;"
             , "import com.yonyou.mde.model.dataloader.*;"
             , "import com.yonyou.mde.model.dataloader.config.*;"
-            , "import com.yonyou.mde.model.*;"
             , "import com.yonyou.mde.model.impl.*;"
             , "import com.yonyou.mde.model.result.*;"
             , "import com.yonyou.mde.util.*;"
@@ -38,6 +37,7 @@ public class JavaClassUtils {
             , "import tech.tablesaw.api.*;"
             , "import java.util.*;"
             , "import java.util.concurrent.*;"
+            , "import com.yonyou.mde.web.bigCube.main.*;"
     };
 
     public static String getFullJavaScript(String classname, String source) {
