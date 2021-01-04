@@ -3,8 +3,8 @@ package com.yonyou.mde.web.script;
 import cn.hutool.db.Entity;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.script.Utils.DB;
-import com.yonyou.mde.web.core.ScriptException;
 
+import javax.script.ScriptException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -242,10 +242,10 @@ public interface IScript {
      * <br>String cmdPath = "D:\\test.bat";
      * <br>RunCmd(cmdPath,"参数");
      *
-     * @param cmdPath 文件地址
+     * @param filepath 文件地址
      * @return 执行信息
      */
-    public String RunCmd(String cmdPath, String... params);
+    public String RunCmd(String filepath, String... params) throws ScriptException;
 
     /**
      * 方法说明： 返回信息
@@ -288,18 +288,6 @@ public interface IScript {
      */
     public DB CreateDB(String url, String user, String password);
 
-    /**
-     * 方法说明： 向指定URL发送POST方法的请求，使用的发送格式为"Content-type", "application/x-www-form-urlencoded"
-     * <br>代码示例:
-     * <br>String resStrs = SendPost("http://www.ttt.com","a=1&b=1");
-     * 或者
-     * <br>String resStrs = SendPost("http://www.ttt.com","{\"a\":\"1\"}");
-     *
-     * @param url    发送请求的URL
-     * @param params 请求参数，请求参数应该是键对值json格式"{\"a\":\"1\"}"或者字符串a=1&b=1形式;
-     * @return 所代表远程资源的响应结果
-     */
-    public String SendPost(String url, String params);
 
     /**
      * 方法说明： 向指定URL发送POST方法的请求，使用的发送格式为"Content-type", "application/x-www-form-urlencoded"
@@ -339,17 +327,6 @@ public interface IScript {
      */
     public String SendGet(String url);
 
-    /**
-     * 方法说明： 调用webservice请求
-     * <br>代码示例:
-     * <br>String resStrs = SendWs("http://www.ttt.com.ws"," &lt;tw1:TransName&gt;name &lt;/tw1:TransName&gt;","getName.v1");
-     *
-     * @param url    发送请求的URL
-     * @param param  soap参数
-     * @param method 方法名
-     * @return 所代表远程资源的响应结果
-     */
-    public String SendWs(String url, String param, String method);
 
     /**
      * 方法说明： 获取属性值
@@ -406,7 +383,7 @@ public interface IScript {
      * @param filepath 文件地址
      * @return String类型的文本内容
      */
-    public String ReadFromFile(String filepath);
+    public String ReadFromFile(String filepath) throws ScriptException;
 
     /**
      * 方法说明： 写入文件，文件不存在则会创建
@@ -417,7 +394,7 @@ public interface IScript {
      * @param filepath 文件地址
      * @return true/false
      */
-    public boolean WriteToFile(String content, String filepath);
+    public boolean WriteToFile(String content, String filepath) throws ScriptException;
 
     /**
      * 方法说明： 追加写入文件，文件不存在则会创建
@@ -428,7 +405,7 @@ public interface IScript {
      * @param filepath 文件地址
      * @return true/false
      */
-    public boolean AppendToFile(String content, String filepath);
+    public boolean AppendToFile(String content, String filepath) throws ScriptException;
 
     /**
      * 方法说明： 文件是否存在

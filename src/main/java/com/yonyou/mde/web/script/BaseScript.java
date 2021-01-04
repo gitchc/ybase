@@ -1,5 +1,8 @@
 package com.yonyou.mde.web.script;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.FileReader;
+import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.db.ds.simple.SimpleDataSource;
@@ -7,6 +10,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.script.Utils.CMDUtils;
 import com.yonyou.mde.web.script.Utils.DB;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
@@ -16,6 +20,8 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Resource;
+import javax.script.ScriptException;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -129,7 +135,7 @@ public class BaseScript implements IScript {
 
     @Override
     public boolean DimensionExists(String dimName) {
-        return false;
+        return memberService.getDimidByCode(dimName) != null;
     }
 
     @Override
@@ -202,7 +208,10 @@ public class BaseScript implements IScript {
 
     @Override
     public boolean IsNull(Object object) {
-        return false;
+        if (object == null) {
+            return true;
+        }
+        return StringUtils.isBlank(object.toString());
     }
 
     @Override
@@ -226,8 +235,12 @@ public class BaseScript implements IScript {
     }
 
     @Override
-    public String RunCmd(String cmdPath, String... params) {
-        return null;
+    public String RunCmd(String filepath, String... params) throws ScriptException {
+        if (FileExists(filepath)) {
+            return CMDUtils.runCMD(filepath + " " + StringUtils.join(params, " "));
+        } else {
+            throw new ScriptException("[" + filepath + "]文件不存在!");
+        }
     }
 
     @Override
@@ -247,13 +260,10 @@ public class BaseScript implements IScript {
         return new DB(db);
     }
 
-    @Override
-    public String SendPost(String url, String params) {
-        return null;
-    }
 
     @Override
     public String SendPost(String url, String params, Map<String, String> headers) {
+
         return null;
     }
 
@@ -267,10 +277,6 @@ public class BaseScript implements IScript {
         return null;
     }
 
-    @Override
-    public String SendWs(String url, String param, String method) {
-        return null;
-    }
 
     @Override
     public String AttrValue(String dimName, String memberName, String attrName) {
@@ -293,23 +299,41 @@ public class BaseScript implements IScript {
     }
 
     @Override
-    public String ReadFromFile(String filepath) {
-        return null;
+    public String ReadFromFile(String filepath) throws ScriptException {
+        if (FileExists(filepath)) {
+            FileReader reader = new FileReader(new File(filepath));
+            return reader.readString();
+        } else {
+            throw new ScriptException("[" + filepath + "]文件不存在!");
+        }
+
     }
 
     @Override
-    public boolean WriteToFile(String content, String filepath) {
-        return false;
+    public boolean WriteToFile(String content, String filepath) throws ScriptException {
+        if (FileExists(filepath)) {
+            FileWriter writer = new FileWriter(new File(filepath));
+            writer.write(content);
+        } else {
+            throw new ScriptException("[" + filepath + "]文件不存在!");
+        }
+        return true;
     }
 
     @Override
-    public boolean AppendToFile(String content, String filepath) {
-        return false;
+    public boolean AppendToFile(String content, String filepath) throws ScriptException {
+        if (FileExists(filepath)) {
+            FileWriter writer = new FileWriter(new File(filepath));
+            writer.append(content);
+        } else {
+            throw new ScriptException("[" + filepath + "]文件不存在!");
+        }
+        return true;
     }
 
     @Override
     public boolean FileExists(String filepath) {
-        return false;
+        return FileUtil.exist(filepath);
     }
 
     @Override
@@ -344,6 +368,9 @@ public class BaseScript implements IScript {
 
     @Override
     public void ExecuteSqls(List<String> sqls) {
+        for (String sql : sqls) {
+            memberService.executeSql(sql);
+        }
 
     }
 
