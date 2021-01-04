@@ -51,7 +51,12 @@ public class Cube implements ICube {
         return content.set(pathValues);
     }
 
-    public DimTree getDimention(String dimName) {
-        return model.getDimTree(dimName.toUpperCase());
+    public Dimension getDimension(String dimName) {
+        String name = dimName.toUpperCase();
+        DimTree dimTree = model.getDimTree(name);
+        if (dimTree != null) {
+            return new Dimension(dimTree,name);
+        }
+        return null;
     }
 }
