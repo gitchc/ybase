@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class MockDataManager {
 
     //创造数据
     private void MockDataFinal(String tableName, List<String> dims, Map<String, List<String>> memberMaps, int mocksize, boolean isRandom) {
-      service.executeSql("truncate " + tableName);
+        service.executeSql("truncate " + tableName);
         List<String[]> members = new ArrayList<>();
         if (mocksize > 10000000) {
             int smalsize = (int) Math.pow(mocksize, 1D / (dims.size() - 2));
@@ -58,7 +59,7 @@ public class MockDataManager {
                 List<String> value = memberMaps.get(dim);
                 int last = value.size() > smalsize ? smalsize : value.size();
 
-                    value = value.subList(0, last);
+                value = value.subList(0, last);
 
                 String[] strings = value.toArray(new String[value.size()]);
                 members.add(strings);

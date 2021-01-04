@@ -31,9 +31,9 @@ public class MockDataByCode extends Tester {
 
 //        ThreadUtil.waitForDie();
 //        baseScript.MockData("tenmillion", 10000000);
-//            baseScript.MockData("hundredmillion", 100000000-10700000-19850000-20020000);
+//            baseScript.MockData("hundredmillion", 100000000-99398125);
 //        ThreadUtil.waitForDie();
-          baseScript.MockData("onebillion", 1000000000);
+//          baseScript.MockData("onebillion", 1000000000);
 
     }
 }
