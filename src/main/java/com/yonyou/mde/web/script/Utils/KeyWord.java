@@ -37,7 +37,7 @@ public class KeyWord {
                 value += " ";
                 value += parameters[i].getName();
             }
-            value += ")";
+            value += ");";
             keywords.add(new Completer(caption, value));
         }
         return keywords;

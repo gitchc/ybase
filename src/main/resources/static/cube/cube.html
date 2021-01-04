@@ -197,6 +197,11 @@
                 $('#alldim').html(content);
                 form.render('', 'cubeform');
                 form.val('cubeform', data);
+                if (data.autosql==1) {
+                    $('#showsql').hide();
+                }else {
+                    $('#showsql').show();
+                }
                 $('#righttable').show();
             });
 

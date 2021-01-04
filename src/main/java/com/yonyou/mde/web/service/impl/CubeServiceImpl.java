@@ -61,8 +61,10 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
             cube.setPosition(maxpos == null ? 0 : maxpos + 1);
             insert(cube);
         }
-        CheckTable(cube);//检查SQL表是否需要创建或者更新
-        ReloadModeAndData(cube, false);//检查是否需要重构cube
+        if (StringUtils.isNotBlank(cube.getDimids())) {
+            CheckTable(cube);//检查SQL表是否需要创建或者更新
+            ReloadModeAndData(cube, false);//检查是否需要重构cube
+        }
     }
 
     //检查是否已需要重新load数据和模型
@@ -163,7 +165,13 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     public void deleteCubeById(String id) {
         Cube cube = findById(id);
         deleteById(id);
-        cubeMapper.dropTable(cube.getCubecode());
+        try {
+            if (cube.getAutosql() == 1) {
+                cubeMapper.dropTable(cube.getCubecode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         CubeManager.removeData(cube.getCubecode());
     }
 
@@ -218,7 +226,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         Cube oldcube = findById(cube.getId());
         cube.setPosition(oldcube.getPosition());
         update(cube);
-        if (!oldcube.getDimids().equals(cube.getDimids())) {
+        if (!StringUtils.equals(oldcube.getDimids(),cube.getDimids())) {
             CheckTable(cube);//重建事实表
             ReloadModeAndData(cube, false);//重新load模型和数据
         }
