@@ -24,7 +24,7 @@ import java.util.Map;
 public class MockDataManager {
     @Resource
     private MemberService service;
-    private final int batchsize = 10000;//1w一提交
+    private final int batchsize = 10000;//10w一提交
 
     //创造表
     public void createTable(DataSource dataSource, String tableName, List<Member> dims) throws Exception {
@@ -50,18 +50,16 @@ public class MockDataManager {
 
     //创造数据
     private void MockDataFinal(String tableName, List<String> dims, Map<String, List<String>> memberMaps, int mocksize, boolean isRandom) {
-//        service.executeSql("truncate " + tableName);
+      service.executeSql("truncate " + tableName);
         List<String[]> members = new ArrayList<>();
         if (mocksize > 10000000) {
             int smalsize = (int) Math.pow(mocksize, 1D / (dims.size() - 2));
             for (String dim : dims) {
                 List<String> value = memberMaps.get(dim);
                 int last = value.size() > smalsize ? smalsize : value.size();
-                if (last < 27) {
+
                     value = value.subList(0, last);
-                } else {
-                    value = value.subList(20, last + 20);
-                }
+
                 String[] strings = value.toArray(new String[value.size()]);
                 members.add(strings);
             }
