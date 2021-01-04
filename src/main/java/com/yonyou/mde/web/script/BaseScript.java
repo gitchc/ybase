@@ -5,6 +5,7 @@ import cn.hutool.db.Entity;
 import cn.hutool.db.ds.simple.SimpleDataSource;
 import cn.hutool.extra.spring.SpringUtil;
 import com.yonyou.mde.error.MdeException;
+import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.script.Utils.DB;
 import com.yonyou.mde.web.service.CubeService;
@@ -133,12 +134,30 @@ public class BaseScript implements IScript {
 
     @Override
     public boolean DimensionAdd(String dimName) {
-        return false;
+        Member dim = new Member();
+        dim.setCode(dimName);
+        dim.setName(dimName);
+        dim.setDatatype(10);
+        try {
+            memberService.insertDim(dim);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean DimensionDestroy(String dimName) {
-        return false;
+        String dimid = null;
+        try {
+            dimid = getDimid(dimName);
+        } catch (MdeException e) {
+            e.printStackTrace();
+            return false;
+        }
+        memberService.delDim(dimid);
+        return true;
     }
 
     @Override
