@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>VUE自定义组件</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <script src="/static/layuiadmin/layui/layui.js"></script>
+    <script src="/static/common/utils.js"></script>
+    <script src="../vue/vue.min.js"></script>
+    <link rel="stylesheet" href="app.css" type="text/css"/>
+    <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/layuiadmin/style/admin.css" media="all">
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="container page layui-form">
+        <select class="itemselect" v-model="page[0].current" name="modules">
+            <option v-for="option in page[0].options" :value="option.key">{{option.value}}</option>
+        </select>
+        <span>Selected: {{page[0].current}}</span>
+    </div>
+</div>
+
+
+<script>
+var form;
+    var app = new Vue({
+        el: '#app',
+        components: {
+
+        },
+        created:function(){
+            var _this = this;
+            _this.send();
+            layui.config({
+                base: '/static/layuiadmin/' //静态资源所在路径
+            }).extend({
+                index: 'lib/index' //主入口模块
+            }).use(['index', 'jquery', 'layer', 'form', 'table'], function () {
+                $ = layui.$, layer = layui.layer, form = layui.form;
+                form.render('select');
+            });
+        }
+        , updated: function () {
+            var _this = this;
+            if(_this.form) {
+                _this.form.render();
+            }
+
+        }
+        , data() {
+            page:[]
+
+        },
+        methods: {
+            send(){
+                this.page =  [{
+                    id: 1,
+                    name: 'itxst.com',
+                    current: "11",
+                    options: [{key: "11", value: "itxst1"}, {key: "21", value: "itxst2"}]
+                },
+                    {
+                        id: 2,
+                        name: 'jd.com',
+                        current: "12",
+                        options: [{key: "12", value: "jd-1"}, {key: "22", value: "jd-2"}]
+                    },
+                    {
+                        id: 3,
+                        name: 'baidu.com',
+                        current: "13",
+                        options: [{key: "13", value: "baidu-1"}, {key: "23", value: "baidu-2"}]
+                    },
+                    {
+                        id: 4,
+                        name: 'taobao.com',
+                        current: "14",
+                        options: [{key: "14", value: "taobao-1"}, {key: "24", value: "taobao-2"}]
+                    }
+                    ]
+            },
+            onStart() {
+                this.drag = true;
+            },
+            onEnd() {
+                this.drag = false;
+            },
+
+        }
+    });
+</script>
+</body>
+</html>

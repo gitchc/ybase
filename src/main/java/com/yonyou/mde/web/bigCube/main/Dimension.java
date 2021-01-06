@@ -17,14 +17,16 @@ public class Dimension implements IDimension {
         this.dimTree = dimTree;
         this.name = name;
     }
-    public List<Member> getMembers(){
+
+    public List<Member> getMembers() {
         List<Member> members = new ArrayList<>();
         for (DimNode node : dimTree.nodes()) {
-            members.add(new Member(node,node.getCode()));
+            members.add(new Member(node, node.getCode()));
         }
         return members;
     }
-    public Member getMember(String name){
+
+    public Member getMember(String name) {
         String uname = name.toUpperCase();
         return new Member(dimTree.getNodeByCode(uname), uname);
     }

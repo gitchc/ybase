@@ -25,8 +25,8 @@ ul {
 
 .container {
     margin: 5px;
-    min-width: 1100px;
     position: relative;
+    font-size: 14px;
 }
 
 @media (min-width: 750px) and (max-width: 970px) {
@@ -57,7 +57,6 @@ img {
     display: inline-block;
     position: relative;
     background-color: #ff7373;
-    z-index: 1000;
     font-size: 15px;
 }
 
@@ -80,85 +79,11 @@ img {
     vertical-align: top
 }
 
-.tile__name {
-    cursor: move;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ff7373
-}
-
-.tile__list {
-    margin-top: 10px
-}
-
-.tile__list:last-child {
-    margin-right: 0;
-    min-height: 80px
-}
-
-.tile__list img {
-    cursor: move;
-    margin: 10px;
-    border-radius: 100%
-}
 
 .block {
     opacity: 1;
     position: absolute
 }
-
-.block__list {
-    padding: 20px 0;
-    max-width: 360px;
-    margin-top: -8px;
-    margin-left: 5px;
-    background-color: #fff
-}
-
-.block__list-title {
-    margin: -20px 0 0;
-    padding: 10px;
-    text-align: center;
-    background: #5f9edf
-}
-
-.block__list li {
-    cursor: move
-}
-
-.block__list_words li {
-    background-color: #e2e2e2;
-}
-
-
-.block__list_words li:first-letter {
-    text-transform: uppercase
-}
-
-.block__list_tags {
-    padding-left: 30px
-}
-
-.block__list_tags:after {
-    clear: both;
-    content: '';
-    display: block
-}
-
-.block__list_tags li {
-    color: #fff;
-    float: left;
-    margin: 8px 20px 10px 0;
-    padding: 5px 10px;
-    min-width: 10px;
-    background-color: #5f9edf;
-    text-align: center
-}
-
-.block__list_tags li:first-child:first-letter {
-    text-transform: uppercase
-}
-
-
 
 
 #editable li:hover i {
@@ -166,56 +91,89 @@ img {
 }
 
 
-
-
 .drag-handle {
     margin-right: 5px;
-    font: 700 20px Sans-Serif;
+    font: 700 14px Sans-Serif;
     color: #5f9edf;
     display: inline-block;
     cursor: move;
-    cursor: -webkit-grabbing
-}
-
-
-#page li {
+    cursor: -webkit-grabbing;
     width: 100px;
-    display: inline-block;
-    margin: 5px 5px;
+    white-space : nowrap;
+    overflow:hidden;/*文字溢出的部分隐藏起来*/
+    text-overflow:ellipsis;
 }
-
-#row li {
-    width: 100px;
-    display: inline-block;
-    margin: 5px 5px;
-}
-
-#col li {
+#col .drag-handle{
     width: 70px;
-    margin-bottom: 15px;
-    margin-left: 5px;
 }
 
+
+.page .item {
+    width: 100px;
+    display: inline-block;
+}
+
+.row .item{
+    width: 100px;
+    display: inline-block;
+}
+
+
+.item{
+    margin: 5px;
+    background-color: #e2e2e2;
+}
+.page{
+    min-width: 800px;
+}
 .row {
+    min-width: 800px;
     margin-left: 100px;
 }
 
 .col {
     margin-left: 5px;
-    margin-top: -70px;
-}
-
-.block__list_words {
-    background-color: #fff;
+    margin-top: -62px;
+    width: 100px;
 }
 
 #col {
     height: 400px;
     padding-top: 5px;
 }
-#row {
-   min-width: 800px;
+
+.panel {
+    background-color: #fff;
 }
-#page {
-    min-width: 800px;
+
+
+
+/*定义要拖拽元素的样式*/
+.ghostClass {
+    background-color: blue !important;
+}
+
+.chosenClass {
+    background-color: red !important;
+    opacity: 1 !important;
+}
+.page .layui-form-select{
+    display: block;
+}
+.page .itemselect{
+    display: block;
+    width: 90px;
+    margin-left:5px ;
+    margin-right:5px ;
+}
+.layui-form-select,.itemselect{
+    display: none;
+}
+
+.dragClass {
+    background-color: blueviolet !important;
+    opacity: 1 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    background-image: none !important;
 }

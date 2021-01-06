@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta property="og:image" content="/st/og-image.png"/>
+    <title>Sortable. No jQuery.</title>
+    <meta name="keywords"
+          content="sortable, reorder, list, javascript, html5, drag and drop, dnd, animation, groups, angular, ng-sortable, react, mixin, effects, rubaxa"/>
+    <meta name="description"
+          content="Sortable - is a minimalist JavaScript library for reorderable drag-and-drop lists on modern browsers and touch devices. No jQuery. Supports Meteor, AngularJS, React and any CSS library, e.g. Bootstrap."/>
+    <meta name="viewport" content="width=device-width, initial-scale=0.5"/>
+    <link href="app.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+
+<div class="container page">
+    <div id="handle">
+        <div>
+            <div data-force="5" class="layer title ">Page</div>
+        </div>
+        <div style=" " class="block__list_words">
+            <ul id="page">
+                <li><span class="drag-handle">&#9776;</span>M</li>
+                <li><span class="drag-handle">&#9776;</span>N</li>
+                <li><span class="drag-handle">&#9776;</span>Q</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container row">
+    <div id="handle2">
+        <div>
+            <div data-force="5" class="layer title ">Row</div>
+        </div>
+        <div style="" class="block__list_words">
+            <ul id="row">
+                <li><span class="drag-handle">&#9776;</span>R</li>
+                <li><span class="drag-handle">&#9776;</span>S</li>
+                <li><span class="drag-handle">&#9776;</span>D</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="col">
+    <div id="handle3">
+        <div>
+            <div data-force="5" class="layer title ">Col</div>
+        </div>
+        <div style="width: 80px; " class="block__list_words">
+            <ul id="col">
+                <li><span class="drag-handle">&#9776;</span>A</li>
+                <li><span class="drag-handle">&#9776;</span>B</li>
+                <li><span class="drag-handle">&#9776;</span>C</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script src="sort.js"></script>
+<script src="/static/layuiadmin/layui/layui.js"></script>
+<script src="/static/common/utils.js"></script>
+<script>
+    layui.config({
+        base: '/static/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'jquery', 'layer', 'form', 'table'], function () {
+        $ = layui.$, layer = layui.layer, form = layui.form;
+        //渲染
+        Sorts.init();
+        $("#col").append("<li><span class=\"drag-handle\">&#9776;</span>TTTT</li>");
+    });
+
+    var Sorts = {
+        init: function () {
+            Sortable.create(document.getElementById("page"), {
+                group: "dim", handle: '.drag-handle', animation: 150, onMove: function (evt, originalEvent) {
+                    return Sorts.doMove(evt, originalEvent, "page");
+                }, onEnd: Sorts.doEnd
+            });
+            Sortable.create(document.getElementById("row"), {
+                group: "dim", handle: '.drag-handle', animation: 150, onMove: function (evt, originalEvent) {
+                    return Sorts.doMove(evt, originalEvent, "row");
+                }, onEnd: Sorts.doEnd
+            });
+            Sortable.create(document.getElementById("col"), {
+                group: "dim", handle: '.drag-handle', animation: 150, onMove: function (evt, originalEvent) {
+                    return Sorts.doMove(evt, originalEvent, "col");
+                }, onEnd: Sorts.doEnd
+            });
+        },
+        doEnd: function (evt, originalEvent) {
+
+        },
+        doMove: function (evt, originalEvent, treeel) {
+            if (document.getElementById(treeel).getElementsByTagName("li").length < 2) {
+                tipsWarn("至少给我留一个~");
+                return false;
+            }
+        }
+    };
+
+
+</script>
+</body>
+</html>

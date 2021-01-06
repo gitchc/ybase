@@ -62,6 +62,9 @@ public class MuiltCross<T> implements Iterator<T[]> {
 
     public List<T[]> get(int start, int end) {
         List<T[]> slices = new ArrayList<>();
+        if (start > size) {
+            return slices;
+        }
         if (end > size) {
             end = size;
         }
