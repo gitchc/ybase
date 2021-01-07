@@ -28,7 +28,7 @@ public class ATTR extends Tester {
         testContinue(cube, dimension); //测试if continue
 
 //        qiantao(cube, dimension);//嵌套,if 暂时不支持
-
+//        insert(cube, dimension);//新值赋值,if 暂时不支持
 
     }
 
