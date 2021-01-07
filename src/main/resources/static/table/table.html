@@ -8,12 +8,12 @@
     <script src="/static/layuiadmin/layui/layui.js"></script>
     <script src="/static/common/utils.js"></script>
     <script src="/static/vue/vue.min.js"></script>
-    <script src="sort.js"></script>
-    <script src="/static/vue/vuedraggable.js"></script>
+    <script src="/static/vue/Sortable.min.js"></script>
+    <script src="/static/vue/vuedraggable.umd.min.js"></script>
+    <script src="/static/element-ui@2.14.1/index.js"></script>
     <link rel="stylesheet" href="app.css" type="text/css"/>
     <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="/static/layuiadmin/style/admin.css" media="all">
-    <script src="/static/element-ui@2.14.1/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui@2.14.1/index.css" media="all">
 </head>
 <body>
@@ -21,15 +21,16 @@
     <div class="container page">
         <div class="layer title">Page</div>
         <div class="panel">
-            <draggable v-model="page" group="dim" animation="100" dragClass="dragClass" ghostClass="ghostClass"
-                       chosenClass="chosenClass" @start="onStart" @end="onEnd">
-                    <div class="item" v-for="item in page" :key="item.id">
-                        <div class="drag-handle">&#9776; {{item.name}}</div>
-                        <el-select v-model="item.current" placeholder="请选择">
-                            <el-option v-for="option in item.options"  :key="option.key" :label="option.value" :value="option.key" >
-                            </el-option>
-                        </el-select>
-                    </div>
+            <draggable v-model="page" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
+                       chosen-class="chosen" handle=".drag-handle" @start="onStart" @end="onEnd">
+                <div class="item" v-for="item in page" :key="item.id">
+                    <div class="drag-handle">&#9776; {{item.name}}</div>
+                    <el-select v-model="item.current" placeholder="请选择">
+                        <el-option v-for="option in item.options" :key="option.key" :label="option.value"
+                                   :value="option.key">
+                        </el-option>
+                    </el-select>
+                </div>
             </draggable>
         </div>
     </div>
@@ -37,11 +38,11 @@
     <div class="container row">
         <div class="layer title">Row</div>
         <div class="panel">
-            <draggable v-model="row" group="dim" animation="100" dragClass="dragClass" ghostClass="ghostClass"
-                       chosenClass="chosenClass" @start="onStart" @end="onEnd">
-                    <div class="item" v-for="item in row" >
-                        <div class="drag-handle">&#9776; {{item.name}}</div>
-                    </div>
+            <draggable v-model="row" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
+                       chosen-class="chosen" @start="onStart" @end="onEnd">
+                <div class="item" v-for="item in row">
+                    <div class="drag-handle">&#9776; {{item.name}}</div>
+                </div>
             </draggable>
         </div>
     </div>
@@ -49,12 +50,12 @@
     <div class="container col">
         <div class="layer title">Col</div>
         <div id="col" style="width: 80px;" class="panel">
-            <draggable v-model="col" group="dim" animation="100" dragClass="dragClass" ghostClass="ghostClass"
-                       chosenClass="chosenClass" @start="onStart" @end="onEnd">
-                    <div class="item" v-for="item in col" :key="item.id">
-                        <div class="drag-handle">&#9776; {{item.name}}</div>
+            <draggable v-model="col" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
+                       chosen-class="chosen" @start="onStart" @end="onEnd" :move="onMove">
+                <div class="item" v-for="item in col" :key="item.id">
+                    <div class="drag-handle">&#9776; {{item.name}}</div>
 
-                    </div>
+                </div>
             </draggable>
         </div>
     </div>
@@ -71,7 +72,7 @@
                 $ = layui.$, layer = layui.layer, form = layui.form;
             });
         },
-        freshTable(page,row,col){
+        freshTable(page, row, col) {
             console.log(page);
             console.log(row);
             console.log(col);
@@ -84,11 +85,11 @@
         el: '#app',
         components: {
             vuedraggable,
-        },created:function(){
+        }, created: function () {
             ui.init();
         }
         , updated: function () {
-            ui.freshTable(this.page,this.col,this.row);
+            ui.freshTable(this.page, this.col, this.row);
         }
         , data() {
             return {
@@ -135,6 +136,13 @@
             },
             onEnd() {
                 this.drag = false;
+            },
+            onMove() {
+                /*  //不允许停靠
+                  if (e.relatedContext.element.id == 1) return false;
+                  //不允许拖拽
+                  if (e.draggedContext.element.id == 4) return false;*/
+                return true;
             }
 
         }
