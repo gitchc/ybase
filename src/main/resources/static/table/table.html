@@ -22,7 +22,7 @@
         <div class="layer title">Page</div>
         <div class="panel">
             <draggable v-model="page" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
-                       chosen-class="chosen" handle=".drag-handle" @start="onStart" @end="onEnd">
+                       chosen-class="chosen" handle=".drag-handle" @start="onStart" @end="onEnd"  :move="onMove">
                 <div class="item" v-for="item in page" :key="item.id">
                     <div class="drag-handle">&#9776; {{item.name}}</div>
                     <el-select v-model="item.current" placeholder="请选择">
@@ -36,7 +36,7 @@
     </div>
 
     <div class="container row">
-        <div class="layer title">Row</div>
+        <div class="layer title" @click="exchange">Row</div>
         <div class="panel">
             <draggable v-model="row" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
                        chosen-class="chosen" @start="onStart" @end="onEnd">
@@ -51,7 +51,7 @@
         <div class="layer title">Col</div>
         <div id="col" style="width: 80px;" class="panel">
             <draggable v-model="col" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
-                       chosen-class="chosen" @start="onStart" @end="onEnd" :move="onMove">
+                       chosen-class="chosen" @start="onStart" @end="onEnd" >
                 <div class="item" v-for="item in col" :key="item.id">
                     <div class="drag-handle">&#9776; {{item.name}}</div>
 
@@ -62,14 +62,14 @@
 
 </div>
 <script>
-    var ui = {
+    var Ctable = {
         init: function () {
             layui.config({
                 base: '/static/layuiadmin/' //静态资源所在路径
             }).extend({
                 index: 'lib/index' //主入口模块
             }).use(['index', 'jquery', 'layer', 'form', 'table'], function () {
-                $ = layui.$, layer = layui.layer, form = layui.form;
+                window.$ = layui.$, window.layer = layui.layer, window.form = layui.form;
             });
         },
         freshTable(page, row, col) {
@@ -86,10 +86,10 @@
         components: {
             vuedraggable,
         }, created: function () {
-            ui.init();
+            Ctable.init();
         }
         , updated: function () {
-            ui.freshTable(this.page, this.col, this.row);
+            Ctable.freshTable(this.page, this.col, this.row);
         }
         , data() {
             return {
@@ -121,8 +121,7 @@
                     }
                 ],
                 col: [
-                    {id: 1, name: 'google.com'},
-                    {id: 2, name: 'msn.com'},
+                    {id: 1, name: 'tencent.com'},
                 ],
                 row: [
                     {id: 1, name: 'google.com'},
@@ -137,12 +136,14 @@
             onEnd() {
                 this.drag = false;
             },
-            onMove() {
-                /*  //不允许停靠
-                  if (e.relatedContext.element.id == 1) return false;
-                  //不允许拖拽
-                  if (e.draggedContext.element.id == 4) return false;*/
+            onMove(e) {
+                  // if (e.draggedContext.element.id == 4) return false;
                 return true;
+            },
+            exchange(){
+                var temp = this.row;
+                this.row = this.col;
+                this.col=temp;
             }
 
         }
