@@ -99,12 +99,17 @@ img {
     cursor: move;
     cursor: -webkit-grabbing;
     width: 100px;
-    white-space : nowrap;
-    overflow:hidden;/*文字溢出的部分隐藏起来*/
-    text-overflow:ellipsis;
+    white-space: nowrap;
+    overflow: hidden; /*文字溢出的部分隐藏起来*/
+    text-overflow: ellipsis;
 }
-#col .drag-handle{
-    width: 70px;
+
+#col {
+    width: 90px
+}
+
+#col .drag-handle {
+    width: 80px;
 }
 
 
@@ -113,19 +118,21 @@ img {
     display: inline-block;
 }
 
-.row .item{
+.row .item {
     width: 100px;
     display: inline-block;
 }
 
 
-.item{
+.item {
     margin: 5px;
     background-color: #e2e2e2;
 }
-.page{
+
+.page {
     min-width: 800px;
 }
+
 .row {
     min-width: 800px;
     margin-left: 100px;
@@ -147,20 +154,20 @@ img {
 }
 
 
-
 /*定义要拖拽元素的样式*/
 
-.page .itemselect{
+.page .itemselect {
     display: block;
     width: 90px;
-    margin-left:5px ;
-    margin-right:5px ;
+    margin-left: 5px;
+    margin-right: 5px;
 }
-.page .el-select{
+
+.page .el-select {
     display: block;
 }
 
-.ghost .el-select{
+.ghost .el-select {
     display: none;
 }
 

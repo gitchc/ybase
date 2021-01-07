@@ -22,7 +22,7 @@
         <div class="layer title">Page</div>
         <div class="panel">
             <draggable v-model="page" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
-                       chosen-class="chosen" handle=".drag-handle" @start="onStart" @end="onEnd"  :move="onMove">
+                       chosen-class="chosen" handle=".drag-handle" @start="onStart" @end="onEnd" :move="onMove">
                 <div class="item" v-for="item in page" :key="item.id">
                     <div class="drag-handle">&#9776; {{item.name}}</div>
                     <el-select v-model="item.current" placeholder="请选择">
@@ -49,9 +49,9 @@
 
     <div class="container col">
         <div class="layer title">Col</div>
-        <div id="col" style="width: 80px;" class="panel">
+        <div id="col" class="panel">
             <draggable v-model="col" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
-                       chosen-class="chosen" @start="onStart" @end="onEnd" >
+                       chosen-class="chosen" @start="onStart" @end="onEnd">
                 <div class="item" v-for="item in col" :key="item.id">
                     <div class="drag-handle">&#9776; {{item.name}}</div>
 
@@ -137,13 +137,13 @@
                 this.drag = false;
             },
             onMove(e) {
-                  // if (e.draggedContext.element.id == 4) return false;
+                // if (e.draggedContext.element.id == 4) return false;
                 return true;
             },
-            exchange(){
+            exchange() {
                 var temp = this.row;
                 this.row = this.col;
-                this.col=temp;
+                this.col = temp;
             }
 
         }
