@@ -12,7 +12,8 @@ import javax.annotation.Resource;
 import java.util.List;
 
 /**
-* Created by ${author} on ${date}.
+* @Author ${author}
+* @Date ${date}
 */
 @RestController
 @RequestMapping("${baseRequestMapping}")

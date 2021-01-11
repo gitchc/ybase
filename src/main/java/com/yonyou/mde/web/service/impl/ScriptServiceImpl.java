@@ -54,10 +54,10 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
     }
 
     @Override
-    public void updateContent(Script script) {
+    public void updateContent(Script script) throws ScriptException {
         String nowuser = "admin";
         scriptMapper.updateContent(script.getId(), script.getContent(), nowuser);
-        checkContent(script);
+        JavaClassUtils.Check(script);
     }
 
     @Override
@@ -99,13 +99,8 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
         return KeyWord.getKeyWords();
     }
 
-    //检查语法
-    public void checkContent(Script script) throws ScriptException {
-        JavaClassUtils.Check(script);
-    }
-
     //执行脚本
-    public Map<String, Object> run(Script script, Map<String, Object> vars) throws ScriptException {
+    private Map<String, Object> run(Script script, Map<String, Object> vars) throws ScriptException {
         if (vars == null) {
             vars = new HashMap<>();
         }
