@@ -1,7 +1,7 @@
-package com.yonyou.mde.web.bigCube.main;
+package com.yonyou.mde.bigCube.main;
 
 import com.yonyou.mde.model.graph.DimNode;
-import com.yonyou.mde.web.bigCube.interfaces.IMember;
+import com.yonyou.mde.bigCube.interfaces.IMember;
 import lombok.Data;
 
 @Data

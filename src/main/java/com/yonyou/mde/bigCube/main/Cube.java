@@ -1,11 +1,11 @@
-package com.yonyou.mde.web.bigCube.main;
+package com.yonyou.mde.bigCube.main;
 
 import com.yonyou.mde.api.MultiDimModelApi;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.model.MultiDimModel;
 import com.yonyou.mde.model.graph.DimTree;
 import com.yonyou.mde.model.result.SliceResult;
-import com.yonyou.mde.web.bigCube.interfaces.ICube;
+import com.yonyou.mde.bigCube.interfaces.ICube;
 
 import java.util.List;
 import java.util.Map;

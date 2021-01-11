@@ -88,7 +88,7 @@ public class SnowID {
      *
      * @return SnowflakeId
      */
-    public synchronized long nextId() {
+    public synchronized long next() {
         long timestamp = timeGen();
 
         //获取当前时间戳如果小于上次时间戳，则表示时间戳获取出现异常
@@ -186,22 +186,21 @@ public class SnowID {
      *
      * @return
      */
-    public static Long nextLongID() {
-        long id = idWorker.nextId();
+    public static long nextId() {
+        long id = idWorker.next();
         return id;
     }
 
     public static String nextID() {
-        return idWorker.nextId() + "";
+        return idWorker.next() + "";
     }
 
     /**
      * 测试
      */
     public static void main(String[] args) {
-        long startTime = System.nanoTime();
-        for (int i = 0; i < 50; i++) {
-            long id = SnowID.nextLongID();
+        for (int i = 0; i < 5000; i++) {
+            long id = SnowID.nextId();
             System.out.println(String.format("id = {%d}", id));
         }
     }
