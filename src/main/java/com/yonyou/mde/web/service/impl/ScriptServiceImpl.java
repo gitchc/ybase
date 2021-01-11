@@ -6,6 +6,7 @@ import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.ScriptMapper;
 import com.yonyou.mde.web.model.Completer;
 import com.yonyou.mde.web.model.Script;
+import com.yonyou.mde.web.model.ScriptType;
 import com.yonyou.mde.web.model.ScriptVo;
 import com.yonyou.mde.web.script.Utils.KeyWord;
 import com.yonyou.mde.web.script.classloder.JavaClassUtils;
@@ -13,7 +14,6 @@ import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
@@ -100,21 +100,21 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
     }
 
     //检查语法
-    public void checkContent(Script script) {
+    public void checkContent(Script script) throws ScriptException {
         JavaClassUtils.Check(script);
     }
 
     //执行脚本
-    public Map<String, Object> run(Script script, Map<String, Object> vars) {
+    public Map<String, Object> run(Script script, Map<String, Object> vars) throws ScriptException {
         if (vars == null) {
             vars = new HashMap<>();
         }
         String id = script.getId();
         try {
-            scriptMapper.updateStatus(id, 1);
+            scriptMapper.updateStatus(id, ScriptType.SUCESS);
             return JavaClassUtils.Run(script, vars);
         } catch (Exception e) {
-            scriptMapper.updateStatus(id, 2);
+            scriptMapper.updateStatus(id, ScriptType.FAIL);
             Map<String, Object> res = new HashMap<>();
             res.put("code", "-1");
             res.put("msg", e.getMessage());
