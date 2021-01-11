@@ -41,7 +41,7 @@ public class ATTR extends Tester {
             Member member = dimension.getMember(row.getText("qijian"));
             String value = member.getAttrValue("所属季度");
             String value1 = member.getAttrValue("所属月");
-            if (value.equals("1") && value1.equals(1)) {
+            if (value.equals("1") && value1.equals("1")) {
                 Assert.assrt("属性赋值不正确!", row.getDouble("value") == 1);
             } else {
                 Assert.assrt("属性赋值不正确!", row.getDouble("value") == 100);

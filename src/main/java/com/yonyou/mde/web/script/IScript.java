@@ -205,7 +205,7 @@ public interface IScript {
      * <br>Date date = StrToDate("2012-02-12","yyyy-MM-dd");
      *
      * @param date   时间格式
-     * @param format 格式化字符串，yyyy-MM-dd
+     * @param format 格式化字符串,可以为空，yyyy-MM-dd
      * @return Date类型的值
      */
     public Date StrToDate(String date, String format);
@@ -220,7 +220,7 @@ public interface IScript {
      * @param params     参数 new String[]{"a","b"}
      * @return 成功：success,失败：错误原因
      */
-    public String RunScript(String scriptName, Map<String, Object> params);
+    public  Map<String, Object> RunScript(String scriptName, Map<String, Object> params);
 
     /**
      * 方法说明： 执行活动脚本
@@ -230,7 +230,7 @@ public interface IScript {
      * @param scriptName 活动脚本名称
      * @return 成功：success,失败：错误原因
      */
-    public String RunScript(String scriptName);
+    public  Map<String, Object> RunScript(String scriptName);
 
 
     /**
@@ -469,11 +469,9 @@ public interface IScript {
 
     /**
      * 当前项目 执行Sql
-     *
      * @param sql    sql语句
-     * @param values 参数
      */
-    public void ExecuteSql(String sql, Object... values);
+    public void ExecuteSql(String sql);
 
     /**
      * 当前项目 批量执行Sql

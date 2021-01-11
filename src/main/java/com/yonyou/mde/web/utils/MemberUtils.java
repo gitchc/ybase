@@ -1,7 +1,10 @@
 package com.yonyou.mde.web.utils;
 
-import cn.hutool.extra.pinyin.PinyinUtil;
+import cn.hutool.core.util.StrUtil;
 import com.yonyou.mde.web.model.Member;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MemberUtils {
     public static String getCodeDetail(Member member) {//凭借空格字符串
@@ -19,5 +22,17 @@ public class MemberUtils {
 
     public static String toString(Object obj) {
         return obj == null ? "" : obj.toString();
+    }
+
+    public static String format(String text, Object... replaceTexts) {
+        return StrUtil.format("[{}]不存在", replaceTexts);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(format("[{}],不存在", "你好"));
+        Map<String, String> values = new HashMap<>();
+        values.put("nihao","你好");
+        System.out.println(StrUtil.format("[{nihao}]不存在", values));
+        System.out.println(StrUtil.indexedFormat("{1}不好{0}","谁1","谁2"));
     }
 }

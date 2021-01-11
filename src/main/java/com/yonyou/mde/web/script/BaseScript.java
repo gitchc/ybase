@@ -1,13 +1,16 @@
 package com.yonyou.mde.web.script;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.io.file.FileWriter;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.db.ds.simple.SimpleDataSource;
 import cn.hutool.extra.spring.SpringUtil;
 import com.yonyou.mde.error.MdeException;
+import com.yonyou.mde.web.configurer.DataSourceConfig;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.script.Utils.CMDUtils;
@@ -15,6 +18,7 @@ import com.yonyou.mde.web.script.Utils.DB;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
 import com.yonyou.mde.web.service.MemberService;
+import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +37,10 @@ public class BaseScript implements IScript {
     MockDataManager mockDataManager;
     @Resource
     MemberService memberService;
+    @Resource
+    DataSourceConfig dataSourceConfig;
+    @Resource
+    ScriptService scriptService;
 
     private Map<String, Object> vars;
     private long version;
@@ -97,7 +105,7 @@ public class BaseScript implements IScript {
     private String getDimid(String dimname) throws MdeException {
         String dimid = memberService.getDimidByCode(dimname);
         if (StringUtils.isBlank(dimid)) {
-            throw new MdeException(dimname + "不存在");
+            throw new MdeException(StrUtil.format("[{}]不存在", dimname));
         }
         return dimid;
     }
@@ -216,22 +224,54 @@ public class BaseScript implements IScript {
 
     @Override
     public String DateFormat(Date date, String format) {
-        return null;
+        return DateUtil.format(date, format);
     }
 
     @Override
     public Date StrToDate(String date, String format) {
-        return null;
+        if (StringUtils.isBlank(format)) {
+            return DateUtil.parse(date);
+        }
+        return DateUtil.parse(date, format);
+    }
+
+    public int getYear(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);                    //放入Date类型数据
+        return calendar.get(Calendar.YEAR);                    //获取年份
+    }
+
+    public Date getDate(long time) {
+        Date date = DateUtil.date(time);
+        return date;
+    }
+
+    public long getTime(Date date) {
+        return date.getTime();
+    }
+
+    public int getMonth(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);                    //放入Date类型数据
+        return calendar.get(Calendar.MONTH);                    //获取月
+
+    }
+
+    public int getDay(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);                    //放入Date类型数据
+        return calendar.get(Calendar.DATE);                    //获取天
+
     }
 
     @Override
-    public String RunScript(String scriptName, Map<String, Object> params) {
-        return null;
+    public Map<String, Object> RunScript(String scriptName, Map<String, Object> params) {
+        return scriptService.run(scriptName, params);
     }
 
     @Override
-    public String RunScript(String scriptName) {
-        return null;
+    public Map<String, Object> RunScript(String scriptName) {
+        return scriptService.run(scriptName, null);
     }
 
     @Override
@@ -358,12 +398,12 @@ public class BaseScript implements IScript {
 
     @Override
     public List<Entity> QuerySql(String sql, Object... values) {
-        return null;
+        return CreateDB(dataSourceConfig.getUrl(), dataSourceConfig.getUsername(), dataSourceConfig.getPassword()).query(sql, values);
     }
 
     @Override
-    public void ExecuteSql(String sql, Object... values) {
-
+    public void ExecuteSql(String sql) {
+        memberService.executeSql(sql);
     }
 
     @Override

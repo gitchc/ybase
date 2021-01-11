@@ -25,7 +25,6 @@ import java.util.Map;
  * Created by CodeGenerator on 2020-12-15.
  */
 @Service
-@Transactional
 public class ScriptServiceImpl extends AbstractService<Script> implements ScriptService {
     @Resource
     private ScriptMapper scriptMapper;
@@ -44,7 +43,7 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
     }
 
     @Override
-    public void updateName(Script script) {
+    public void updateName(Script script) throws ServiceException {
         Script oldsc = scriptMapper.getScriptByName(script.getName());
         if (oldsc != null) {
             throw new ServiceException("脚本名称不能重复!");
@@ -62,28 +61,37 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
     }
 
     @Override
-    public Map<String, Object> run(ScriptVo vo) {
-        Script script;
+    public Map<String, Object> run(ScriptVo vo) throws ScriptException {
         String id = vo.getId();
+        Script script;
         String name = vo.getName();
         if (StringUtils.isNotBlank(id)) {
             script = scriptMapper.selectByPrimaryKey(id);
         } else if (StringUtils.isNotBlank(name)) {
             script = scriptMapper.getScriptByName(name);
-            id = script.getId();
         } else {
             throw new ScriptException("名称或者id不能为空");
         }
-        try {
-            scriptMapper.updateStatus(id, 1);
-            return run(script, vo.getVars());
-        } catch (Exception e) {
-            scriptMapper.updateStatus(id, 2);
-            Map<String, Object> res = new HashMap<>();
-            res.put("code", "-1");
-            res.put("msg", e.getMessage());
-            return res;
+        return run(script, vo.getVars());
+    }
+
+    @Override
+    public Map<String, Object> run(String name, Map<String, Object> params) throws ScriptException {
+        Script script = scriptMapper.getScriptByName(name);
+        if (script == null) {
+            throw new ScriptException("脚本[" + name + "]不存在!");
         }
+        return run(script, params);
+    }
+
+
+    @Override
+    public String getId(String scriptName) {
+        Script script = scriptMapper.getScriptByName(scriptName);
+        if (script != null) {
+            return script.getId();
+        }
+        return null;
     }
 
     @Override
@@ -101,6 +109,17 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
         if (vars == null) {
             vars = new HashMap<>();
         }
-        return JavaClassUtils.Run(script, vars);
+        String id = script.getId();
+        try {
+            scriptMapper.updateStatus(id, 1);
+            return JavaClassUtils.Run(script, vars);
+        } catch (Exception e) {
+            scriptMapper.updateStatus(id, 2);
+            Map<String, Object> res = new HashMap<>();
+            res.put("code", "-1");
+            res.put("msg", e.getMessage());
+            return res;
+        }
+
     }
 }
