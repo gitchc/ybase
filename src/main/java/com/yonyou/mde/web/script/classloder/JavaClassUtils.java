@@ -37,7 +37,7 @@ public class JavaClassUtils {
             , "import tech.tablesaw.api.*;"
             , "import java.util.*;"
             , "import java.util.concurrent.*;"
-            , "import com.yonyou.mde.web.bigCube.main.*;"
+            , "import com.yonyou.mde.bigCube.main.*;"
     };
 
     public static String getFullJavaScript(String classname, String source) {

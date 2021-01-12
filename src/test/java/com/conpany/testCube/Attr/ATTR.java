@@ -14,11 +14,6 @@ import tech.tablesaw.api.Table;
 
 public class ATTR extends Tester {
 
-    private void printAll(SliceResult se) {
-        Table resultTable = se.toTable();
-        System.out.println(String.format("Result Size: %d\n%s", resultTable.rowCount(), resultTable.printAll()));
-    }
-
     @Test
     public void exp() throws MdeException {
         Cube cube = Server.getServer().getCube("测试属性");
