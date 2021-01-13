@@ -20,6 +20,14 @@ public class Assert {
         }
     }
 
+    /**
+     * @description: 方法说明
+     * @param: msg 提示信息
+     * @param: val 判断逻辑
+     * @return: void
+     * @author Administrator
+     *
+     */
     public static void assrt(String msg, boolean val) {
         if (!val) {
             throw new ScriptException("assert '" + msg + "' failed");

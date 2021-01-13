@@ -31,7 +31,13 @@ public abstract class AbstractService<T> implements Service<T> {
     public void insert(List<T> models) {
         mapper.insertList(models);
     }
-
+    /**
+     * @description: 方法说明
+     * @param: id 表id
+     * @return: void
+     * @author Administrator
+     *
+     */
     public void deleteById(String id) {
         mapper.deleteByPrimaryKey(id);
     }
