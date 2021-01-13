@@ -9,9 +9,9 @@ import com.yonyou.mde.web.model.Attr;
 import com.yonyou.mde.web.model.AttrValueVO;
 import com.yonyou.mde.web.model.Attrvalue;
 import com.yonyou.mde.web.service.AttrvalueService;
-import com.yonyou.mde.web.utils.MemberUtils;
+import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
-import com.yonyou.mde.web.utils.SortUtils;
+import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ public class AttrvalueServiceImpl extends AbstractService<Attrvalue> implements 
     @Override
     public List<Map<String, String>> getAllAttrValues(String dimid) {
         List<AttrValueVO> allAttrValues = attrvalueMapper.getAllAttrValues(dimid); //获取所有属性
-        allAttrValues = SortUtils.sort(allAttrValues);
+        allAttrValues = SortUtil.sort(allAttrValues);
         Map<String, Map<String, String>> finalmap = new HashMap<>();
         List<Map<String, String>> finalattrs = new ArrayList<>();
         for (AttrValueVO item : allAttrValues) { //合并
@@ -50,7 +50,7 @@ public class AttrvalueServiceImpl extends AbstractService<Attrvalue> implements 
                 attrsMap.put("name", item.getName());
                 finalattrs.add(attrsMap);
             }
-            attrsMap.put(item.getAttrname(), MemberUtils.toString(item.getAttrvalue()));
+            attrsMap.put(item.getAttrname(), MemberUtil.toString(item.getAttrvalue()));
         }
 
         return finalattrs;

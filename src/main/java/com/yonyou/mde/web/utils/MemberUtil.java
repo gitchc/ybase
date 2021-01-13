@@ -6,7 +6,7 @@ import com.yonyou.mde.web.model.Member;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MemberUtils {
+public class MemberUtil {
     public static String getCodeDetail(Member member) {//凭借空格字符串
         int g = member.getGeneration();
         StringBuilder sb = new StringBuilder();

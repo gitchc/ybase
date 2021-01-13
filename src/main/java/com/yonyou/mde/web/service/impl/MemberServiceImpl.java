@@ -8,9 +8,9 @@ import com.yonyou.mde.web.dao.AttrvalueMapper;
 import com.yonyou.mde.web.dao.MemberMapper;
 import com.yonyou.mde.web.model.*;
 import com.yonyou.mde.web.service.MemberService;
-import com.yonyou.mde.web.utils.MemberUtils;
+import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
-import com.yonyou.mde.web.utils.SortUtils;
+import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -168,10 +168,10 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
             BeanUtil.copyProperties(item, vo);
             vo.setDatatypedetail(DataType.getStr(item.getDatatype()));
             vo.setStatusdetail(StatusType.getStr(item.getStatus()));
-            vo.setCodedetail(MemberUtils.getCodeDetail(item));
+            vo.setCodedetail(MemberUtil.getCodeDetail(item));
             res.add(vo);
         });
-        List<MemberVO> finalRes = SortUtils.sort(res);
+        List<MemberVO> finalRes = SortUtil.sort(res);
         return finalRes;
     }
 
@@ -182,7 +182,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         criteria.andEqualTo("dimid", id);
         criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
         List<Member> list = findByCondition(condition);
-        List<Member> finalRes = SortUtils.sortMember(list);
+        List<Member> finalRes = SortUtil.sortMember(list);
         return finalRes;
     }
 

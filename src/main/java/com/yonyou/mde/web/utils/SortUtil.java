@@ -8,7 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SortUtils {
+public class SortUtil {
     /*
      * 1.1.2 1.2.3
      * 高效排序

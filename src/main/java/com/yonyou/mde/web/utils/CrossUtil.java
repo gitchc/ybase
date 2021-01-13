@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /*
  * 笛卡尔积
  * */
-public class CrossUtils {
+public class CrossUtil {
 
     /*
      * @param lists:{[a],[b1,b2]}

@@ -16,7 +16,7 @@ import com.yonyou.mde.web.service.DataService.CubeManager;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
 import com.yonyou.mde.web.utils.SnowID;
-import com.yonyou.mde.web.utils.SortUtils;
+import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,7 +138,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                 result.put(dimcode, dimColumns);
             }
             List<Member> members = memberService.getMembersBydimid(dimId);
-            members = SortUtils.sortMember(members);
+            members = SortUtil.sortMember(members);
             Map<String, Map<String, Object>> attrValues = attrvalueService.getAttrValues(dimId);
             Map<String, String> parentMap = new HashMap<>();
             parentMap.put(dimId, dim.getCode());
