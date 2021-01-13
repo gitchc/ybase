@@ -8,7 +8,7 @@ import com.yonyou.mde.web.model.Completer;
 import com.yonyou.mde.web.model.Script;
 import com.yonyou.mde.web.model.ScriptType;
 import com.yonyou.mde.web.model.ScriptVo;
-import com.yonyou.mde.web.script.Utils.KeyWord;
+import com.yonyou.mde.web.script.utils.KeyWord;
 import com.yonyou.mde.web.script.classloder.JavaClassUtils;
 import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;

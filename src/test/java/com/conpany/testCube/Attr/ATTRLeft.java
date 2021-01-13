@@ -7,7 +7,7 @@ import com.yonyou.mde.bigCube.main.Member;
 import com.yonyou.mde.bigCube.main.Server;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.model.result.SliceResult;
-import com.yonyou.mde.web.script.Utils.Assert;
+import com.yonyou.mde.web.script.utils.Assert;
 import org.junit.Test;
 import tech.tablesaw.api.Row;
 

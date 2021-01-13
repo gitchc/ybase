@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.script.Utils;
+package com.yonyou.mde.web.script.utils;
 
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;

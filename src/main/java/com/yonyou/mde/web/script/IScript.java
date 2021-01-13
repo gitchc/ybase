@@ -2,7 +2,7 @@ package com.yonyou.mde.web.script;
 
 import cn.hutool.db.Entity;
 import com.yonyou.mde.error.MdeException;
-import com.yonyou.mde.web.script.Utils.DB;
+import com.yonyou.mde.web.script.utils.DB;
 
 import javax.script.ScriptException;
 import java.util.Date;

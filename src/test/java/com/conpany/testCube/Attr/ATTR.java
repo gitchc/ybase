@@ -7,10 +7,9 @@ import com.yonyou.mde.bigCube.main.Cube;
 import com.yonyou.mde.bigCube.main.Dimension;
 import com.yonyou.mde.bigCube.main.Member;
 import com.yonyou.mde.bigCube.main.Server;
-import com.yonyou.mde.web.script.Utils.Assert;
+import com.yonyou.mde.web.script.utils.Assert;
 import org.junit.Test;
 import tech.tablesaw.api.Row;
-import tech.tablesaw.api.Table;
 
 public class ATTR extends Tester {
 
