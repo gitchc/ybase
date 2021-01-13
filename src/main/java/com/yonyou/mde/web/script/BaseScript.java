@@ -13,7 +13,7 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.script.utils.CMDUtils;
+import com.yonyou.mde.web.script.utils.ShellUtil;
 import com.yonyou.mde.web.script.utils.DB;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
@@ -277,7 +277,7 @@ public class BaseScript implements IScript {
     @Override
     public String RunCmd(String filepath, String... params) throws ScriptException {
         if (FileExists(filepath)) {
-            return CMDUtils.runCMD(filepath + " " + StringUtils.join(params, " "));
+            return ShellUtil.runCMD(filepath + " " + StringUtils.join(params, " "));
         } else {
             throw new ScriptException("[" + filepath + "]文件不存在!");
         }

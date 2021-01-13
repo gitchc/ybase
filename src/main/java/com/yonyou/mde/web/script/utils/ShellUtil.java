@@ -7,7 +7,7 @@ import java.io.*;
  * @Description:
  * @Date:First Created 2021/1/04
  */
-public class CMDUtils {
+public class ShellUtil {
     /**
      * linux: String shStr="/export/home/text.sh";
      * win: String shStr = "start D:\\test.bat";

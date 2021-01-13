@@ -11,7 +11,7 @@ import java.util.List;
 /*
 * 脚本的关键字
 * */
-public class KeyWord {
+public class KeyWordUtil {
     private static List<Completer> keywords;
 
     public static List<Completer> getKeyWords() {
