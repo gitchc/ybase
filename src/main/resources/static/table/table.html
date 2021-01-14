@@ -23,11 +23,12 @@
         <div class="panel">
             <draggable v-model="page" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
                        chosen-class="chosen" handle=".drag-handle" @start="onStart" @end="onEnd" :move="onMove">
-                <div class="item" v-for="item in page" :key="item.id">
-                    <div class="drag-handle">&#9776; {{item.name}}</div>
-                    <el-select v-model="item.current" placeholder="请选择">
-                        <el-option v-for="option in item.options" :key="option.key" :label="option.value"
-                                   :value="option.key">
+                <div class="item" v-for="item in page">
+                    <div class="drag-handle">&#9776; {{item.dimName}}</div>
+                    <el-select v-model="item.selectedMember" placeholder="请选择">
+                        <el-option v-for="option in item.options" :class="`indent${option.generation}`"
+                                   :key="option.code" :label="option.displayName"
+                                   :value="option.code">
                         </el-option>
                     </el-select>
                 </div>
@@ -41,113 +42,146 @@
             <draggable v-model="row" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
                        chosen-class="chosen" @start="onStart" @end="onEnd">
                 <div class="item" v-for="item in row">
-                    <div class="drag-handle">&#9776; {{item.name}}</div>
+                    <div class="drag-handle">&#9776; {{item.dimName}}</div>
                 </div>
             </draggable>
         </div>
     </div>
-
+    <div class="maintable">
+        <table class="layui-hide" id="maintable" lay-filter="maintable">
+        </table>
+    </div>
     <div class="container col">
         <div class="layer title">Col</div>
         <div id="col" class="panel">
             <draggable v-model="col" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
                        chosen-class="chosen" @start="onStart" @end="onEnd">
-                <div class="item" v-for="item in col" :key="item.id">
-                    <div class="drag-handle">&#9776; {{item.name}}</div>
-
+                <div class="item" v-for="item in col">
+                    <div class="drag-handle">&#9776; {{item.dimName}}</div>
                 </div>
             </draggable>
         </div>
     </div>
-
 </div>
 <script>
+    Vue.component('vuedraggable', window.vuedraggable.name);
+    layui.config({
+        base: '/static/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'jquery', 'layer', 'form', 'table'], function () {
+        window.$ = layui.$, window.layer = layui.layer, window.form = layui.form;
+        Ctable.initPages();
+        Ctable.LoadTabeData();
+        Ctable.bindTableEvent();
+    });
+
     var Ctable = {
-        init: function () {
-            layui.config({
-                base: '/static/layuiadmin/' //静态资源所在路径
-            }).extend({
-                index: 'lib/index' //主入口模块
-            }).use(['index', 'jquery', 'layer', 'form', 'table'], function () {
-                window.$ = layui.$, window.layer = layui.layer, window.form = layui.form;
+        initPages: function () {
+            window.app = new Vue({
+                el: '#app',
+                components: {
+                    vuedraggable,
+                }, created: function () {
+                    this.initPages();
+                }
+                , updated: function () {
+                    Ctable.freshTable(this.page, this.col, this.row);
+                }
+                , data() {
+                    return {
+                        drag: false,
+                        page: [],
+                        col: [],
+                        row: []
+                    };
+                },
+                methods: {
+                    initPages() {
+                        var cubeid = "133874023144632320";
+                        fetchGet("/cube/getPages?id=" + cubeid, function (data) {
+                            app.page = data;
+                        });
+                    },
+                    onStart() {
+                        this.drag = true;
+                    },
+                    onEnd() {
+                        this.drag = false;
+                    },
+                    onMove(e) {
+                        // if (e.draggedContext.element.id == 4) return false;
+                        return true;
+                    },
+                    exchange() {
+                        var temp = this.row;
+                        this.row = this.col;
+                        this.col = temp;
+                    }
+
+                }
             });
         },
         freshTable(page, row, col) {
             console.log(page);
             console.log(row);
             console.log(col);
+        }, bindTableEvent() {
+            //监听单元格编辑
+            table.on('edit(maintable)', function (obj) {
+                var value = obj.value //得到修改后的值
+                    , data = obj.data //得到所在行所有键值
+                    , field = obj.field; //得到字段
+                fetchPost("/cube/updateValue", {code: data.code, attrvalue: value, attrname: field})
+            });
+            //监听行单击事件（双击事件为：rowDouble）
+            table.on('row(maintable)', function (obj) {
+                var data = obj.data;
+                //标注选中样式
+                obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+            });
+
+            //监听单元格事件
+            table.on('tool(maintable)', function (obj) {
+                let attrids = obj.event.split(',');
+                FIELD = attrids[0];
+                ATTRID = attrids[1];
+            });
+        }, LoadTabeData() {
+            fetchGet('/attr/list?dimid=' + dimid, (data) => {
+                var tableoptions = {};
+                if (!data || data.length == 0) {
+                    tableoptions = {
+                        elem: '#attrtable'
+                        , id: 'attrtable'
+                        , height: 'full-85'
+                        , cols: [[{field: 'col', title: '无'}]]
+                        , data: []
+                    };
+                } else {
+                    //展示已知数据
+                    tableoptions = {
+                        elem: '#attrtable'
+                        , id: 'attrtable'
+                        , height: 'full-85'
+                        , cols: [data]
+                        , url: '/attrvalue/listAttrValues?dimid=' + dimid
+                        , parseData: function (res) { //res 即为原始返回的数据
+                            return {
+                                "code": res.code == 200 ? 0 : res.code, //解析接口状态
+                                "msg": res.message, //解析提示文本
+                                "count": res.data.length, //解析数据长度
+                                "data": res.data //解析数据列表
+                            };
+                        }
+                    };
+
+                }
+                table.reload('maintable', tableoptions);//重载
+
+            });
         }
     }
-    // var Ctor = Vue.extend(Main)
-    // new Ctor().$mount('#app')
-    Vue.component('vuedraggable', window.vuedraggable.name)
-    var app = new Vue({
-        el: '#app',
-        components: {
-            vuedraggable,
-        }, created: function () {
-            Ctable.init();
-        }
-        , updated: function () {
-            Ctable.freshTable(this.page, this.col, this.row);
-        }
-        , data() {
-            return {
-                drag: false,
-                page: [
-                    {
-                        id: 1,
-                        name: 'itxst.com',
-                        current: "21",
-                        options: [{key: "11", value: "itxst1"}, {key: "21", value: "itxst2"}]
-                    },
-                    {
-                        id: 2,
-                        name: 'jd.com',
-                        current: "12",
-                        options: [{key: "12", value: "jd-1"}, {key: "22", value: "jd-2"}]
-                    },
-                    {
-                        id: 3,
-                        name: 'baidu.com',
-                        current: "13",
-                        options: [{key: "13", value: "baidu-1"}, {key: "23", value: "baidu-2"}]
-                    },
-                    {
-                        id: 4,
-                        name: 'taobao.com',
-                        current: "14",
-                        options: [{key: "14", value: "taobao-1"}, {key: "24", value: "taobao-2"}]
-                    }
-                ],
-                col: [
-                    {id: 1, name: 'tencent.com'},
-                ],
-                row: [
-                    {id: 1, name: 'google.com'},
-                    {id: 2, name: 'msn.com'},
-                ]
-            };
-        },
-        methods: {
-            onStart() {
-                this.drag = true;
-            },
-            onEnd() {
-                this.drag = false;
-            },
-            onMove(e) {
-                // if (e.draggedContext.element.id == 4) return false;
-                return true;
-            },
-            exchange() {
-                var temp = this.row;
-                this.row = this.col;
-                this.col = temp;
-            }
-
-        }
-    });
 </script>
 </body>
 </html>

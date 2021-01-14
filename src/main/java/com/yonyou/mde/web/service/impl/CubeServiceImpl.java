@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.yonyou.mde.dto.DimColumn;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
@@ -8,25 +9,24 @@ import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.CubeMapper;
 import com.yonyou.mde.web.dao.MemberMapper;
-import com.yonyou.mde.web.model.Cube;
-import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.model.*;
 import com.yonyou.mde.web.service.AttrvalueService;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeManager;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
+import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
 import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Condition;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -49,6 +49,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     private AttrvalueService attrvalueService;
     @Resource
     MockDataManager mockDataManager;
+
     @Override
     public void insertCube(Cube cube) {
         String id = SnowID.nextID();
@@ -88,11 +89,11 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     }
 
     //获取Cube的所有成员
-    public Map<String,List<String>> getCubeMembers(String cubecode){
+    public Map<String, List<String>> getCubeMembers(String cubecode) {
         Map<String, List<String>> cubeMap = new HashMap<>();
         Cube cube = cubeMapper.getCubeByCode(cubecode);
         if (cube == null) {
-            throw new ScriptException(cubecode+"不存在!");
+            throw new ScriptException(cubecode + "不存在!");
         }
         List<Member> dims = getMemberByIds(cube.getDimids());
         for (Member dim : dims) {
@@ -108,11 +109,42 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     }
 
     @Override
+    public List<PageDim> getCubeDims(String id) {
+        Cube cube = cubeMapper.selectByPrimaryKey(id);
+        String dimids = cube.getDimids();
+        List<Member> dims = getMemberByIds(dimids);
+        List<PageDim> pageDims = new ArrayList<>();
+        for (Member dim : dims) {
+            Condition condition = new Condition(Member.class);
+            Example.Criteria criteria = condition.createCriteria();
+            criteria.andEqualTo("dimid", dim.getId());
+            criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
+            List<Member> list = memberService.findByCondition(condition);
+            list = SortUtil.sortMember(list);
+            List<PageMember> res = new ArrayList<>(list.size());
+            list.forEach(item -> {
+                PageMember vo = new PageMember();
+                BeanUtil.copyProperties(item, vo);
+                vo.setDisplayName(MemberUtil.getDisplayName(item));
+                res.add(vo);
+            });
+            PageDim pageDim = new PageDim();
+            pageDim.setDimId(dim.getId());
+            pageDim.setDimName(dim.getName());
+            pageDim.setDimCode(dim.getCode());
+            pageDim.setSelectedMember(res.get(0).getCode());
+            pageDim.setOptions(res);
+            pageDims.add(pageDim);
+        }
+        return pageDims;
+    }
+
+    @Override
     public List<String> getDimCodes(String cubeCode) {
         List<String> codes = new ArrayList<>();
         Cube cube = cubeMapper.getCubeByCode(cubeCode);
         if (cube == null) {
-            throw new ScriptException(cubeCode+"不存在!");
+            throw new ScriptException(cubeCode + "不存在!");
         }
         String dimids = cube.getDimids();
         List<Member> dims = getMemberByIds(dimids);
@@ -197,6 +229,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     public List<Cube> getAutoLoadCubes() {
         return cubeMapper.getAutoLoadCues();
     }
+
     //加载启动需要加载的cube
     @Override
     public void loadAutoCube() {
@@ -205,10 +238,11 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         }
     }
 
-    public List<Member>getMemberByIds(String dimids){
+    public List<Member> getMemberByIds(String dimids) {
         String ndimids = "'" + dimids.replace(",", "','") + "'";
         return memberMapper.selectByIds(ndimids);
     }
+
     private void CheckTable(Cube cube) {
         String tableName = cube.getCubecode();
         String dimids = cube.getDimids();
@@ -226,7 +260,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         Cube oldcube = findById(cube.getId());
         cube.setPosition(oldcube.getPosition());
         update(cube);
-        if (!StringUtils.equals(oldcube.getDimids(),cube.getDimids())) {
+        if (!StringUtils.equals(oldcube.getDimids(), cube.getDimids())) {
             CheckTable(cube);//重建事实表
             ReloadModeAndData(cube, false);//重新load模型和数据
         }

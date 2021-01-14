@@ -20,6 +20,13 @@ public class MemberUtil {
         return sb.toString();
     }
 
+    public static String getDisplayName(Member member) {//凭借空格字符串
+        if (member.getDatatype() >= 10) {
+            return "▼".concat(member.getName());
+        }
+        return member.getName();
+    }
+
     public static String toString(Object obj) {
         return obj == null ? "" : obj.toString();
     }
@@ -31,8 +38,8 @@ public class MemberUtil {
     public static void main(String[] args) {
         System.out.println(format("[{}],不存在", "你好"));
         Map<String, String> values = new HashMap<>();
-        values.put("nihao","你好");
+        values.put("nihao", "你好");
         System.out.println(StrUtil.format("[{nihao}]不存在", values));
-        System.out.println(StrUtil.indexedFormat("{1}不好{0}","谁1","谁2"));
+        System.out.println(StrUtil.indexedFormat("{1}不好{0}", "谁1", "谁2"));
     }
 }

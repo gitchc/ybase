@@ -105,7 +105,7 @@ img {
 }
 
 #col {
-    width: 90px
+    width: 90px;
 }
 
 #col .drag-handle {
@@ -137,11 +137,16 @@ img {
     min-width: 800px;
     margin-left: 100px;
 }
-
+.row .panel{
+    height: 30px;
+}
 .col {
     margin-left: 5px;
-    margin-top: -62px;
+    margin-top: -60px;
     width: 100px;
+}
+.col .item{
+    margin-top: 0px;
 }
 
 #col {
@@ -152,7 +157,9 @@ img {
 .panel {
     background-color: #fff;
 }
-
+.maintable{
+    margin-left: 100px;
+}
 
 /*定义要拖拽元素的样式*/
 
@@ -181,4 +188,25 @@ img {
 
 .ghost {
     background-color: #a2a1a1 !important;
+}
+.indent1{
+    text-indent: 1em;
+}
+.indent2{
+    text-indent: 2em;
+}
+.indent3{
+    text-indent: 3em;
+}
+.indent4{
+    text-indent: 4em;
+}
+.indent5{
+    text-indent: 5em;
+}
+.indent6{
+    text-indent: 6em;
+}
+.indent7{
+    text-indent: 7em;
 }

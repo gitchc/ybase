@@ -3,6 +3,7 @@ package com.yonyou.mde.web.web;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.model.Cube;
+import com.yonyou.mde.web.model.PageDim;
 import com.yonyou.mde.web.service.CubeService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -60,6 +61,11 @@ public class CubeController {
     @RequestMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         List<Cube> list = cubeService.getAll();
+        return ResultGenerator.genSuccessResult(list);
+    }
+    @RequestMapping("/getPages")
+    public Result getPageDims(@RequestParam String id) {
+       List<PageDim> list =  cubeService.getCubeDims(id);
         return ResultGenerator.genSuccessResult(list);
     }
 }
