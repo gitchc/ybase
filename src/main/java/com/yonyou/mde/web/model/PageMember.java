@@ -13,6 +13,7 @@ public class PageMember {
     private String displayName;
     private String id;
     private String code;
+    private String dimcode;
     private int CCount;
     private Integer generation;
 

@@ -125,6 +125,10 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
             list.forEach(item -> {
                 PageMember vo = new PageMember();
                 BeanUtil.copyProperties(item, vo);
+                vo.setId(item.getId());
+                vo.setCode(item.getCode());
+                vo.setGeneration(item.getGeneration());
+                vo.setDimcode(dim.getCode());
                 vo.setDisplayName(MemberUtil.getDisplayName(item));
                 res.add(vo);
             });

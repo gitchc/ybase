@@ -5,12 +5,16 @@ import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.PageDim;
 import com.yonyou.mde.web.service.CubeService;
+import com.yonyou.mde.web.service.DataService.CubeDataService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by CodeGenerator on 2020-12-15.
@@ -20,7 +24,8 @@ import java.util.List;
 public class CubeController {
     @Resource
     private CubeService cubeService;
-
+    @Resource
+    private CubeDataService cubeDataService;
     @RequestMapping("/insert")
     public Result add(Cube cube) {
         cubeService.insertCube(cube);
@@ -63,9 +68,16 @@ public class CubeController {
         List<Cube> list = cubeService.getAll();
         return ResultGenerator.genSuccessResult(list);
     }
+
     @RequestMapping("/getPages")
     public Result getPageDims(@RequestParam String id) {
-       List<PageDim> list =  cubeService.getCubeDims(id);
+        List<PageDim> list = cubeService.getCubeDims(id);
         return ResultGenerator.genSuccessResult(list);
+    }
+
+    @RequestMapping("/getData")
+    public Result getData(@RequestParam String cubeid, @RequestParam String pages, @RequestParam String rows, @RequestParam String cols, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        List<Map<String, String>> data  = cubeDataService.getData(cubeid,pages,rows,cols);
+        return ResultGenerator.genSuccessResult(data);
     }
 }

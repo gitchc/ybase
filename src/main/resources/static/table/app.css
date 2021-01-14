@@ -104,11 +104,11 @@ img {
     text-overflow: ellipsis;
 }
 
-#col {
+#row {
     width: 90px;
 }
 
-#col .drag-handle {
+#row .drag-handle {
     width: 80px;
 }
 
@@ -118,7 +118,7 @@ img {
     display: inline-block;
 }
 
-.row .item {
+.col .item {
     width: 100px;
     display: inline-block;
 }
@@ -133,23 +133,28 @@ img {
     min-width: 800px;
 }
 
-.row {
+.col {
     min-width: 800px;
     margin-left: 100px;
 }
-.row .panel{
+
+.col .panel {
     height: 30px;
 }
-.col {
-    margin-left: 5px;
-    margin-top: -60px;
-    width: 100px;
+.col .title{
+    margin-left:-10px;
 }
-.col .item{
+.row {
+    margin-left: 5px;
+    width: 100px;
+    float: left;
+}
+
+.row .item {
     margin-top: 0px;
 }
 
-#col {
+#row {
     height: 400px;
     padding-top: 5px;
 }
@@ -157,7 +162,8 @@ img {
 .panel {
     background-color: #fff;
 }
-.maintable{
+
+.maintable {
     margin-left: 100px;
 }
 
@@ -189,24 +195,31 @@ img {
 .ghost {
     background-color: #a2a1a1 !important;
 }
-.indent1{
+
+.indent1 {
     text-indent: 1em;
 }
-.indent2{
+
+.indent2 {
     text-indent: 2em;
 }
-.indent3{
+
+.indent3 {
     text-indent: 3em;
 }
-.indent4{
+
+.indent4 {
     text-indent: 4em;
 }
-.indent5{
+
+.indent5 {
     text-indent: 5em;
 }
-.indent6{
+
+.indent6 {
     text-indent: 6em;
 }
-.indent7{
+
+.indent7 {
     text-indent: 7em;
 }
