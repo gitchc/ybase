@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.web;
 
+import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.model.Cube;
@@ -76,8 +77,8 @@ public class CubeController {
     }
 
     @RequestMapping("/getData")
-    public Result getData(@RequestParam String cubeid, @RequestParam String pages, @RequestParam String rows, @RequestParam String cols, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<Map<String, String>> data  = cubeDataService.getData(cubeid,pages,rows,cols);
+    public Result getData(@RequestParam String cubeid, @RequestParam String pages, @RequestParam String rows, @RequestParam String cols, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) throws MdeException {
+        List<Map<String, Object>> data  = cubeDataService.getData(cubeid,pages,rows,cols);
         return ResultGenerator.genSuccessResult(data);
     }
 }

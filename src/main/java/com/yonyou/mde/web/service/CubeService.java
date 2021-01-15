@@ -17,6 +17,8 @@ public interface CubeService extends Service<Cube> {
 
     List<String> getDimCodes(String cubeCode);
 
+    Map<String, String> getDimMap(String cubeid);
+
     void deleteCubeById(String id);
 
     void saveCube(Cube cube);
@@ -32,4 +34,6 @@ public interface CubeService extends Service<Cube> {
     List<Cube> getAll();
 
     List<PageDim> getCubeDims(String id);
+
+    Cube getCubeById(String cubeid);
 }

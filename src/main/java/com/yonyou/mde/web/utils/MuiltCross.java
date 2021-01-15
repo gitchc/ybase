@@ -18,7 +18,6 @@ public class MuiltCross<T> implements Iterator<T[]> {
     private final int length;
     private int tail = 0;
     private int size = 1;
-
     public MuiltCross(List<T[]> element) {
         if (element == null) {
             throw new NullPointerException();
@@ -58,6 +57,14 @@ public class MuiltCross<T> implements Iterator<T[]> {
 
     public int size() {
         return size;
+    }
+
+    public List<T[]> getAll() {
+        List<T[]> slices = new ArrayList<>();
+        while (hasNext()) {
+            slices.add(next());
+        }
+        return slices;
     }
 
     public List<T[]> get(int start, int end) {

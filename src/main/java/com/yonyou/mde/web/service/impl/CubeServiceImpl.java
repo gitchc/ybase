@@ -1,6 +1,5 @@
 package com.yonyou.mde.web.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.yonyou.mde.dto.DimColumn;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
@@ -13,8 +12,8 @@ import com.yonyou.mde.web.model.*;
 import com.yonyou.mde.web.service.AttrvalueService;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeManager;
-import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
+import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
 import com.yonyou.mde.web.utils.SortUtil;
@@ -109,6 +108,11 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     }
 
     @Override
+    public Cube getCubeById(String cubeid) {
+        return cubeMapper.selectByPrimaryKey(cubeid);
+    }
+
+    @Override
     public List<PageDim> getCubeDims(String id) {
         Cube cube = cubeMapper.selectByPrimaryKey(id);
         String dimids = cube.getDimids();
@@ -124,11 +128,10 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
             List<PageMember> res = new ArrayList<>(list.size());
             list.forEach(item -> {
                 PageMember vo = new PageMember();
-                BeanUtil.copyProperties(item, vo);
                 vo.setId(item.getId());
                 vo.setCode(item.getCode());
                 vo.setGeneration(item.getGeneration());
-                vo.setDimcode(dim.getCode());
+                vo.setDimCode(dim.getCode());
                 vo.setDisplayName(MemberUtil.getDisplayName(item));
                 res.add(vo);
             });
@@ -161,6 +164,20 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
             }
         }
         return codes;
+    }
+
+    @Override
+    public Map<String, String> getDimMap(String cubeid) {
+        Map<String, String> codesMap = new HashMap<>();
+        Cube cube = cubeMapper.selectByPrimaryKey(cubeid);
+        if (cube == null) {
+            throw new ScriptException(cubeid + "不存在!");
+        }
+        List<Member> dims = getMemberByIds(cube.getDimids());
+        for (Member dim : dims) {
+            codesMap.put(dim.getId(), dim.getCode());
+        }
+        return codesMap;
     }
 
     private Map<String, List<DimColumn>> getMembers(List<Member> dims) {
@@ -264,7 +281,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         Cube oldcube = findById(cube.getId());
         cube.setPosition(oldcube.getPosition());
         update(cube);
-        if (!StringUtils.equals(oldcube.getDimids(), cube.getDimids())) {
+        if (!StringUtils.equals(oldcube.getDimids(), cube.getDimids())) {//维度不匹配,重构模型
             CheckTable(cube);//重建事实表
             ReloadModeAndData(cube, false);//重新load模型和数据
         }

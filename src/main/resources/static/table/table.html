@@ -159,17 +159,16 @@
                 };
             } else {
                 var cols = [];
-                for (let i = 0; i < col.length; i++) {
-                    var colOptions = col[i].options;
+                for (var item of col) {
+                    var colOptions = item.options;
                     var slice = [];
                     for (let j = 0; j < colOptions.length; j++) {
                         var option = colOptions[j];
                         slice.push({
-                            filed: option.code,
+                            field: option.dimCode + '.' + option.code,
                             title: option.displayName,
                             edit: 'text',
-                            event: option.dimCode + '.' + option.code,
-                            minWidth: 80
+                            event: option.dimCode + '.' + option.code
                         });
                     }
                     cols.push(slice);
@@ -179,11 +178,13 @@
                     var index = 0;
                     var slicecols = [];
                     while (items = colCross.next()) {
-                        var eventStr;
+                        var eventStr, filedStr;
                         for (var item of items) {
                             if (eventStr) {
-                                item.event = eventStr + "#" + item.event
+                                item.field = filedStr + "#" + item.filed;
+                                item.event = eventStr + "#" + item.event;
                             } else {
+                                filedStr = item.filed;
                                 eventStr = item.event;
                             }
                         }
@@ -197,9 +198,9 @@
                     if (rows) {
                         rows += "__";
                     }
-                    rows += item.dimCode;
+                    rows += item.dimId;
                     newCol0.push({
-                        filed: item.dimCode,
+                        field: item.dimCode,
                         title: item.dimName,
                         fixed: 'left',
                         width: '100',
@@ -219,14 +220,17 @@
                     if (colstrs) {
                         colstrs += "__";
                     }
+                    colstrs += item.dimId;
+                }
                 //展示已知数据
                 tableoptions = {
-                    elem: '#maintable'
-                    , id: 'maintable'
-                    , height: 'full-85'
-                    , cols: cols
-                    , url: '/cube/getData?cubeid=' + cubeid + '&pages=' + pages + "&rows=" + rows+"&cols="+colstrs
-                    , parseData: function (res) { //res 即为原始返回的数据
+                    elem: '#maintable',
+                    id: 'maintable',
+                    height: 'full-185',
+                    cellMinWidth: 80,
+                    cols: cols,
+                    url: '/cube/getData?cubeid=' + cubeid + '&pages=' + pages + "&rows=" + rows + "&cols=" + colstrs,
+                    parseData: function (res) { //res 即为原始返回的数据
                         return {
                             "code": res.code == 200 ? 0 : res.code, //解析接口状态
                             "msg": res.message, //解析提示文本

@@ -168,7 +168,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
             BeanUtil.copyProperties(item, vo);
             vo.setDatatypedetail(DataType.getStr(item.getDatatype()));
             vo.setStatusdetail(StatusType.getStr(item.getStatus()));
-            vo.setCodedetail(MemberUtil.getCodeDetail(item));
+            vo.setCodedetail(MemberUtil.getLevelName(item));
             res.add(vo);
         });
         List<MemberVO> finalRes = SortUtil.sort(res);

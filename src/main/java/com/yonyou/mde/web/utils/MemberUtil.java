@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MemberUtil {
-    public static String getCodeDetail(Member member) {//凭借空格字符串
+    public static String getLevelName(Member member) {//凭借空格字符串
         int g = member.getGeneration();
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < g; i++) {
