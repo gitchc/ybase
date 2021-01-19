@@ -121,6 +121,7 @@ img {
 .col .item {
     width: 100px;
     display: inline-block;
+    margin-left:0px;
 }
 
 
@@ -154,27 +155,27 @@ img {
     margin-right: 5px;
 }
 
-.row {
-    margin-left: 5px;
-    width: 100px;
-    float: left;
-}
 
 .row .item {
     margin-top: 0px;
 }
 
 #row {
-    height: calc(100% - 70px);
+    height: calc(100% - 65px);
     padding-top: 5px;
     border: #e6e6e6 1px solid;
 }
-.row{
-    height: 100%;
-}
+
 .panel {
     background-color: #fff;
 }
+.row {
+    margin-left: 5px;
+    width: 100px;
+    float: left;
+    height: calc(100% - 5px);
+}
+
 #righttable,#app{
     height: calc(100% - 70px);
 }
@@ -245,7 +246,7 @@ body, html {
 }
 
 #dimlayout {
-    height: calc(100% - 10px);
+    height: calc(100% - 15px);
 }
 
 .layrow, .layui-card {

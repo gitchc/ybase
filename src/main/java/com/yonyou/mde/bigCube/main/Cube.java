@@ -1,11 +1,14 @@
 package com.yonyou.mde.bigCube.main;
 
-import com.yonyou.mde.api.MultiDimModelApi;
 import com.yonyou.mde.bigCube.interfaces.ICube;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.model.MultiDimModel;
+import com.yonyou.mde.model.api.MultiDimModelApi;
 import com.yonyou.mde.model.graph.DimTree;
 import com.yonyou.mde.model.result.SliceResult;
+import com.yonyou.mde.util.KafkaUtil;
+import kafka.Kafka;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,18 +60,23 @@ public class Cube implements ICube {
 
     public void setData(String exp, Object value) throws MdeException {
         Double vl = 0d;
-        if (value instanceof String) {
-            vl = Double.parseDouble(value.toString());
+        if (value instanceof String) {//区分 0 跟 空
+            String vlstr = value.toString();
+            if (StringUtils.isNotBlank(vlstr)) {
+                vl = Double.parseDouble(vlstr);
+            }else {
+                content.clear(exp);//清空数据
+            }
         } else if (value instanceof Double) {
             vl = (Double) value;
         }
-        Map<String, Object> keyvalue = new HashMap<>();
+        Map<String, Object> keyvalues = new HashMap<>();
         for (String dimexp : exp.split("#")) {
             String[] dimToValues = dimexp.split("\\.");
-            keyvalue.put(dimToValues[0], dimToValues[1]);
+            keyvalues.put(dimToValues[0], dimToValues[1]);
         }
-        keyvalue.put("VALUE", vl);
-        content.set(Arrays.asList(keyvalue),true);
+        keyvalues.put("VALUE", vl);
+        content.set(Arrays.asList(keyvalues), true);
     }
 
     public Dimension getDimension(String dimName) {

@@ -1,9 +1,9 @@
 package com.yonyou.mde.bigCube.main;
 
-import com.yonyou.mde.api.MultiDimModelApi;
 import com.yonyou.mde.context.MdeContext;
 import com.yonyou.mde.model.MultiDimModel;
 import com.yonyou.mde.bigCube.interfaces.IServer;
+import com.yonyou.mde.model.api.MultiDimModelApi;
 
 public class Server implements IServer {
     private static Server server;
@@ -15,7 +15,7 @@ public class Server implements IServer {
 
     public static Server getServer() {
         if (server == null) {
-            server = new Server(MdeContext.get());
+            server = new Server(MdeContext.getInstance());
         }
         return server;
     }

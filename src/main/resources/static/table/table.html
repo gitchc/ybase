@@ -195,7 +195,6 @@
             if (isInit) {
                 app.initPages();
             } else {
-                isInit=true;
                 window.app = new Vue({
                     el: '#app',
                     components: {
@@ -218,8 +217,8 @@
                         initPages() {
                             fetchGet("/cube/getPages?id=" + cubeid, function (data) {
                                 app.page = data;
-                                app.col=[];
-                                app.row=[];
+                                app.col = [];
+                                app.row = [];
                             });
                         },
                         onStart() {
@@ -263,101 +262,96 @@
             }
             return pages;
         }, loadTabeData(isBlank, page, row, col) {
-            var tableoptions = {};
-            if (isBlank) {
-                tableoptions = {
-                    elem: '#maintable'
-                    , id: 'maintable'
-                    , height: 'full-275'
-                    , cellMinWidth: 100
-                    , cols: [[{field: 'col', title: '', width: '1'}]]
-                    , data: []
-                };
-            } else {
-                var cols = [];
-                var colstrs = "";
-                for (var item of col) {//遍历col,拼接列头
-                    if (colstrs) {
-                        colstrs += "__";
-                    }
-                    colstrs += item.dimId;
-                    var colOptions = item.options;
-                    var slice = [];
-                    for (let j = 0; j < colOptions.length; j++) {
-                        var option = colOptions[j];
-                        slice.push({
-                            field: option.dimCode + '.' + option.code,
-                            title: option.displayName,
-                            edit: 'text',
-                            event: option.dimCode + '.' + option.code
-                        });
-                    }
-                    cols.push(slice);
-                }
-                if (col.length > 1) {//列多余2的,求笛卡尔集合
-                    var colCross = CrossUtils.cross(cols);
-                    var slicecols = [];
-                    while (items = colCross.next()) {
-                        var newitems = [];
-                        var eventStr = "", filedStr = "";
-                        for (var olditem of items) {
-                            var item = {};
-                            item = clone(olditem, item);
-                            if (eventStr) {
-                                filedStr = filedStr + "#" + item.field;
-                                eventStr = eventStr + "#" + item.event;
-                            } else {
-                                filedStr = item.field;
-                                eventStr = item.event;
-                            }
-                            delete item.field;
-                            delete item.event;
-                            newitems.push(item);
-                        }
-                        slicecols.push(newitems);
-                        newitems[0].field = filedStr;
-                        newitems[0].event = eventStr;
-                    }
-                    cols = CrossUtils.transpose(slicecols);//转置
-                }
-                var newCol0 = [];
-                var rows = "";
-                for (var item of row) {
-                    if (rows) {
-                        rows += "__";
-                    }
-                    rows += item.dimId;
-                    newCol0.push({
-                        field: item.dimCode,
-                        title: item.dimName,
-                        width: '100',
-                        rowspan: col.length,
-                        fixed: "left"
-                    })
-                }
-                cols[0] = newCol0.concat(cols[0]);//设置表头
-
-                var pages = this.getPage(page, "__");
-                //展示已知数据
-                tableoptions = {
-                    elem: '#maintable',
-                    id: 'maintable',
-                    height: 'full-275',
-                    cellMinWidth: 100,
-                    cols: cols,
-                    url: '/cube/getData?cubeid=' + cubeid + '&pages=' + pages + "&rows=" + rows + "&cols=" + colstrs,
-                    parseData: function (res) { //res 即为原始返回的数据
-                        return {
-                            "code": res.code == 200 ? 0 : res.code, //解析接口状态
-                            "msg": res.message, //解析提示文本
-                            "count": res.data.length, //解析数据长度
-                            "data": res.data //解析数据列表
-                        };
-                    }
-                };
-
+            var defaults = {
+                elem: '#maintable'
+                , id: 'maintable'
+                , height: 'full-280'
+                , cellMinWidth: 100
+                , cols: [[{field: 'col', title: '', width: '1'}]]
+                , data: []
+            };
+            if (isBlank) {//空白的时候,清空所有表所有数据
+                table.render(defaults);//重载
+                return;
             }
-            table.render(tableoptions);//重载
+            var cols = [];
+            var colstrs = "";
+            for (var item of col) {//遍历col,拼接列头
+                if (colstrs) {
+                    colstrs += "__";
+                }
+                colstrs += item.dimId;
+                var colOptions = item.options;
+                var slice = [];
+                for (let j = 0; j < colOptions.length; j++) {
+                    var option = colOptions[j];
+                    slice.push({
+                        field: option.dimCode + '.' + option.code,
+                        title: option.displayName,
+                        edit: 'text',
+                        event: option.dimCode + '.' + option.code
+                    });
+                }
+                cols.push(slice);
+            }
+            if (col.length > 1) {//列多余2的,求笛卡尔集合
+                var colCross = CrossUtils.cross(cols);
+                var slicecols = [];
+                while (items = colCross.next()) {
+                    var newitems = [];
+                    var eventStr = "", filedStr = "";
+                    for (var olditem of items) {
+                        var item = {};
+                        item = clone(olditem, item);
+                        if (eventStr) {
+                            filedStr = filedStr + "#" + item.field;
+                            eventStr = eventStr + "#" + item.event;
+                        } else {
+                            filedStr = item.field;
+                            eventStr = item.event;
+                        }
+                        delete item.field;
+                        delete item.event;
+                        newitems.push(item);
+                    }
+                    slicecols.push(newitems);
+                    newitems[0].field = filedStr;
+                    newitems[0].event = eventStr;
+                }
+                cols = CrossUtils.transpose(slicecols);//转置
+            }
+            var newCol0 = [];
+            var rows = "";
+            for (var item of row) {
+                if (rows) {
+                    rows += "__";
+                }
+                rows += item.dimId;
+                newCol0.push({
+                    field: item.dimCode,
+                    title: item.dimName,
+                    width: '100',
+                    rowspan: col.length,
+                    fixed: "left"
+                })
+            }
+            cols[0] = newCol0.concat(cols[0]);//设置表头
+            var pages = this.getPage(page, "__");
+            //展示已知数据
+            var toptions = {
+                cols: cols,
+                url: '/cube/getData?cubeid=' + cubeid + '&pages=' + pages + "&rows=" + rows + "&cols=" + colstrs,
+                parseData: function (res) { //res 即为原始返回的数据
+                    return {
+                        "code": res.code == 200 ? 0 : res.code, //解析接口状态
+                        "msg": res.message, //解析提示文本
+                        "count": res.data.length, //解析数据长度
+                        "data": res.data //解析数据列表
+                    };
+                }
+            };
+            var options = $.extend(defaults, toptions);
+            table.render(options);//重载
         }
     }
 </script>

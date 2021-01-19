@@ -4,8 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
-import com.yonyou.mde.MdeInit;
-import com.yonyou.mde.api.MultiDimModelApi;
+import com.yonyou.mde.Mde;
 import com.yonyou.mde.config.MdeConfiguration;
 import com.yonyou.mde.datasource.DataSourceInfo;
 import com.yonyou.mde.dto.DimColumn;
@@ -13,8 +12,8 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.model.Dimension;
 import com.yonyou.mde.model.dataloader.DataLoaderTemplate;
 import com.yonyou.mde.model.dataloader.DefaultLoaderConfig;
+import com.yonyou.mde.model.dataloader.ModelInitializer;
 import com.yonyou.mde.model.dataloader.config.LoadType;
-import com.yonyou.mde.model.dim.DimCacheManager;
 import com.yonyou.mde.model.meta.CubeMeta;
 import com.yonyou.mde.model.processor.DefalutRowGenerator;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
@@ -59,17 +58,19 @@ public class CubeAction {
     public void loadCubeData() throws MdeException {
         MdeConfiguration configuration = new MdeConfiguration();
         configuration.setDistributed(false);
-        configuration.setModelInitializer((cubeName) -> {
-            try {
-                loadCubeMeta();
-            } catch (MdeException e) {
-                e.printStackTrace();
+        configuration.setModelInitializer(new ModelInitializer() {
+            @Override
+            public void init(String cubeName, Map<String, String> map) throws Exception {
+                try {
+                    CubeAction.this.loadCubeMeta();
+                } catch (MdeException e) {
+                    e.printStackTrace();
+                }
             }
         });
         configuration.setProcessor(new DefalutRowGenerator());
-        MdeInit.init(configuration);
+        Mde.init(configuration);
         loadCubeMeta();//加载元数据信息
-        MultiDimModelApi.loadModel(cubeName);
     }
 
     //根据Cube信息加载模型
@@ -83,7 +84,7 @@ public class CubeAction {
             boolean isRollUp = dim.getDatatype() == 11;
             dimensions.add(new Dimension(code, code, code));
             dimCodes.add(code);
-            DimCacheManager.setCubeDimByList(cubeName, code, members.get(code), isRollUp);
+            Mde.setModelDimTree(cubeName, code, members.get(code), isRollUp);
         }
         if (StringUtils.isBlank(loadSql)) {
             this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName;
