@@ -95,17 +95,17 @@ tr.layui-tablePlug-data-temp {
   height: 18px;
 }
 
-/* 让固定列区域在鼠标移入的时候支持滚动 - 开始 */
+/*!* 让固定列区域在鼠标移入的时候支持滚动 - 开始 *!
 .layui-table-fixed.layui-table-fixed-scroll .layui-table-body:hover {
   overflow-y: auto;
-}
+}*/
 
 .layui-table-fixed-r.layui-table-fixed-scroll:hover {
   right: 0 !important;
 }
 
 .layui-table-fixed-l.layui-table-fixed-scroll:hover {
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 /* 让固定列区域在鼠标移入的时候支持滚动 - 结束 */

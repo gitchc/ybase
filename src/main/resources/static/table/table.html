@@ -195,6 +195,7 @@
             if (isInit) {
                 app.initPages();
             } else {
+                isInit=true;
                 window.app = new Vue({
                     el: '#app',
                     components: {
