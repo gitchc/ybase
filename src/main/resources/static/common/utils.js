@@ -19,7 +19,15 @@ function showInfo(msg, title) {
 
     });
 }
-
+//克隆工具
+var clone = function (origin, target) {
+    for (var prop in origin) {
+        if (origin.hasOwnProperty(prop)) {
+            target[prop] = origin[prop];
+        }
+    }
+    return target;
+}
 // 错误提示
 function showError(msg, title) {
     if (!title)

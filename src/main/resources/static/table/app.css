@@ -132,9 +132,12 @@ img {
 .page {
     min-width: 800px;
 }
-.page .panel{
+
+.page .panel {
     min-height: 35px;
+    border: #e6e6e6 1px solid;
 }
+
 .col {
     min-width: 800px;
     margin-left: 100px;
@@ -142,10 +145,15 @@ img {
 
 .col .panel {
     height: 30px;
+    border: #e6e6e6 1px solid;
 }
-.col .title{
-    margin-left:-10px;
+
+.col .title {
+    margin-left: -10px;
+    vertical-align:middle;
+    margin-right: 5px;
 }
+
 .row {
     margin-left: 5px;
     width: 100px;
@@ -157,14 +165,19 @@ img {
 }
 
 #row {
-    height: 400px;
+    height: calc(100% - 70px);
     padding-top: 5px;
+    border: #e6e6e6 1px solid;
 }
-
+.row{
+    height: 100%;
+}
 .panel {
     background-color: #fff;
 }
-
+#righttable,#app{
+    height: calc(100% - 70px);
+}
 .maintable {
     margin-left: 100px;
 }
@@ -224,4 +237,35 @@ img {
 
 .indent7 {
     text-indent: 7em;
+}
+
+
+body, html {
+    height: 100%;
+}
+
+#dimlayout {
+    height: calc(100% - 10px);
+}
+
+.layrow, .layui-card {
+    height: calc(100% - 5px);
+}
+
+.leftpd {
+    height: calc(100% - 70px);
+    overflow: auto;
+}
+
+#dimlayout {
+    padding: 10px 10px 0px 10px;
+
+}
+
+.hide {
+    display: none !important;
+}
+
+.layui-form-item .layui-input-inline {
+    width: 400px;
 }

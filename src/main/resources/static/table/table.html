@@ -18,55 +18,124 @@
     <link rel="stylesheet" href="/static/element-ui@2.14.1/index.css" media="all">
 </head>
 <body>
-<div id="app">
-    <div class="container page">
-        <div class="layer title">Page</div>
-        <div class="panel">
-            <draggable v-model="page" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
-                       chosen-class="chosen" handle=".drag-handle" @start="onStart" @end="onEnd" :move="onMove">
-                <div class="item" v-for="item in page">
-                    <div class="drag-handle">&#9776; {{item.dimName}}</div>
-                    <el-select v-model="item.selectedMember" placeholder="请选择">
-                        <el-option v-for="option in item.options" :class="`indent${option.generation}`"
-                                   :key="option.code" :label="option.displayName"
-                                   :value="option.code">
-                        </el-option>
-                    </el-select>
-                </div>
-            </draggable>
-        </div>
-    </div>
-    <div class="container row">
-        <div class="layer title">行</div>
-        <div id="row" class="panel">
-            <draggable v-model="row" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
-                       chosen-class="chosen" @start="onStart" @end="onEnd">
-                <div class="item" v-for="item in row">
-                    <div class="drag-handle">&#9776; {{item.dimName}}</div>
-                </div>
-            </draggable>
-        </div>
-    </div>
-    <div class="container col">
-        <span @click="exchange"></span>
-        <div class="layer title">列</div>
-        <div class="panel">
-            <draggable v-model="col" group="dim" animation="100" drag-class="drag" ghost-class="ghost"
-                       chosen-class="chosen" @start="onStart" @end="onEnd">
-                <div class="item" v-for="item in col">
-                    <div class="drag-handle">&#9776; {{item.dimName}}</div>
-                </div>
-            </draggable>
-        </div>
-    </div>
-    <div class="maintable">
-        <table class="layui-hide" id="maintable" lay-filter="maintable">
-        </table>
-    </div>
+<div id="dimlayout">
+    <div class="layui-row layui-col-space10 layrow">
+        <div class=" layui-col-md3 layrow" id="left">
+            <!-- 填充内容 -->
+            <div class="layui-card">
+                <div class="layui-row">
+                    <div class="layui-elem-quote layui-quote-nm">
+                        <strong>模型信息</strong>
+                        <div class="layui-btn-group">
+                            <!-- <button type="button" action="add" class="layui-btn layui-btn-primary layui-btn-sm">
+                                 <i class="layui-icon">&#xe654;</i>
+                             </button>
+                             <button type="button" action="delete" class="layui-btn layui-btn-primary layui-btn-sm">
+                                 <i class="layui-icon">&#xe640;</i>
+                             </button>
+                             <button type="button" action="attr" class="layui-btn layui-btn-primary layui-btn-sm">
+                                 <i class="layui-icon">&#xe641;</i>
+                             </button>-->
+                        </div>
 
+                    </div>
+                </div>
+                <div class="layui-row leftpd">
+                    <form class="layui-form" id="leftree">
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class=" layui-col-md9 layrow" id="right">
+            <div class="layui-card">
+                <div class="layui-row">
+                    <div class="layui-elem-quote layui-quote-nm">
+                        <a href="javascript:;" title="侧边伸缩">
+                            <i class="layui-icon layui-icon-shrink-right" id="tabclick"></i>
+                        </a>
+                        <strong>视图</strong>
+                        <!-- <button type="button" action="save" class="layui-btn layui-btn-primary layui-btn-sm">
+                             <i class="layui-icon">&#xe62a;</i>
+                         </button>-->
+                    </div>
+                </div>
+                <div class="layui-row" id="righttable" style="display: none">
+                    <div id="app">
+                        <div class="container page">
+                            <div class="layer title">Page</div>
+                            <div class="panel">
+                                <draggable v-model="page" group="dim" animation="100" drag-class="drag"
+                                           ghost-class="ghost"
+                                           chosen-class="chosen" handle=".drag-handle" @start="onStart" @end="onEnd"
+                                           :move="onMove">
+                                    <div class="item" v-for="item in page">
+                                        <div class="drag-handle">&#9776; {{item.dimName}}</div>
+                                        <el-select v-model="item.selectedMember" placeholder="请选择">
+                                            <el-option v-for="option in item.options"
+                                                       :class="`indent${option.generation}`"
+                                                       :key="option.code" :label="option.displayName"
+                                                       :value="option.code">
+                                            </el-option>
+                                        </el-select>
+                                    </div>
+                                </draggable>
+                            </div>
+                        </div>
+                        <div class="container row">
+                            <div class="layer title">行</div>
+                            <div id="row" class="panel">
+                                <draggable v-model="row" group="dim" animation="100" drag-class="drag"
+                                           ghost-class="ghost"
+                                           chosen-class="chosen" @start="onStart" @end="onEnd">
+                                    <div class="item" v-for="item in row">
+                                        <div class="drag-handle">&#9776; {{item.dimName}}</div>
+                                    </div>
+                                </draggable>
+                            </div>
+                        </div>
+                        <div class="container col">
+                            <div class="layer ">
+                                <div class="title">列</div>
+                                <div id="tool" class="layui-btn-group">
+                                    <button type="button" @click="fresh"
+                                            class="layui-btn layui-btn-primary layui-btn-sm">
+                                        <i class="layui-icon">&#xe9aa;</i>
+                                    </button>
+                                    <button type="button" @click="exchange"
+                                            class="layui-btn layui-btn-primary layui-btn-sm">
+                                        <i class="layui-icon"> &#xe691;</i>
+                                    </button>
+                                    <!--
+                                      <button type="button" action="attr" class="layui-btn layui-btn-primary layui-btn-sm">
+                                          <i class="layui-icon">&#xe641;</i>
+                                      </button>-->
+                                </div>
+                            </div>
+                            <div class="panel">
+                                <draggable v-model="col" group="dim" animation="100" drag-class="drag"
+                                           ghost-class="ghost"
+                                           chosen-class="chosen" @start="onStart" @end="onEnd">
+                                    <div class="item" v-for="item in col">
+                                        <div class="drag-handle">&#9776; {{item.dimName}}</div>
+                                    </div>
+                                </draggable>
+                            </div>
+                        </div>
+                        <div class="maintable">
+                            <table class="layui-hide" id="maintable" lay-filter="maintable">
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 <script>
-    var cubeid = "133874023144632320";
+    var cubeid = "";
     Vue.component('vuedraggable', window.vuedraggable.name);
     layui.config({
         base: '/static/layuiadmin/' //静态资源所在路径
@@ -75,85 +144,143 @@
         index: 'lib/index' //主入口模块
     }).use(['tablePlug', 'index', 'jquery', 'layer', 'form', 'table'], function () {
         window.$ = layui.$, window.layer = layui.layer, window.form = layui.form, window.table = layui.table;
-        Ctable.initPages();
-        Ctable.bindTableEvent();
+        cubeEvent.initData();
+        cubeEvent.initEvent();
     });
-
-    var Ctable = {
-        initPages: function () {
-            window.app = new Vue({
-                el: '#app',
-                components: {
-                    vuedraggable,
-                }, created: function () {
-                    this.initPages();
-                }
-                , updated: function () {
-                    if (this.row.length == 0 || this.col.length == 0) {
-                        Ctable.loadTabeData(true);
-                    } else {
-                        Ctable.loadTabeData(false, this.page, this.row, this.col);
-                    }
-                }
-                , data() {
-                    return {
-                        drag: false,
-                        page: [],
-                        col: [],
-                        row: []
-                    };
-                },
-                methods: {
-                    initPages() {
-                        fetchGet("/cube/getPages?id=" + cubeid, function (data) {
-                            app.page = data;
-                        });
-                    },
-                    onStart() {
-                        this.drag = true;
-                    },
-                    onEnd() {
-                        this.drag = false;
-                    },
-                    onMove(e) {
-                        // if (e.draggedContext.element.id == 4) return false;
-                        return true;
-                    },
-                    exchange() {
-                        var temp = this.row;
-                        this.row = this.col;
-                        this.col = temp;
-                    }
-
-                }
+    var cubeEvent = {
+        initData: function () {
+            $('#leftree').empty();
+            $('#righttable').hide();
+            fetchGet("/cube/list", function (data) {
+                data.forEach((item, index, array) => {
+                    $('#leftree').append(' <div class="layui-row"> ' +
+                        '<div class=" layui-col-md8" ><label cubeid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
+                        '                   class="layui-form-label cubelable">' + item.cubename + '</label> </div> \n' +
+                        '</div>');
+                })
+                form.render();
+                cubeEvent.restInitVars();
             });
-        }, bindTableEvent() {
+        },
+        restInitVars: function () {
+            window.cubeid = "";
+        }, initEvent() {
+            //隐藏工具栏
+            $('#tabclick').click(function () {
+                $(this).toggleClass('layui-icon-shrink-right layui-icon-spread-left');
+                $('#left').toggleClass('hide');
+                $('#right').toggleClass('layui-col-md9 layui-col-md12');
+            })
+            //cube点击事件
+            $("#leftree").on("click", ".cubelable", function () {
+                $('.cubelable').removeClass("custom-tree-item-clicked");
+                $(this).addClass("custom-tree-item-clicked");
+                cubeid = $(this).attr('cubeid');
+                Ctable.initPages();
+                $('#righttable').show();
+            });
             //监听单元格编辑
             table.on('edit(maintable)', function (obj) {
                 var value = obj.value //得到修改后的值
                     , data = obj.data.rowkey //得到所在行所有键值
                     , field = obj.field; //得到字段
-                 fetchPost("/cube/updateValue", {path:filed+data,cubeid:cubeid})
+                fetchPost("/cube/setData", {path: field + "#" + data, cubeid: cubeid, value: value})
             });
 
-/*            //监听单元格事件
-            table.on('tool(maintable)', function (obj) {
-               console.log(obj.event)
-            });*/
+        }
+    };
+    var isInit = false;
+    var Ctable = {
+        initPages: function () {
+            if (isInit) {
+                app.initPages();
+            } else {
+                isInit=true;
+                window.app = new Vue({
+                    el: '#app',
+                    components: {
+                        vuedraggable,
+                    }, created: function () {
+                        this.initPages();
+                    }
+                    , updated: function () {
+                        this.fresh();
+                    }
+                    , data() {
+                        return {
+                            drag: false,
+                            page: [],
+                            col: [],
+                            row: []
+                        };
+                    },
+                    methods: {
+                        initPages() {
+                            fetchGet("/cube/getPages?id=" + cubeid, function (data) {
+                                app.page = data;
+                                app.col=[];
+                                app.row=[];
+                            });
+                        },
+                        onStart() {
+                            this.drag = true;
+                        },
+                        onEnd() {
+                            this.drag = false;
+                        },
+                        onMove(e) {
+                            // if (e.draggedContext.element.id == 4) return false;
+                            return true;
+                        },
+                        exchange() {
+                            var temp = this.row;
+                            this.row = this.col;
+                            this.col = temp;
+                        }, fresh() {
+                            if (this.row.length == 0 || this.col.length == 0) {
+                                Ctable.loadTabeData(true);
+                            } else {
+                                Ctable.loadTabeData(false, this.page, this.row, this.col);
+                            }
+                        }
+
+                    }
+                });
+            }
+
+        }, getPage(page, split) {//获取当前页面维
+            var pages = "";
+            for (var item of page) {
+                if (pages) {
+                    if (split) {
+                        pages += split;
+                    } else {
+                        pages += "#";
+                    }
+
+                }
+                pages += item.dimCode + "." + item.selectedMember;
+            }
+            return pages;
         }, loadTabeData(isBlank, page, row, col) {
             var tableoptions = {};
             if (isBlank) {
                 tableoptions = {
                     elem: '#maintable'
                     , id: 'maintable'
-                    , height: 'full-85'
+                    , height: 'full-275'
                     , cellMinWidth: 100
-                    , cols: [[{field: 'col', title: '',width:'1'}]]
+                    , cols: [[{field: 'col', title: '', width: '1'}]]
                     , data: []
                 };
             } else {
                 var cols = [];
-                for (var item of col) {
+                var colstrs = "";
+                for (var item of col) {//遍历col,拼接列头
+                    if (colstrs) {
+                        colstrs += "__";
+                    }
+                    colstrs += item.dimId;
                     var colOptions = item.options;
                     var slice = [];
                     for (let j = 0; j < colOptions.length; j++) {
@@ -167,7 +294,7 @@
                     }
                     cols.push(slice);
                 }
-                if (col.length > 1) {
+                if (col.length > 1) {//列多余2的,求笛卡尔集合
                     var colCross = CrossUtils.cross(cols);
                     var slicecols = [];
                     while (items = colCross.next()) {
@@ -209,25 +336,13 @@
                     })
                 }
                 cols[0] = newCol0.concat(cols[0]);//设置表头
-                var pages = "";
-                for (var item of page) {
-                    if (pages) {
-                        pages += "__";
-                    }
-                    pages += item.dimCode + "." + item.selectedMember;
-                }
-                var colstrs = "";
-                for (var item of col) {
-                    if (colstrs) {
-                        colstrs += "__";
-                    }
-                    colstrs += item.dimId;
-                }
+
+                var pages = this.getPage(page, "__");
                 //展示已知数据
                 tableoptions = {
                     elem: '#maintable',
                     id: 'maintable',
-                    height: 'full-185',
+                    height: 'full-275',
                     cellMinWidth: 100,
                     cols: cols,
                     url: '/cube/getData?cubeid=' + cubeid + '&pages=' + pages + "&rows=" + rows + "&cols=" + colstrs,
@@ -244,14 +359,6 @@
             }
             table.render(tableoptions);//重载
         }
-    }
-    var clone = function (origin, target) {
-        for (var prop in origin) {
-            if (origin.hasOwnProperty(prop)) {
-                target[prop] = origin[prop];
-            }
-        }
-        return target;
     }
 </script>
 </body>

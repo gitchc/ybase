@@ -27,6 +27,7 @@ public class CubeController {
     private CubeService cubeService;
     @Resource
     private CubeDataService cubeDataService;
+
     @RequestMapping("/insert")
     public Result add(Cube cube) {
         cubeService.insertCube(cube);
@@ -78,12 +79,13 @@ public class CubeController {
 
     @RequestMapping("/getData")
     public Result getData(@RequestParam String cubeid, @RequestParam String pages, @RequestParam String rows, @RequestParam String cols, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) throws MdeException {
-        List<Map<String, Object>> data  = cubeDataService.getData(cubeid,pages,rows,cols);
+        List<Map<String, Object>> data = cubeDataService.getData(cubeid, pages, rows, cols);
         return ResultGenerator.genSuccessResult(data);
     }
+
     @RequestMapping("/setData")
-    public Result getData(@RequestParam String cubeid, @RequestParam String path,@RequestParam String value) throws MdeException {
-        cubeDataService.setData(cubeid,path,value);
+    public Result getData(String cubeid, String path, String value) throws MdeException {
+        cubeDataService.setData(cubeid, path, value);
         return ResultGenerator.genSuccessResult();
     }
 }

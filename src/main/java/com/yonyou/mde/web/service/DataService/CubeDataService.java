@@ -57,9 +57,9 @@ public class CubeDataService {
         List<Member[]> colslice = new MuiltCross(colDims).getAll();//获取列维度的笛卡尔积
 
         String queryExp = getQueryExp(cubeid, pageFindStr, rowslice, dimMap);//根据前1000条获取要查询的切片组合
-        Map<String, Object> datas = getDatas(cubeCode, rowArr, colArr, queryExp,dimMap);//根据切片和行列,取值
+        Map<String, Object> datas = getDatas(cubeCode, rowArr, colArr, queryExp, dimMap);//根据切片和行列,取值
         List<String> colFields = getFileds(colslice, dimMap);//获取拼接表格的filed
-        List<Map<String, Object>> results = getTableData(dimMap, rowslice, datas, colFields);//获取Table的键对值
+        List<Map<String, Object>> results = getTableData(pageFindStr, dimMap, rowslice, datas, colFields);//获取Table的键对值
         return results;
     }
 
@@ -69,24 +69,27 @@ public class CubeDataService {
      * @param: rowslice
      * @param: datas
      * @param: colFields
-     * @return: java.util.List<java.util.Map<java.lang.String,java.lang.Object>>
+     * @return: java.util.List<java.util.Map < java.lang.String, java.lang.Object>>
      * @author chenghch
-     *
      */
-    private List<Map<String, Object>> getTableData(Map<String, String> dimMap, List<Member[]> rowslice, Map<String, Object> datas, List<String> colFields) {
+    private List<Map<String, Object>> getTableData(String pageFindStr, Map<String, String> dimMap, List<Member[]> rowslice, Map<String, Object> datas, List<String> colFields) {
         List<Map<String, Object>> results = new ArrayList<>();
-        for (Member[] members : rowslice) {
+        for (Member[] rowMembers : rowslice) {
             Map<String, Object> rs = new HashMap<>();
             results.add(rs);
             StringBuilder sb = new StringBuilder();
-            for (Member member : members) {//拼接维度成员
+            for (Member member : rowMembers) {//拼接维度成员
                 String dimcode = dimMap.get(member.getDimid());
                 String field = StrUtil.format("{}.{}", dimcode, member.getCode());
                 sb.append("#");
                 sb.append(field);
                 rs.put(dimcode, MemberUtil.getLevelName(member));
             }
-            rs.put("rowkey", sb.toString());
+            if (StringUtils.isNotBlank(pageFindStr)) {
+                rs.put("rowkey", pageFindStr + sb.toString());
+            } else {
+                rs.put("rowkey", sb.toString());
+            }
             for (String colfield : colFields) {//拼接数据列
                 StringBuilder newSb = new StringBuilder();
                 newSb.append(sb);
@@ -100,15 +103,14 @@ public class CubeDataService {
     }
 
     /**
- * @description: 通过表达式获取Data的Map值
- * @param: cubeCode
- * @param: rowArr
- * @param: colArr
- * @param: queryExp
- * @return: java.util.Map<java.lang.String,java.lang.Object>
- * @author chenghch
- *
- */
+     * @description: 通过表达式获取Data的Map值
+     * @param: cubeCode
+     * @param: rowArr
+     * @param: colArr
+     * @param: queryExp
+     * @return: java.util.Map<java.lang.String, java.lang.Object>
+     * @author chenghch
+     */
     private Map<String, Object> getDatas(String cubeCode, String[] rowArr, String[] colArr, String queryExp, Map<String, String> dimMap) throws MdeException {
         SliceResult sliceResult = Server.getServer().getCube(cubeCode).find(queryExp);//根据切片查询出来所有值
         Table table = sliceResult.toTable();
@@ -228,6 +230,6 @@ public class CubeDataService {
     public void setData(String cubeid, String path, String value) throws MdeException {
         Cube cube = cubeService.getCubeById(cubeid);
         String cubeCode = cube.getCubecode();
-        Server.getServer().getCube(cubeCode).setVal(path, value);
+        Server.getServer().getCube(cubeCode).setData(path, value);
     }
 }

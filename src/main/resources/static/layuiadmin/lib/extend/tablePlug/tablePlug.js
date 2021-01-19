@@ -1187,7 +1187,7 @@ layui.define(['table'], function (exports) {
         // 因为加了缓存需要同步他的hide信息
         if (cacheFlag) {
           // 将缓存中的hide跟cols的hide同步
-          item.hide = cols[key[0]][key[1]].hide;
+          item.hide = cols[key[0]][key[1]]?cols[key[0]][key[1]].hide:false;
           // 将之前设置的选中状态去掉
           item[table.config.checkName] = false;
           // 如果没有设置width默认成自动分配宽度列

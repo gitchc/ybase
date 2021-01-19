@@ -7,6 +7,8 @@ import com.yonyou.mde.model.MultiDimModel;
 import com.yonyou.mde.model.graph.DimTree;
 import com.yonyou.mde.model.result.SliceResult;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,18 +45,30 @@ public class Cube implements ICube {
         return content.clear(exp);
     }
 
-    public int setVal(String exp, Object e) throws MdeException {
-        if (e instanceof String) {
-            return content.setVal(exp, Double.parseDouble(e.toString()));
+    public int setVal(String exp, Object value) throws MdeException {
+        Double vl = 0d;
+        if (value instanceof String) {
+            vl = Double.parseDouble(value.toString());
+        } else if (value instanceof Double) {
+            vl = (Double) value;
         }
-        if (e instanceof Double) {
-            return content.setVal(exp, (Double) e);
-        }
-        return 0;
+        return content.setVal(exp, vl);
     }
 
-    public boolean setValues(List<Map<String, Object>> pathValues) throws MdeException {
-        return content.set(pathValues);
+    public void setData(String exp, Object value) throws MdeException {
+        Double vl = 0d;
+        if (value instanceof String) {
+            vl = Double.parseDouble(value.toString());
+        } else if (value instanceof Double) {
+            vl = (Double) value;
+        }
+        Map<String, Object> keyvalue = new HashMap<>();
+        for (String dimexp : exp.split("#")) {
+            String[] dimToValues = dimexp.split("\\.");
+            keyvalue.put(dimToValues[0], dimToValues[1]);
+        }
+        keyvalue.put("VALUE", vl);
+        content.set(Arrays.asList(keyvalue),true);
     }
 
     public Dimension getDimension(String dimName) {
