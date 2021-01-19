@@ -81,4 +81,9 @@ public class CubeController {
         List<Map<String, Object>> data  = cubeDataService.getData(cubeid,pages,rows,cols);
         return ResultGenerator.genSuccessResult(data);
     }
+    @RequestMapping("/setData")
+    public Result getData(@RequestParam String cubeid, @RequestParam String path,@RequestParam String value) throws MdeException {
+        cubeDataService.setData(cubeid,path,value);
+        return ResultGenerator.genSuccessResult();
+    }
 }

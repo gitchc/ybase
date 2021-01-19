@@ -71,8 +71,9 @@
     layui.config({
         base: '/static/layuiadmin/' //静态资源所在路径
     }).extend({
+        tablePlug: 'lib/extend/tablePlug/tablePlug',
         index: 'lib/index' //主入口模块
-    }).use(['index', 'jquery', 'layer', 'form', 'table'], function () {
+    }).use(['tablePlug', 'index', 'jquery', 'layer', 'form', 'table'], function () {
         window.$ = layui.$, window.layer = layui.layer, window.form = layui.form, window.table = layui.table;
         Ctable.initPages();
         Ctable.bindTableEvent();
@@ -130,31 +131,24 @@
             //监听单元格编辑
             table.on('edit(maintable)', function (obj) {
                 var value = obj.value //得到修改后的值
-                    , data = obj.data //得到所在行所有键值
+                    , data = obj.data.rowkey //得到所在行所有键值
                     , field = obj.field; //得到字段
-                fetchPost("/cube/updateValue", {code: data.code, attrvalue: value, attrname: field})
-            });
-            //监听行单击事件（双击事件为：rowDouble）
-            table.on('row(maintable)', function (obj) {
-                var data = obj.data;
-                //标注选中样式
-                obj.tr.addClass('layui-table-click').siblings().removeClass('layui-table-click');
+                 fetchPost("/cube/updateValue", {path:filed+data,cubeid:cubeid})
             });
 
-            //监听单元格事件
+/*            //监听单元格事件
             table.on('tool(maintable)', function (obj) {
-                let attrids = obj.event.split(',');
-                FIELD = attrids[0];
-                ATTRID = attrids[1];
-            });
+               console.log(obj.event)
+            });*/
         }, loadTabeData(isBlank, page, row, col) {
             var tableoptions = {};
             if (isBlank) {
                 tableoptions = {
                     elem: '#maintable'
                     , id: 'maintable'
-                    , height: 'full-185'
-                    , cols: [[{field: 'col', title: '无'}]]
+                    , height: 'full-85'
+                    , cellMinWidth: 100
+                    , cols: [[{field: 'col', title: '',width:'1'}]]
                     , data: []
                 };
             } else {
@@ -175,20 +169,27 @@
                 }
                 if (col.length > 1) {
                     var colCross = CrossUtils.cross(cols);
-                    var index = 0;
                     var slicecols = [];
                     while (items = colCross.next()) {
-                        var eventStr, filedStr;
-                        for (var item of items) {
+                        var newitems = [];
+                        var eventStr = "", filedStr = "";
+                        for (var olditem of items) {
+                            var item = {};
+                            item = clone(olditem, item);
                             if (eventStr) {
-                                item.field = filedStr + "#" + item.filed;
-                                item.event = eventStr + "#" + item.event;
+                                filedStr = filedStr + "#" + item.field;
+                                eventStr = eventStr + "#" + item.event;
                             } else {
-                                filedStr = item.filed;
+                                filedStr = item.field;
                                 eventStr = item.event;
                             }
+                            delete item.field;
+                            delete item.event;
+                            newitems.push(item);
                         }
-                        slicecols.push(items);
+                        slicecols.push(newitems);
+                        newitems[0].field = filedStr;
+                        newitems[0].event = eventStr;
                     }
                     cols = CrossUtils.transpose(slicecols);//转置
                 }
@@ -202,9 +203,9 @@
                     newCol0.push({
                         field: item.dimCode,
                         title: item.dimName,
-                        fixed: 'left',
                         width: '100',
-                        rowspan: col.length
+                        rowspan: col.length,
+                        fixed: "left"
                     })
                 }
                 cols[0] = newCol0.concat(cols[0]);//设置表头
@@ -227,7 +228,7 @@
                     elem: '#maintable',
                     id: 'maintable',
                     height: 'full-185',
-                    cellMinWidth: 80,
+                    cellMinWidth: 100,
                     cols: cols,
                     url: '/cube/getData?cubeid=' + cubeid + '&pages=' + pages + "&rows=" + rows + "&cols=" + colstrs,
                     parseData: function (res) { //res 即为原始返回的数据
@@ -243,6 +244,14 @@
             }
             table.render(tableoptions);//重载
         }
+    }
+    var clone = function (origin, target) {
+        for (var prop in origin) {
+            if (origin.hasOwnProperty(prop)) {
+                target[prop] = origin[prop];
+            }
+        }
+        return target;
     }
 </script>
 </body>

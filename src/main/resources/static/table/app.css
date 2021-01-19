@@ -132,7 +132,9 @@ img {
 .page {
     min-width: 800px;
 }
-
+.page .panel{
+    min-height: 35px;
+}
 .col {
     min-width: 800px;
     margin-left: 100px;

@@ -86,10 +86,14 @@ public class CubeDataService {
                 sb.append(field);
                 rs.put(dimcode, MemberUtil.getLevelName(member));
             }
+            rs.put("rowkey", sb.toString());
             for (String colfield : colFields) {//拼接数据列
-                sb.append("#");
-                sb.append(colfield);
-                rs.put(colfield, getValue(datas, sb.toString()));
+                StringBuilder newSb = new StringBuilder();
+                newSb.append(sb);
+                newSb.append("#");
+                newSb.append(colfield);
+                Object value = getValue(datas, newSb.toString());
+                rs.put(colfield, value);
             }
         }
         return results;
@@ -221,4 +225,9 @@ public class CubeDataService {
         return dims;
     }
 
+    public void setData(String cubeid, String path, String value) throws MdeException {
+        Cube cube = cubeService.getCubeById(cubeid);
+        String cubeCode = cube.getCubecode();
+        Server.getServer().getCube(cubeCode).setVal(path, value);
+    }
 }

@@ -37,7 +37,8 @@ var CrossUtils = {
             }
         };
         var size = 1;
-        for (var i = 0; i < args.length; i++) {
+        var length = args.length-1;
+        for (var i = length; i >= 0; i--) {
             size = size * args[i].length;
             that[i] = args[i];
         }

@@ -1,11 +1,11 @@
 package com.yonyou.mde.bigCube.main;
 
 import com.yonyou.mde.api.MultiDimModelApi;
+import com.yonyou.mde.bigCube.interfaces.ICube;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.model.MultiDimModel;
 import com.yonyou.mde.model.graph.DimTree;
 import com.yonyou.mde.model.result.SliceResult;
-import com.yonyou.mde.bigCube.interfaces.ICube;
 
 import java.util.List;
 import java.util.Map;
@@ -43,8 +43,14 @@ public class Cube implements ICube {
         return content.clear(exp);
     }
 
-    public int setVal(String exp, double e) throws MdeException {
-        return content.setVal(exp, e);
+    public int setVal(String exp, Object e) throws MdeException {
+        if (e instanceof String) {
+            return content.setVal(exp, Double.parseDouble(e.toString()));
+        }
+        if (e instanceof Double) {
+            return content.setVal(exp, (Double) e);
+        }
+        return 0;
     }
 
     public boolean setValues(List<Map<String, Object>> pathValues) throws MdeException {
@@ -55,7 +61,7 @@ public class Cube implements ICube {
         String name = dimName.toUpperCase();
         DimTree dimTree = model.getDimTree(name);
         if (dimTree != null) {
-            return new Dimension(dimTree,name);
+            return new Dimension(dimTree, name);
         }
         return null;
     }
