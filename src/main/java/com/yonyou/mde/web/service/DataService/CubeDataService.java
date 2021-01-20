@@ -90,7 +90,7 @@ public class CubeDataService {
             if (StringUtils.isNotBlank(pageFindStr)) {
                 rs.put("rowkey", pageFindStr.concat("#").concat(sb.toString()));
             } else {
-                    rs.put("rowkey", sb.toString());
+                rs.put("rowkey", sb.toString());
             }
             for (String colfield : colFields) {//拼接数据列
                 StringBuilder newSb = new StringBuilder("#");

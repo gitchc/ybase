@@ -65,7 +65,7 @@ public class ScriptController {
     @RequestMapping("/list")
     public Result list(@RequestParam String keyword, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         Condition condition = new Condition(Script.class);
-        condition.orderBy("name asc");
+        condition.orderBy("name").asc();
         if (StringUtils.isNotBlank(keyword)) {
             if (keyword.contains("*")) {
                 keyword = keyword.replaceAll("\\*", "%");

@@ -20,7 +20,7 @@ public class JavaClassUtils {
     public static final String[] importClass = new String[]{
             "import cn.hutool.db.*;"
             , "import com.google.common.base.Stopwatch;"
-            , "import com.yonyou.mde.api.*;"
+            , "import com.yonyou.mde.model.api.*;"
             , "import com.yonyou.mde.context.MdeContext;"
             , "import com.yonyou.mde.dto.*;"
             , "import com.yonyou.mde.error.MdeException;"
@@ -30,7 +30,7 @@ public class JavaClassUtils {
             , "import com.yonyou.mde.model.result.*;"
             , "import com.yonyou.mde.util.*;"
             , "import com.yonyou.mde.model.meta.*;"
-            , "import com.yonyou.mde.web.script.Utils.*;"
+            , "import com.yonyou.mde.web.script.utils.*;"
             , "import com.yonyou.mde.web.script.*;"
             , "import com.yonyou.mde.web.core.ScriptException;"
             , "import org.apache.commons.lang3.StringUtils;"

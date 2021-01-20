@@ -53,7 +53,7 @@ img {
 
 .title {
     color: #fff;
-    padding: 3px 10px;
+    padding: 2px 10px;
     display: inline-block;
     position: relative;
     background-color: #ff7373;
@@ -61,7 +61,7 @@ img {
 }
 
 .title_xl {
-    padding: 3px 15px;
+    padding: 2px 15px;
     font-size: 40px
 }
 
@@ -140,8 +140,11 @@ img {
 }
 
 .col {
-    min-width: 800px;
-    margin-left: 100px;
+    width: calc(100% - 120px);
+    float: left;
+    position: relative;
+    margin-left: 0px;
+    margin-top:0px;
 }
 
 .col .panel {
@@ -150,7 +153,6 @@ img {
 }
 
 .col .title {
-    margin-left: -10px;
     vertical-align:middle;
     margin-right: 5px;
 }
@@ -161,8 +163,7 @@ img {
 }
 
 #row {
-    height: calc(100% - 65px);
-    padding-top: 5px;
+    height: calc(100% - 55px);
     border: #e6e6e6 1px solid;
 }
 
@@ -171,7 +172,6 @@ img {
 }
 .row {
     margin-left: 5px;
-    width: 100px;
     float: left;
     height: calc(100% - 5px);
 }
@@ -180,7 +180,9 @@ img {
     height: calc(100% - 70px);
 }
 .maintable {
-    margin-left: 109px;
+    width: calc(100% - 120px);
+    float: left;
+    position: relative;
 }
 
 /*定义要拖拽元素的样式*/
