@@ -138,7 +138,11 @@ img {
     min-height: 35px;
     border: #e6e6e6 1px solid;
 }
-
+.page .el-input__inner{
+    padding: 0 10px;
+    height: 35px;
+    line-height: 35px;
+}
 .col {
     width: calc(100% - 120px);
     float: left;
@@ -159,7 +163,7 @@ img {
 
 
 .row .item {
-    margin-top: 0px;
+    margin-top: 5px;
 }
 
 #row {
