@@ -12,6 +12,8 @@ import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.MuiltCross;
+import com.yonyou.mde.web.utils.SnowID;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import tech.tablesaw.api.Row;
@@ -27,6 +29,7 @@ import java.util.*;
  * @Date 2021/1/14 20:21
  */
 @Service
+@Log4j2
 public class CubeDataService {
     @Resource
     private CubeMapper cubeMapper;
@@ -190,33 +193,65 @@ public class CubeDataService {
         return findStr.toString();
     }
 
+    /**
+     * @description: 拼接查询Col的表达式
+     * @param: colslice
+     * @param: dimMap
+     * @return: java.lang.StringBuilder
+     * @author chenghch
+     */
     private StringBuilder getColExp(List<Member[]> colslice, Map<String, String> dimMap) {
         StringBuilder colexps = new StringBuilder();
         for (Member[] members : colslice) {
-            StringBuilder colexp = new StringBuilder();
-            for (Member member : members) {
-                if (colexp.length() == 0) {
-                    colexp.append("#");
-                    colexp.append(dimMap.get(member.getDimid()));
-                    colexp.append(".[");
-                    colexp.append(member.getCode());
-                } else {
-                    colexp.append(",");
-                    colexp.append(member.getCode());
+            if (members.length == 1) {//dim.[member]会被把[member]当成编码,单个的时候只能携程dim.member不能带中括号
+                colexps.append("#");
+                Member member = members[0];
+                colexps.append(dimMap.get(member.getDimid()));
+                colexps.append(".");
+                colexps.append(member.getCode());
+            } else {
+                StringBuilder colexp = new StringBuilder();
+                for (Member member : members) {
+                    if (colexp.length() == 0) {
+                        colexp.append("#");
+                        colexp.append(dimMap.get(member.getDimid()));
+                        colexp.append(".[");
+                        colexp.append(member.getCode());
+                    } else {
+                        colexp.append(",");
+                        colexp.append(member.getCode());
+                    }
                 }
+                colexp.append("]");
+                colexps.append(colexp);
             }
-            colexp.append("]");
-            colexps.append(colexp);
+
         }
         return colexps;
     }
 
+    private final String singleFormat = "{}.{}";
+    private final String muiltFormat = "{}.[{}]";
+
+    /**
+     * @description: 拼接查询row的表达式
+     * @param: findRowMembers
+     * @param: dimMap
+     * @return: java.lang.StringBuilder
+     * @author chenghch
+     */
     private StringBuilder getRowExp(Map<String, Set<String>> findRowMembers, Map<String, String> dimMap) {
         StringBuilder findStr = new StringBuilder();
         for (Map.Entry<String, Set<String>> entry : findRowMembers.entrySet()) {
             String dimid = entry.getKey();
             Set<String> members = entry.getValue();
-            String rowFindStr = StrUtil.format("{}.[{}]", dimMap.get(dimid), StringUtils.join(members, ","));
+            String rowFindStr;
+            String dimcode = dimMap.get(dimid);
+            if (members.size() == 1) {//dim.[member]会被把[member]当成编码,单个的时候只能携程dim.member不能带中括号
+                rowFindStr = StrUtil.format(singleFormat, dimcode, StringUtils.join(members, ","));
+            } else {
+                rowFindStr = StrUtil.format(muiltFormat, dimcode, StringUtils.join(members, ","));
+            }
             findStr.append("#");
             findStr.append(rowFindStr);
         }
@@ -260,9 +295,128 @@ public class CubeDataService {
         return dims;
     }
 
+    /**
+     * @description: 多维模型set值
+     * @param: cubeid
+     * @param: path
+     * @param: value
+     * @return: void
+     * @author chenghch
+     */
     public void setData(String cubeid, String path, String value) throws MdeException {
         Cube cube = cubeService.getCubeById(cubeid);
         String cubeCode = cube.getCubecode();
         Server.getServer().getCube(cubeCode).setData(path, value);
+    }
+
+    public void insertOrUpdate(String cubename, Map<String, Object> rawRow) {
+        boolean isupdate = updateValue(cubename, rawRow);
+        if (!isupdate) {
+            inSertValue(cubename, rawRow);
+        }
+
+    }
+
+    /**
+     * @description: 根据多维库的消息, 插入到数据库
+     * @param: rawRow
+     * @return: void
+     * @author chenghch
+     */
+    private final String insertTemplate = "insert into {}({})values({})";
+
+    private void inSertValue(String cubename, Map<String, Object> rawRow) {
+        StringBuilder param = new StringBuilder("id");
+        StringBuilder paramvalues = new StringBuilder("'" + SnowID.nextID() + "'");
+        for (Map.Entry<String, Object> entry : rawRow.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue().toString();
+            param.append(",");
+            param.append(key);
+            paramvalues.append(",");
+            paramvalues.append("'").append(value).append("'");
+        }
+        String insertSql = StrUtil.format(insertTemplate, cubename, param.toString(), paramvalues.toString());
+        try {
+            cubeMapper.insertSql(insertSql);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("#数据操作失败#:" + insertSql);
+        }
+    }
+
+    /**
+     * @description: 根据多维库的消息, 更新到数据库
+     * @param: rawRow
+     * @return: void
+     * @author chenghch
+     */
+    private final String updateTemplate = "update {} set value={},txtvalue='{}',isdeleted=0 where {}";
+    private final String updateParamTemplate = "{}='{}'";
+
+    private boolean updateValue(String cubename, Map<String, Object> rawRow) {
+        StringBuilder keyvalues = new StringBuilder();
+        String value = "";
+        String textvalue = "";
+        for (Map.Entry<String, Object> entry : rawRow.entrySet()) {
+            String pkey = entry.getKey();
+            String pvalue = entry.getValue().toString();
+            if ("TXTVALUE".equals(pkey)) {
+                textvalue = pvalue;
+            } else if ("VALUE".equals(pkey)) {
+                value = pvalue;
+            } else {
+                if (keyvalues.length() > 0) {
+                    keyvalues.append(" and ");
+                }
+                keyvalues.append(StrUtil.format(updateParamTemplate, pkey, pvalue));
+            }
+        }
+        String updatesql = StrUtil.format(updateTemplate, cubename, value, textvalue, keyvalues.toString());
+        try {
+            return cubeMapper.executeSql(updatesql) > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("#数据操作失败#:" + updatesql);
+            return true;
+        }
+    }
+
+    /**
+     * @description: 根据多维库的消息, 删除数据
+     * @param: rawRow
+     * @param: isSoft 软删除,硬删除
+     * @return: void
+     * @author chenghch
+     */
+    private final String deleteTemplate = "delete from {} where {}";
+    private final String deleteParamTemplate = "{}='{}'";
+    private final String delSoftTemplate = "update {} set isdeleted=1 where {}";
+    public void deleteValue(String cubename, Map<String, Object> rawRow,boolean isSoft) {
+        StringBuilder keyvalues = new StringBuilder();
+        for (Map.Entry<String, Object> entry : rawRow.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue().toString();
+            if ("VALUE".equals(key) || ("TXTVALUE".equals(key))) {
+                continue;
+            } else {
+                if (keyvalues.length() > 0) {
+                    keyvalues.append(" and ");
+                }
+                keyvalues.append(StrUtil.format(deleteParamTemplate, key, value));
+            }
+        }
+        String deleSql;
+        if (isSoft) {
+            deleSql = StrUtil.format(delSoftTemplate, cubename, keyvalues.toString());
+        }else {
+            deleSql = StrUtil.format(deleteTemplate, cubename, keyvalues.toString());
+        }
+        try {
+            cubeMapper.executeSql(deleSql);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("#数据操作失败#:" + deleSql);
+        }
     }
 }

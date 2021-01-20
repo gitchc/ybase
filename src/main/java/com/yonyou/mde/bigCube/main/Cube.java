@@ -6,8 +6,6 @@ import com.yonyou.mde.model.MultiDimModel;
 import com.yonyou.mde.model.api.MultiDimModelApi;
 import com.yonyou.mde.model.graph.DimTree;
 import com.yonyou.mde.model.result.SliceResult;
-import com.yonyou.mde.util.KafkaUtil;
-import kafka.Kafka;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -16,36 +14,36 @@ import java.util.List;
 import java.util.Map;
 
 public class Cube implements ICube {
-    private MultiDimModelApi content;
+    private MultiDimModelApi modelApi;
     private MultiDimModel model;
 
-    public Cube(MultiDimModelApi content, MultiDimModel model) {
-        this.content = content;
+    public Cube(MultiDimModelApi modelApi, MultiDimModel model) {
+        this.modelApi = modelApi;
         this.model = model;
     }
 
     public SliceResult find(String exp) throws MdeException {
-        return content.find(exp);
+        return modelApi.find(exp);
     }
 
     public double findVal(String exp) throws MdeException {
-        return content.findVal(exp);
+        return modelApi.findVal(exp);
     }
 
     public List<Map<String, Object>> findTxt(String exp) throws MdeException {
-        return content.findTxt(exp);
+        return modelApi.findTxt(exp);
     }
 
     public SliceResult exp(String exp) throws MdeException {
-        return content.exp(exp);
+        return modelApi.exp(exp);
     }
 
     public SliceResult calc(String exp) throws MdeException {
-        return content.calc(exp);
+        return modelApi.calc(exp);
     }
 
     public int clear(String exp) throws MdeException {
-        return content.clear(exp);
+        return modelApi.clear(exp);
     }
 
     public int setVal(String exp, Object value) throws MdeException {
@@ -55,7 +53,7 @@ public class Cube implements ICube {
         } else if (value instanceof Double) {
             vl = (Double) value;
         }
-        return content.setVal(exp, vl);
+        return modelApi.setVal(exp, vl);
     }
 
     public void setData(String exp, Object value) throws MdeException {
@@ -65,7 +63,7 @@ public class Cube implements ICube {
             if (StringUtils.isNotBlank(vlstr)) {
                 vl = Double.parseDouble(vlstr);
             }else {
-                content.clear(exp);//清空数据
+                modelApi.clear(exp);//清空数据
             }
         } else if (value instanceof Double) {
             vl = (Double) value;
@@ -76,7 +74,7 @@ public class Cube implements ICube {
             keyvalues.put(dimToValues[0], dimToValues[1]);
         }
         keyvalues.put("VALUE", vl);
-        content.set(Arrays.asList(keyvalues), true);
+        modelApi.set(Arrays.asList(keyvalues));
     }
 
     public Dimension getDimension(String dimName) {

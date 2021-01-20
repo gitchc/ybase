@@ -3720,7 +3720,7 @@ function TreeBuilder() {
 	this.insertionMode = null;
 	this.insertionModeName = "";
 	this.originalInsertionMode = "";
-	this.inQuirksMode = false; // TODO quirks mode
+	this.inQuirksMode = false; //  quirks mode
 	this.compatMode = "no quirks";
 	this.framesetOk = true;
 	this.redirectAttachToFosterParent = false;

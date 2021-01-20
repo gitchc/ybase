@@ -180,6 +180,12 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         return codesMap;
     }
 
+    /**
+     * @description: 组织多维模型需要的数据
+     * @param: dims
+     * @return: java.util.Map<java.lang.String, java.util.List < com.yonyou.mde.dto.DimColumn>>
+     * @author chenghch
+     */
     private Map<String, List<DimColumn>> getMembers(List<Member> dims) {
         Map<String, List<DimColumn>> result = new HashMap<>();
         for (Member dim : dims) {
@@ -206,12 +212,22 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                 dimColumn.setCode(code);
                 dimColumn.setParentPk(pkParent);
                 dimColumn.setParentCode(pkParent);
+                boolean isrollup = getRowUp(member);
+//                dimColumn.setRollUp(isrollup);//todo 设置节点的自动卷积属性
                 dimColumn.setWeight(member.getWeight());
                 dimColumn.setExtraParam(attrValues.get(code)); //设置属性
                 dimColumns.add(dimColumn);
             }
         }
         return result;
+    }
+
+    //判断节点类型
+    private boolean getRowUp(Member member) {
+        if (member.getDatatype() == DataType.MAROLLUP) {//非自动卷积类型
+            return false;
+        }
+        return true;
     }
 
     @Override

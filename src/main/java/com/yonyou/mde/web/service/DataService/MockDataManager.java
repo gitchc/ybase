@@ -128,7 +128,7 @@ public class MockDataManager {
         for (Member dim : dims) {
             createsql.append(dim.getCode() + " varchar(100),\n");
         }
-        createsql.append("value decimal(19,6),txtvalue varchar(1000)\n");
+        createsql.append("value decimal(19,6),txtvalue varchar(1000),isdeleted int default 0\n");
         createsql.append(")");
         return createsql.toString();
     }

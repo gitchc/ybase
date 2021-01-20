@@ -355,7 +355,7 @@ layui.define(['table'], function (exports) {
   //   }
   // };
 
-  // 目前新增了一个errorView处理异常或者没有数据的时候的显示问题，对应的initTable中的一些逻辑是否还有必要待定 todo
+  // 目前新增了一个errorView处理异常或者没有数据的时候的显示问题，对应的initTable中的一些逻辑是否还有必要待定
   // 初始化表格的内容
   table.Class.prototype.initTable = function () {
     var that = this;

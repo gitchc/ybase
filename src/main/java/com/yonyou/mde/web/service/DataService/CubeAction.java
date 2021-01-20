@@ -15,7 +15,6 @@ import com.yonyou.mde.model.dataloader.DefaultLoaderConfig;
 import com.yonyou.mde.model.dataloader.ModelInitializer;
 import com.yonyou.mde.model.dataloader.config.LoadType;
 import com.yonyou.mde.model.meta.CubeMeta;
-import com.yonyou.mde.model.processor.DefalutRowGenerator;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
 import com.yonyou.mde.web.model.Dim;
 import com.yonyou.mde.web.model.Member;
@@ -58,6 +57,7 @@ public class CubeAction {
     public void loadCubeData() throws MdeException {
         MdeConfiguration configuration = new MdeConfiguration();
         configuration.setDistributed(false);
+        configuration.setWriteBackByBiz(true);//回写库
         configuration.setModelInitializer(new ModelInitializer() {
             @Override
             public void init(String cubeName, Map<String, String> map) throws Exception {
@@ -68,13 +68,13 @@ public class CubeAction {
                 }
             }
         });
-        configuration.setProcessor(new DefalutRowGenerator());
+        configuration.setProcessor(new WriteBackProcesser());
         Mde.init(configuration);
         loadCubeMeta();//加载元数据信息
     }
 
     //根据Cube信息加载模型
-    public void loadCubeMeta() throws MdeException {
+    private void loadCubeMeta() throws MdeException {
         //所有维度
         List<String> dimCodes = new ArrayList<>();
         List<Dimension> dimensions = new ArrayList<>();
@@ -87,7 +87,7 @@ public class CubeAction {
             Mde.setModelDimTree(cubeName, code, members.get(code), isRollUp);
         }
         if (StringUtils.isBlank(loadSql)) {
-            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName;
+            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName+" where isdeleted=0";
         } else {
             this.tableName = getTableName(loadSql);
         }
@@ -101,7 +101,7 @@ public class CubeAction {
         DataLoaderTemplate.getInstance().loadModel(configf);
     }
 
-    protected CubeMeta createCubeMeta(String cubeName, String factTableName,
+    private CubeMeta createCubeMeta(String cubeName, String factTableName,
                                       String tablePkColName, List<Dimension> dimensions) {
         return CubeMeta.builder()
                 .modelName(cubeName)

@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.core;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import tk.mybatis.mapper.common.BaseMapper;
@@ -17,5 +18,7 @@ public interface Mapper<T>
         IdsMapper<T>,
         InsertListMapper<T> {
     @Update("${sql}")
-    void executeSql(@Param(value = "sql") String sql);
+    int executeSql(@Param(value = "sql") String sql);
+    @Insert("${sql}")
+    void insertSql(@Param(value = "sql") String sql);
 }

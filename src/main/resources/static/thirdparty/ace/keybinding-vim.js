@@ -240,7 +240,7 @@ ace.define("ace/keyboard/vim",["require","exports","module","ace/range","ace/lib
     sel.toSingleRange(ranges[0].clone());
     var session = this.ace.session;
     for (var i = 0; i < ranges.length; i++) {
-      var range = session.$clipRangeToDocument(ranges[i]); // todo why ace doesn't do this?
+      var range = session.$clipRangeToDocument(ranges[i]); //  why ace doesn't do this?
       sel.addRange(range);
     }
   };

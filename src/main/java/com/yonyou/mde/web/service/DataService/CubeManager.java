@@ -15,18 +15,19 @@ import java.util.Map;
 public class CubeManager {
     //加载Cube数据
     public static void loadCubeData(DataSourceConfig config, String cubeName, String tableName, String loadSql, List<Member> dims, Map<String, List<DimColumn>> members) throws MdeException {
+        removeData(cubeName);//卸载Cube,然后重新Load
         CubeAction manager = new CubeAction(config, cubeName, tableName, loadSql, dims,members);
         manager.loadCubeData();
     }
 
     //卸载数据
-    public static void removeData(String cubecode) {
-        MdeContext mdeContext = MdeContext.get();
-        mdeContext.removeModel(cubecode);
+    public static void removeData(String cubeName) {
+        MdeContext mdeContext = MdeContext.getInstance();
+        mdeContext.removeModel(cubeName);
     }
 
     //重新load数据
     public static void reloadData(String cubecode) {
-        //todo 未完成
+
     }
 }

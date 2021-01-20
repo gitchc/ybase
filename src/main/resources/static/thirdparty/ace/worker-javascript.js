@@ -11081,7 +11081,7 @@ var errors = {
   E028: "Illegal comma.",
   E029: "Unclosed string.",
   E030: "Expected an identifier and instead saw '{a}'.",
-  E031: "Bad assignment.", // FIXME: Rephrase
+  E031: "Bad assignment.", // : Rephrase
   E032: "Expected a small integer or 'false' and instead saw '{a}'.",
   E033: "Expected an operator and instead saw '{a}'.",
   E034: "get/set are ES5 features.",
@@ -11165,7 +11165,7 @@ var warnings = {
   W041: null,
   W042: "Avoid EOL escaping.",
   W043: "Bad escaping of EOL. Use option multistr if needed.",
-  W044: "Bad or unnecessary escaping.", /* TODO(caitp): remove W044 */
+  W044: "Bad or unnecessary escaping.", /* (caitp): remove W044 */
   W045: "Bad number '{a}'.",
   W046: "Don't use extra leading zeros '{a}'.",
   W047: "A trailing decimal point can be confused with a dot: '{a}'.",
