@@ -117,7 +117,7 @@ public class CubeDataService {
      * @author chenghch
      */
     private Map<String, Object> getDatas(String cubeCode, String[] rowArr, String[] colArr, String queryExp, Map<String, String> dimMap) throws MdeException {
-        SliceResult sliceResult = Server.getServer().getCube(cubeCode).find(queryExp);//根据切片查询出来所有值
+        SliceResult sliceResult = Server.getCube(cubeCode).find(queryExp);//根据切片查询出来所有值
         Table table = sliceResult.toTable();
         Map<String, Object> datas = new HashMap<>();
         for (Row row : table) {
@@ -306,7 +306,7 @@ public class CubeDataService {
     public void setData(String cubeid, String path, String value) throws MdeException {
         Cube cube = cubeService.getCubeById(cubeid);
         String cubeCode = cube.getCubecode();
-        Server.getServer().getCube(cubeCode).setData(path, value);
+        Server.getCube(cubeCode).setData(path, value);
     }
 
     public void insertOrUpdate(String cubename, Map<String, Object> rawRow) {

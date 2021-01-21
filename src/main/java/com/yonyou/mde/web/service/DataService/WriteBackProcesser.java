@@ -50,8 +50,8 @@ public class WriteBackProcesser extends BaseEventDataProcessor {
                 });
                 break;
             case DELETE:
-                ThreadUtil.execAsync(() -> {//异步执行,不保证数据的准确性,软删除
-                    dataService.deleteValue(cubeName, rawRow,true);
+                ThreadUtil.execAsync(() -> {//异步执行,不保证数据的准确性,硬删除
+                    dataService.deleteValue(cubeName, rawRow,false);
                 });
 
                 break;

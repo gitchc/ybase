@@ -64,6 +64,7 @@ public class Cube implements ICube {
                 vl = Double.parseDouble(vlstr);
             }else {
                 modelApi.clear(exp);//清空数据
+                return;
             }
         } else if (value instanceof Double) {
             vl = (Double) value;

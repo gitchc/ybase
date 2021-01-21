@@ -20,12 +20,13 @@ public class ATTR extends Tester {
     public void exp() throws MdeException {
         Cube cube = Server.getServer().getCube("测试属性");
         Dimension dimension = cube.getDimension("QIJIAN");
-//        testAnd(cube, dimension);//测试if and
-//        testOr(cube, dimension);//测试if or
+        testAnd(cube, dimension);//测试if and
+        testOr(cube, dimension);//测试if or
+        insert(cube);//新值赋值,if
         testContinue(cube, dimension); //测试if continue*/
 
 //        qiantao(cube, dimension);//嵌套,if 暂时不支持
-//        insert(cube);//新值赋值,if 暂时不支持
+
 
     }
 
@@ -90,7 +91,7 @@ public class ATTR extends Tester {
 
     private void testAnd(Cube cube, Dimension dimension) throws MdeException {
         SliceResult sliceResult;
-        cube.exp("(VERSION.第1版)->if((attrValue(QIJIAN,~,所属季度)==1 && attrValue(QIJIAN,~,所属月)==1),VERSION.第1版=attrValue(QIJIAN,~,所属季度),VERSION.第1版=100+attrValue(QIJIAN,~,所属月))");
+        cube.exp("(VERSION.第1版)->if((attrValue(QIJIAN,~,所属季度)==1 && attrValue(QIJIAN,~,所属月)==1),VERSION.第1版=attrValue(QIJIAN,~,所属季度),VERSION.第1版=attrValue(QIJIAN,~,所属月)+100)");
         sliceResult = cube.find("VERSION.第1版");
         printAll(sliceResult);
         for (Row row : sliceResult.toTable()) {

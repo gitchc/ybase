@@ -106,8 +106,9 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
         }
         String id = script.getId();
         try {
+            Map<String, Object> runResult = JavaClassUtils.Run(script, vars);
             scriptMapper.updateStatus(id, ScriptType.SUCESS);
-            return JavaClassUtils.Run(script, vars);
+            return runResult;
         } catch (Exception e) {
             scriptMapper.updateStatus(id, ScriptType.FAIL);
             Map<String, Object> res = new HashMap<>();

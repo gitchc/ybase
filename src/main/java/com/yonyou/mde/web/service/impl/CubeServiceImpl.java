@@ -213,7 +213,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                 dimColumn.setParentPk(pkParent);
                 dimColumn.setParentCode(pkParent);
                 boolean isrollup = getRowUp(member);
-//                dimColumn.setRollUp(isrollup);//todo 设置节点的自动卷积属性
+                dimColumn.setRollUp(isrollup);//todo 设置节点的自动卷积属性
                 dimColumn.setWeight(member.getWeight());
                 dimColumn.setExtraParam(attrValues.get(code)); //设置属性
                 dimColumns.add(dimColumn);

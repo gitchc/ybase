@@ -16,6 +16,7 @@ import com.yonyou.mde.model.dataloader.ModelInitializer;
 import com.yonyou.mde.model.dataloader.config.LoadType;
 import com.yonyou.mde.model.meta.CubeMeta;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
+import com.yonyou.mde.web.model.DataType;
 import com.yonyou.mde.web.model.Dim;
 import com.yonyou.mde.web.model.Member;
 import lombok.Data;
@@ -56,19 +57,16 @@ public class CubeAction {
 
     public void loadCubeData() throws MdeException {
         MdeConfiguration configuration = new MdeConfiguration();
-        configuration.setDistributed(false);
+        configuration.setDistributed(false);//是否启用分布式
         configuration.setWriteBackByBiz(true);//回写库
-        configuration.setModelInitializer(new ModelInitializer() {
-            @Override
-            public void init(String cubeName, Map<String, String> map) throws Exception {
-                try {
-                    CubeAction.this.loadCubeMeta();
-                } catch (MdeException e) {
-                    e.printStackTrace();
-                }
+        configuration.setModelInitializer((cubeName, map) -> {
+            try {
+                CubeAction.this.loadCubeMeta();
+            } catch (MdeException e) {
+                e.printStackTrace();
             }
         });
-        configuration.setProcessor(new WriteBackProcesser());
+        configuration.setProcessor(new WriteBackProcesser());//自定义回写数据库方法
         Mde.init(configuration);
         loadCubeMeta();//加载元数据信息
     }
@@ -81,13 +79,13 @@ public class CubeAction {
 
         for (Member dim : dims) {
             String code = dim.getCode();
-            boolean isRollUp = dim.getDatatype() == 11;
+            boolean isRollUp = dim.getDatatype() == DataType.AUTOROLLUP;
             dimensions.add(new Dimension(code, code, code));
             dimCodes.add(code);
             Mde.setModelDimTree(cubeName, code, members.get(code), isRollUp);
         }
         if (StringUtils.isBlank(loadSql)) {
-            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName+" where isdeleted=0";
+//            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName+" where isdeleted=0";
         } else {
             this.tableName = getTableName(loadSql);
         }
@@ -110,7 +108,7 @@ public class CubeAction {
                 .tablePkColName(tablePkColName)
                 .measureColName(DEFAULT_MEASURE_COLUMN)
                 .txtValueColName(DEFAULT_TXT_VALUE_COLUMN)
-                .dimensions(dimensions).loadSql(loadSql)
+                .dimensions(dimensions)
                 .build();
     }
 

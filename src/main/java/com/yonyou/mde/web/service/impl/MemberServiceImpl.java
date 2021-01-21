@@ -117,9 +117,9 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Override
     public void switchDim(Member member) {
         memberMapper.switchDim(member.getDimid(), member.getDatatype());
-        Integer olddatatype = 10;
-        if (member.getDatatype() == 10) {
-            olddatatype = 11;
+        Integer olddatatype = DataType.MAROLLUP;
+        if (member.getDatatype() == olddatatype) {
+            olddatatype = DataType.AUTOROLLUP;
         }
         memberMapper.switchMember(member.getDimid(), olddatatype, member.getDatatype());
     }

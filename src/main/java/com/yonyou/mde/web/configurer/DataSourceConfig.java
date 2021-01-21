@@ -14,5 +14,5 @@ public class DataSourceConfig {
     private String username;
     @Value("${spring.datasource.password}")
     private String password;
-    private String schema="console";
+    private String schema="";
 }
