@@ -2,9 +2,9 @@ package com.yonyou.mde.web.web;
 
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
-import com.yonyou.mde.web.model.Completer;
+import com.yonyou.mde.web.model.vos.Completer;
 import com.yonyou.mde.web.model.Script;
-import com.yonyou.mde.web.model.ScriptVo;
+import com.yonyou.mde.web.model.vos.ScriptVo;
 import com.yonyou.mde.web.service.ScriptService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;

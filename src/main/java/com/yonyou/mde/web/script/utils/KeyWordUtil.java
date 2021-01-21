@@ -1,7 +1,7 @@
 package com.yonyou.mde.web.script.utils;
 
 import com.yonyou.mde.web.script.IScript;
-import com.yonyou.mde.web.model.Completer;
+import com.yonyou.mde.web.model.vos.Completer;
 import sun.plugin.javascript.ReflectUtil;
 
 import java.lang.reflect.Method;

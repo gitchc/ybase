@@ -6,8 +6,8 @@ import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.AttrMapper;
 import com.yonyou.mde.web.dao.AttrvalueMapper;
 import com.yonyou.mde.web.model.Attr;
-import com.yonyou.mde.web.model.AttrValueVO;
-import com.yonyou.mde.web.model.Attrvalue;
+import com.yonyou.mde.web.model.vos.AttrValueVO;
+import com.yonyou.mde.web.model.AttrValue;
 import com.yonyou.mde.web.service.AttrvalueService;
 import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @Service
 @Transactional
-public class AttrvalueServiceImpl extends AbstractService<Attrvalue> implements AttrvalueService {
+public class AttrvalueServiceImpl extends AbstractService<AttrValue> implements AttrvalueService {
     @Resource
     private AttrvalueMapper attrvalueMapper;
     @Resource
@@ -83,12 +83,12 @@ public class AttrvalueServiceImpl extends AbstractService<Attrvalue> implements 
             attrid = attr.getId();
         }
 
-        Attrvalue nValue = attrvalueMapper.getAttrValue(attrid, attrValueVO.getCode());//查询属性值是否存在
+        AttrValue nValue = attrvalueMapper.getAttrValue(attrid, attrValueVO.getCode());//查询属性值是否存在
         if (nValue != null) {//有就更改
             nValue.setAttrvalue(attrValueVO.getAttrvalue());
             update(nValue);
         } else {//没有就新增
-            nValue = new Attrvalue();
+            nValue = new AttrValue();
             nValue.setAttrid(attrid);
             nValue.setMembercode(attrValueVO.getCode());
             nValue.setAttrvalue(attrValueVO.getAttrvalue());

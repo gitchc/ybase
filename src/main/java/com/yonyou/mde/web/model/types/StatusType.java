@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.model;
+package com.yonyou.mde.web.model.types;
 
 //状态类型
 public class StatusType {

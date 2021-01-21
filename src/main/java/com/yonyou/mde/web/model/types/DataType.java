@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.model;
+package com.yonyou.mde.web.model.types;
 
 //数据类型
 public class DataType {

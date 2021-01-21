@@ -1,7 +1,7 @@
 package com.yonyou.mde.web.service;
 import com.yonyou.mde.web.model.Attr;
 import com.yonyou.mde.web.core.Service;
-import com.yonyou.mde.web.model.ColVO;
+import com.yonyou.mde.web.model.vos.ColVO;
 
 import java.util.List;
 

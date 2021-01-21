@@ -1,7 +1,7 @@
 package com.yonyou.mde.web.utils;
 
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.model.Position;
+import com.yonyou.mde.web.model.entity.Position;
 
 import java.util.ArrayList;
 import java.util.Comparator;

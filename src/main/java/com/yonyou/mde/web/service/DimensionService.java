@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by CodeGenerator on 2020-12-10.
  */
-public interface MemberService extends Service<Member> {
+public interface DimensionService extends Service<Member> {
 
     String insertDim(Member member) throws ServiceException;
 

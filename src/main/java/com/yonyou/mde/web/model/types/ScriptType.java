@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.model;
+package com.yonyou.mde.web.model.types;
 
 public class ScriptType {
     public static final int UNRUN = 0;//未执行过

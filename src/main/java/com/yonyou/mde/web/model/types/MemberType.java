@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.model;
+package com.yonyou.mde.web.model.types;
 
 //成员类型
 public class MemberType {

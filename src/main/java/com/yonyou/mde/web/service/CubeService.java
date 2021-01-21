@@ -2,7 +2,7 @@ package com.yonyou.mde.web.service;
 
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.core.Service;
-import com.yonyou.mde.web.model.PageDim;
+import com.yonyou.mde.web.model.entity.PageDim;
 
 import java.util.List;
 import java.util.Map;

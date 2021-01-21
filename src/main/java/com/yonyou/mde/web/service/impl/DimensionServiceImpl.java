@@ -6,12 +6,13 @@ import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.AttrMapper;
 import com.yonyou.mde.web.dao.AttrvalueMapper;
 import com.yonyou.mde.web.dao.MemberMapper;
-import com.yonyou.mde.web.model.*;
+import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.types.DataType;
 import com.yonyou.mde.web.model.types.MemberType;
 import com.yonyou.mde.web.model.types.StatusType;
 import com.yonyou.mde.web.model.vos.MemberFiled;
 import com.yonyou.mde.web.model.vos.MemberVO;
+import com.yonyou.mde.web.service.DimensionService;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
@@ -33,7 +34,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class MemberServiceImpl extends AbstractService<Member> implements MemberService {
+public class DimensionServiceImpl extends AbstractService<Member> implements DimensionService {
     @Resource
     private MemberMapper memberMapper;
     @Resource

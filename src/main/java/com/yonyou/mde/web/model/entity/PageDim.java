@@ -1,5 +1,6 @@
-package com.yonyou.mde.web.model;
+package com.yonyou.mde.web.model.entity;
 
+import com.yonyou.mde.web.model.entity.PageMember;
 import lombok.Data;
 
 import java.util.List;

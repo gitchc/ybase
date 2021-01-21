@@ -1,6 +1,7 @@
-package com.yonyou.mde.web.model;
+package com.yonyou.mde.web.model.vos;
 
 
+import com.yonyou.mde.web.model.entity.Position;
 import lombok.Data;
 
 @Data

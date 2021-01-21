@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
-public class Attrvalue {
+public class AttrValue {
     /**
      * 雪花id
      */

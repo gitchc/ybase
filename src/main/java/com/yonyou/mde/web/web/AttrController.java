@@ -3,7 +3,7 @@ package com.yonyou.mde.web.web;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.model.Attr;
-import com.yonyou.mde.web.model.ColVO;
+import com.yonyou.mde.web.model.vos.ColVO;
 import com.yonyou.mde.web.service.AttrService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

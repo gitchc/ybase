@@ -1,4 +1,4 @@
-package com.yonyou.mde.web.model;
+package com.yonyou.mde.web.model.vos;
 
 import lombok.Data;
 

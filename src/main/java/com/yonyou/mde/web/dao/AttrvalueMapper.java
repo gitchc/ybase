@@ -1,14 +1,14 @@
 package com.yonyou.mde.web.dao;
 
 import com.yonyou.mde.web.core.Mapper;
-import com.yonyou.mde.web.model.AttrValueVO;
-import com.yonyou.mde.web.model.Attrvalue;
+import com.yonyou.mde.web.model.vos.AttrValueVO;
+import com.yonyou.mde.web.model.AttrValue;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-public interface AttrvalueMapper extends Mapper<Attrvalue> {
+public interface AttrvalueMapper extends Mapper<AttrValue> {
 
     @Delete("delete from attrvalue where attrid in (select id from(select id from attr  where dimid = #{dimid} )cd)")
     void deleteByDim(String dimid);
@@ -25,7 +25,7 @@ public interface AttrvalueMapper extends Mapper<Attrvalue> {
     List<AttrValueVO> getAllAttrValues(String dimid);
 
     @Select("select * from attrvalue where attrid = #{attrid} and membercode = #{membercode}")
-    Attrvalue getAttrValue(String attrid, String membercode);
+    AttrValue getAttrValue(String attrid, String membercode);
 
     @Delete("delete from attrvalue where attrid in (select id from(select id from attr  where dimid = #{dimid} and attrname=#{attrname})cd) ")
     void deleteByDimIdAndName(String attrname, String dimid);

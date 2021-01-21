@@ -4,7 +4,7 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.model.Cube;
-import com.yonyou.mde.web.model.PageDim;
+import com.yonyou.mde.web.model.entity.PageDim;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeDataService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

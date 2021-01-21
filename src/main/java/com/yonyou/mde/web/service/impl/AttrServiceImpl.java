@@ -4,7 +4,7 @@ import com.yonyou.mde.web.core.AbstractService;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.AttrMapper;
 import com.yonyou.mde.web.model.Attr;
-import com.yonyou.mde.web.model.ColVO;
+import com.yonyou.mde.web.model.vos.ColVO;
 import com.yonyou.mde.web.service.AttrService;
 import com.yonyou.mde.web.utils.SnowID;
 import org.springframework.stereotype.Service;

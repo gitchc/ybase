@@ -3,9 +3,9 @@ package com.yonyou.mde.web.service;
 import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.core.Service;
 import com.yonyou.mde.web.core.ServiceException;
-import com.yonyou.mde.web.model.Completer;
+import com.yonyou.mde.web.model.vos.Completer;
 import com.yonyou.mde.web.model.Script;
-import com.yonyou.mde.web.model.ScriptVo;
+import com.yonyou.mde.web.model.vos.ScriptVo;
 
 import java.util.List;
 import java.util.Map;

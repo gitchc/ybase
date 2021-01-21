@@ -2,8 +2,8 @@ package com.yonyou.mde.web.web;
 
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
-import com.yonyou.mde.web.model.AttrValueVO;
-import com.yonyou.mde.web.model.Attrvalue;
+import com.yonyou.mde.web.model.vos.AttrValueVO;
+import com.yonyou.mde.web.model.AttrValue;
 import com.yonyou.mde.web.service.AttrvalueService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -25,7 +25,7 @@ public class AttrvalueController {
     private AttrvalueService attrvalueService;
 
     @RequestMapping("/insert")
-    public Result insert(Attrvalue attrvalue) {
+    public Result insert(AttrValue attrvalue) {
         attrvalueService.insert(attrvalue);
         return ResultGenerator.genSuccessResult();
     }
@@ -37,7 +37,7 @@ public class AttrvalueController {
     }
 
     @RequestMapping("/update")
-    public Result update(Attrvalue attrvalue) {
+    public Result update(AttrValue attrvalue) {
         attrvalueService.update(attrvalue);
         return ResultGenerator.genSuccessResult();
     }
@@ -48,14 +48,14 @@ public class AttrvalueController {
     }
     @RequestMapping("/detail")
     public Result detail(@RequestParam String id) {
-        Attrvalue Attrvalue = attrvalueService.findById(id);
+        AttrValue Attrvalue = attrvalueService.findById(id);
         return ResultGenerator.genSuccessResult(Attrvalue);
     }
 
     @RequestMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
-        List<Attrvalue> list = attrvalueService.findAll();
+        List<AttrValue> list = attrvalueService.findAll();
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
