@@ -1,6 +1,7 @@
 package com.conpany.project;
 
 import cn.hutool.core.io.file.FileReader;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.utils.SnowID;
 import lombok.extern.log4j.Log4j2;
@@ -91,9 +92,9 @@ public class MockData extends Tester {
         Map<String, String> keys = new HashMap<>();
         String[] cubeCodestrs = cubeCodes.split("\\n");
         List<String> mm = new ArrayList<>();
-        List<Member> members = memberService.findAllDim();
+        List<Dimension> members = dimensionService.findAllDim();
 
-        for (Member member : members) {
+        for (Dimension member : members) {
             keys.put(member.getName(), member.getCode());
         }
         int maxsize = 10000;

@@ -12,11 +12,13 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
 import com.yonyou.mde.web.core.ServiceException;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.script.utils.ShellUtil;
 import com.yonyou.mde.web.script.utils.DB;
+import com.yonyou.mde.web.script.utils.ShellUtil;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
+import com.yonyou.mde.web.service.DimensionService;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;
@@ -32,15 +34,17 @@ import java.util.*;
 @Log4j2
 public class BaseScript implements IScript {
     @Resource
-    CubeService cubeService;
+    private CubeService cubeService;
     @Resource
-    MockDataManager mockDataManager;
+    private MockDataManager mockDataManager;
     @Resource
-    MemberService memberService;
+    private MemberService memberService;
     @Resource
-    DataSourceConfig dataSourceConfig;
+    private DimensionService dimensionService;
     @Resource
-    ScriptService scriptService;
+    private DataSourceConfig dataSourceConfig;
+    @Resource
+    private ScriptService scriptService;
 
     private Map<String, Object> vars;
     private long version;
@@ -103,7 +107,7 @@ public class BaseScript implements IScript {
     }
 
     private String getDimid(String dimname) throws MdeException {
-        String dimid = memberService.getDimidByCode(dimname);
+        String dimid = dimensionService.getDimidByCode(dimname);
         if (StringUtils.isBlank(dimid)) {
             throw new MdeException(StrUtil.format("[{}]不存在", dimname));
         }
@@ -143,17 +147,17 @@ public class BaseScript implements IScript {
 
     @Override
     public boolean DimensionExists(String dimName) {
-        return memberService.getDimidByCode(dimName) != null;
+        return dimensionService.getDimidByCode(dimName) != null;
     }
 
     @Override
     public boolean DimensionAdd(String dimName) {
-        Member dim = new Member();
+        Dimension dim = new Dimension();
         dim.setCode(dimName);
         dim.setName(dimName);
         dim.setDatatype(10);
         try {
-            memberService.insertDim(dim);
+            dimensionService.insertDim(dim);
         } catch (ServiceException e) {
             e.printStackTrace();
             return false;
@@ -170,7 +174,7 @@ public class BaseScript implements IScript {
             e.printStackTrace();
             return false;
         }
-        memberService.delDim(dimid);
+        dimensionService.delDim(dimid);
         return true;
     }
 

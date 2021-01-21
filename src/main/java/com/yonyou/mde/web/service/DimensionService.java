@@ -2,9 +2,8 @@ package com.yonyou.mde.web.service;
 
 import com.yonyou.mde.web.core.Service;
 import com.yonyou.mde.web.core.ServiceException;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.model.vos.MemberFiled;
-import com.yonyou.mde.web.model.vos.MemberVO;
 
 import java.util.List;
 
@@ -12,35 +11,18 @@ import java.util.List;
 /**
  * Created by CodeGenerator on 2020-12-10.
  */
-public interface DimensionService extends Service<Member> {
+public interface DimensionService extends Service<Dimension> {
 
-    String insertDim(Member member) throws ServiceException;
+    String insertDim(Dimension member) throws ServiceException;
 
-    Member insertMember(Member member, Member Pmember);
+    List<Dimension> findAllDim();
 
-    String insertMember(Member member);
-
-    List<Member> findAllDim();
-
-    void switchDim(Member member);
+    void switchDim(Dimension member);
 
     void delDim(String dimid);
 
-    void updateDim(Member member);
-
-    void deleteMember(String id);
-
-    void updateFiled(MemberFiled member);
-
-    void updateMember(Member member);
-
-    List<MemberVO> getMemberVOsBydimid(String dimid);
-
-    List<Member> getMembersBydimid(String id);
-
-    List<String> getMemberCodesByDimid(String id);
+    void updateDim(Dimension member);
 
     String getDimidByCode(String dimCode);
 
-    String getMemberIdByCode(String dimid, String memberName);
 }

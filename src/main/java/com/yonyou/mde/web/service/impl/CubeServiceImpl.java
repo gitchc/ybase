@@ -187,9 +187,9 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     /**
      * @description: 组织多维模型需要的数据
      * @param: dims
-     * @return: java.util.Map<java.lang.String, java.util.List < com.yonyou.mde.dto.DimColumn>>
      * @author chenghch
      */
+
     private Map<String, List<DimColumn>> getMembers(List<Member> dims) {
         Map<String, List<DimColumn>> result = new HashMap<>();
         for (Member dim : dims) {

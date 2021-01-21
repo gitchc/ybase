@@ -2,6 +2,7 @@ package com.conpany.project;
 
 import com.applix.tm1.*;
 import com.yonyou.mde.web.core.ServiceException;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
 import com.yuanian.dac.tabase.entity.TabaseConnectionInfo;
 import com.yuanian.dac.tabase.interfaces.IDatabase;
@@ -76,13 +77,13 @@ public class MockMeta extends Tester {
 
     private void TabaseDimToPLN(String dimName) {
         try {
-            Member dim = new Member();
+            Dimension dim = new Dimension();
             dim.setCode(MockUtil.getCode(dimName));
             dim.setName(MockUtil.getName(dimName));
             dim.setDatatype(10);
             String dimid = null;
             try {
-                dimid = memberService.insertDim(dim);
+                dimid = dimensionService.insertDim(dim);
             } catch (ServiceException e) {
                 System.out.println("维度已经存在跳过:" + dim.getName());
                 return;

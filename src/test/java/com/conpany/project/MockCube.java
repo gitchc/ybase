@@ -2,6 +2,7 @@ package com.conpany.project;
 
 import com.applix.tm1.TM1Server;
 import com.yonyou.mde.web.model.Cube;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
 import com.yuanian.dac.tabase.entity.TabaseConnectionInfo;
 import com.yuanian.dac.tabase.interfaces.IDatabase;
@@ -110,9 +111,9 @@ public class MockCube extends Tester {
                 "onebillion";
         String[] cubeCodes = cubeCode.split("\\n");
         Map<String, String> keys = new HashMap<>();
-        List<Member> members = memberService.findAllDim();
-        for (Member member : members) {
-            keys.put(member.getName(), member.getId());
+        List<Dimension> dims = dimensionService.findAllDim();
+        for (Dimension dim : dims) {
+            keys.put(dim.getName(), dim.getId());
         }
         int i = 0;
         for (String cubename : cubestrs.split("\\n")) {

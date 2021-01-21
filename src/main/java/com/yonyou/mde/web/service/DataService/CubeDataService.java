@@ -351,7 +351,7 @@ public class CubeDataService {
      * @return: void
      * @author chenghch
      */
-    private final String updateTemplate = "update {} set value={},txtvalue='{}',isdeleted=0 where {}";
+    private final String updateTemplate = "update {} set value={},txtvalue='{}' where isdeleted=0  {}";
     private final String updateParamTemplate = "{}='{}'";
 
     private boolean updateValue(String cubename, Map<String, Object> rawRow) {
@@ -366,9 +366,7 @@ public class CubeDataService {
             } else if ("VALUE".equals(pkey)) {
                 value = pvalue;
             } else {
-                if (keyvalues.length() > 0) {
-                    keyvalues.append(" and ");
-                }
+                keyvalues.append(" and ");
                 keyvalues.append(StrUtil.format(updateParamTemplate, pkey, pvalue));
             }
         }
@@ -391,8 +389,9 @@ public class CubeDataService {
      */
     private final String deleteTemplate = "delete from {} where {}";
     private final String deleteParamTemplate = "{}='{}'";
-    private final String delSoftTemplate = "update {} set isdeleted=1 where {}";
-    public void deleteValue(String cubename, Map<String, Object> rawRow,boolean isSoft) {
+    private final String delSoftTemplate = "update {} set isdeleted=1 where isdeleted=0 and {}";
+
+    public void deleteValue(String cubename, Map<String, Object> rawRow, boolean isSoft) {
         StringBuilder keyvalues = new StringBuilder();
         for (Map.Entry<String, Object> entry : rawRow.entrySet()) {
             String key = entry.getKey();
@@ -400,16 +399,14 @@ public class CubeDataService {
             if ("VALUE".equals(key) || ("TXTVALUE".equals(key))) {
                 continue;
             } else {
-                if (keyvalues.length() > 0) {
-                    keyvalues.append(" and ");
-                }
+                keyvalues.append(" and ");
                 keyvalues.append(StrUtil.format(deleteParamTemplate, key, value));
             }
         }
         String deleSql;
         if (isSoft) {
             deleSql = StrUtil.format(delSoftTemplate, cubename, keyvalues.toString());
-        }else {
+        } else {
             deleSql = StrUtil.format(deleteTemplate, cubename, keyvalues.toString());
         }
         try {

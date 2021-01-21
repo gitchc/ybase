@@ -3,9 +3,11 @@ package com.yonyou.mde.web.web;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.core.ServiceException;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.vos.MemberFiled;
 import com.yonyou.mde.web.model.vos.MemberVO;
+import com.yonyou.mde.web.service.DimensionService;
 import com.yonyou.mde.web.service.MemberService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,35 +24,37 @@ import java.util.List;
 public class MemberController {
     @Resource
     private MemberService memberService;
+    @Resource
+    private DimensionService dimensionService;
 
     @RequestMapping("/insertDim")
-    public Result insertDim(Member member) throws ServiceException {
-        memberService.insertDim(member);
+    public Result insertDim(Dimension dimension) throws ServiceException {
+        dimensionService.insertDim(dimension);
         return ResultGenerator.genSuccessResult();
 
     }
 
     @RequestMapping("/listDim")
     public Result listDim() {
-        List<Member> list = memberService.findAllDim();
+        List<Dimension> list = dimensionService.findAllDim();
         return ResultGenerator.genSuccessResult(list);
     }
 
     @RequestMapping("/switchDim")
-    public Result switchDim(Member member) {
-        memberService.switchDim(member);
+    public Result switchDim(Dimension dimension) {
+        dimensionService.switchDim(dimension);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/delDim")
     public Result delDim(@RequestParam String id) {
-        memberService.delDim(id);
+        dimensionService.delDim(id);
         return ResultGenerator.genSuccessResult();
     }
 
     @RequestMapping("/updateDim")
-    public Result updateDim(Member member) {
-        memberService.updateDim(member);
+    public Result updateDim(Dimension dimension) {
+        dimensionService.updateDim(dimension);
         return ResultGenerator.genSuccessResult();
     }
 

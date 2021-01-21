@@ -119,27 +119,6 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         return memberMapper.selectAllDim();
     }
 
-    @Override
-    public void switchDim(Member member) {
-        memberMapper.switchDim(member.getDimid(), member.getDatatype());
-        Integer olddatatype = DataType.MAROLLUP;
-        if (member.getDatatype() == olddatatype) {
-            olddatatype = DataType.AUTOROLLUP;
-        }
-        memberMapper.switchMember(member.getDimid(), olddatatype, member.getDatatype());
-    }
-
-    @Override
-    public void delDim(String dimid) {
-        attrvalueMapper.deleteByDim(dimid);//删除属性值
-        attrMapper.deleteByDim(dimid);//删除属性
-        memberMapper.delDim(dimid);//删除维度
-    }
-
-    @Override
-    public void updateDim(Member member) {
-        memberMapper.updateDim(member.getId(), member.getName());
-    }
 
     @Override
     public void deleteMember(String id) {
@@ -196,14 +175,10 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         return new ArrayList<>(memberMapper.getMemberCodesByDimid(dimid));
     }
 
-    @Override
-    public String getDimidByCode(String dimCode) {
-       return memberMapper.getDimIdByCode(dimCode);
-    }
 
     @Override
     public String getMemberIdByCode(String dimid, String membercode) {
-        return memberMapper.getMemberIdByCode(dimid,membercode);
+        return memberMapper.getMemberIdByCode(dimid, membercode);
     }
 
 
