@@ -182,7 +182,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     }
 
     @Override
-    public List<String> getAllMemberCodes() {
+    public List<Member> getAllMemberMeta() {
         return memberMapper.getAllMemberCodes();
     }
 }

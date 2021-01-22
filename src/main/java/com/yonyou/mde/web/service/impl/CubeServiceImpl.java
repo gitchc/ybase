@@ -115,9 +115,14 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     public Cube getCubeById(String cubeid) {
         return cubeMapper.selectByPrimaryKey(cubeid);
     }
-
+    /**
+     * @description: 获取cube的名称和编码
+     * @param:
+     * @author chenghch
+     *
+     */
     @Override
-    public List<String> getAllCubeCodes() {
+    public List<Cube> getAllCubeMeta() {
         return cubeMapper.getAllCubeCodes();
     }
 

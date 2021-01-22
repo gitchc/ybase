@@ -37,5 +37,5 @@ public interface CubeService extends Service<Cube> {
 
     Cube getCubeById(String cubeid);
 
-    List<String> getAllCubeCodes();
+    List<Cube> getAllCubeMeta();
 }

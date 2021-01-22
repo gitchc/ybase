@@ -4,7 +4,9 @@ import com.yonyou.mde.web.core.AbstractService;
 import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.ScriptMapper;
+import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.Dimension;
+import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.Script;
 import com.yonyou.mde.web.model.types.KeywordType;
 import com.yonyou.mde.web.model.types.ScriptType;
@@ -18,6 +20,7 @@ import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -111,6 +114,7 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
         List<Completer> all = new ArrayList<>();
         all.addAll(KeyWordUtil.getKeyWords());
         getMetaKeyWords(all);
+        all.add(new Completer("if", "(Slice)->if(Logic,true_value,false_value)", "IF函数(Slice)->if(Logic,true_value,false_value)"));
         return all;
     }
 
@@ -121,16 +125,31 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
      */
     private void getMetaKeyWords(List<Completer> all) {
         List<Dimension> allDims = dimensionService.getAllDims();
+        Map<String, String> dimMap = new HashMap<>();
+        Map<String, String> dimcodes = new HashMap<>();
         for (Dimension allDim : allDims) {
+            dimMap.put(allDim.getId(), allDim.getName());
+            dimcodes.put(allDim.getId(), allDim.getCode());
+            all.add(new Completer(allDim.getName(), allDim.getCode(), KeywordType.DIM));//添加维度关键字
             all.add(new Completer(allDim.getCode(), allDim.getCode(), KeywordType.DIM));//添加维度关键字
         }
-        List<String> memberCodes = memberService.getAllMemberCodes();
-        for (String memberCode : memberCodes) {
-            all.add(new Completer(memberCode, memberCode, KeywordType.MEMBER));//添加成员关键字
+        List<Member> memberCodes = memberService.getAllMemberMeta();
+        for (Member member : memberCodes) {
+            String name = member.getName();
+            String code = member.getCode();
+            String value = dimcodes.get((member.getDimid())) + "." + code;
+            String detail = dimMap.get(member.getDimid()) + "." + name;
+            String detail1 = detail + "(" + code + ")";
+            String detail2 = detail + "(" + value + ")";
+            all.add(new Completer(name + " ", code, detail1, 99));//添加成员关键字
+            all.add(new Completer(name, value, detail2));//添加成员关键字
         }
-        List<String> cubeCodes = cubeService.getAllCubeCodes();
-        for (String cubeCode : cubeCodes) {
-            all.add(new Completer(cubeCode, cubeCode, KeywordType.CUBE));//添加模型关键字
+        List<Cube> cubeCodes = cubeService.getAllCubeMeta();
+        for (Cube cube : cubeCodes) {
+            String cubecode = cube.getCubecode();
+            String cubename = cube.getCubename();
+            all.add(new Completer(cubecode, cubecode, KeywordType.CUBE, 88));//添加模型关键字
+            all.add(new Completer(cubename, cubecode, KeywordType.CUBE, 89));//添加模型关键字
         }
     }
 

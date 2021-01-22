@@ -73,7 +73,7 @@
                                 <i class="layui-icon">&#xe640;</i>
                             </button>
                             <button type="button" action="runall" class="layui-btn layui-btn-primary layui-btn-sm">
-                                <i class="layui-icon">&#xe628;</i>
+                                <i class="layui-icon">&#xe652;</i>
                             </button>
                             <button type="button" action="search" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe615;</i>
@@ -99,6 +99,9 @@
                         <strong>脚本详细信息</strong>
                         <button type="button" action="save" class="layui-btn layui-btn-primary layui-btn-sm">
                             <i class="layui-icon">&#xe62a;</i>
+                        </button>
+                        <button type="button" action="run" class="layui-btn layui-btn-primary layui-btn-sm">
+                            <i class="layui-icon">&#xe652;</i>
                         </button>
                     </div>
                 </div>
@@ -236,7 +239,9 @@
             restInitVars();
         },
         run: function (id) {
-
+            if (!id) {
+                id = scriptid;
+            }
             $.ajax({
                 url: "/script/run",
                 data: {id: id},

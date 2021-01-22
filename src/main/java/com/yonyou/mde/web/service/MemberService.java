@@ -80,10 +80,10 @@ public interface MemberService extends Service<Member> {
      */
     String getMemberIdByCode(String dimid, String memberName);
     /**
-     * @description: 获取所有的成员编码
+     * @description: 获取所有的成员编码和名称
      * @param:
      * @author chenghch
      *
      */
-    List<String> getAllMemberCodes();
+    List<Member> getAllMemberMeta();
 }

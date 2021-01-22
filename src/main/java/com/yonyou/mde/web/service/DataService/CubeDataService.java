@@ -351,7 +351,7 @@ public class CubeDataService {
      * @return: void
      * @author chenghch
      */
-    private final String updateTemplate = "update {} set value={},txtvalue='{}' where isdeleted=0  {}";
+    private final String updateTemplate = "update {} set value={},txtvalue='{}' where isdeleted=0 {}";
     private final String updateParamTemplate = "{}='{}'";
 
     private boolean updateValue(String cubename, Map<String, Object> rawRow) {
@@ -389,7 +389,7 @@ public class CubeDataService {
      */
     private final String deleteTemplate = "delete from {} where {}";
     private final String deleteParamTemplate = "{}='{}'";
-    private final String delSoftTemplate = "update {} set isdeleted=1 where isdeleted=0 and {}";
+    private final String delSoftTemplate = "update {} set isdeleted=1 where isdeleted=0 {}";
 
     public void deleteValue(String cubename, Map<String, Object> rawRow, boolean isSoft) {
         StringBuilder keyvalues = new StringBuilder();

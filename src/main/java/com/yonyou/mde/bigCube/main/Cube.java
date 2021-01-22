@@ -46,23 +46,31 @@ public class Cube implements ICube {
         return modelApi.clear(exp);
     }
 
-    public int setVal(String exp, Object value) throws MdeException {
-        Double vl = 0d;
-        if (value instanceof String) {
-            vl = Double.parseDouble(value.toString());
-        } else if (value instanceof Double) {
-            vl = (Double) value;
+    public int setString(String exp, String value) throws MdeException {
+        if (StringUtils.isBlank(value)) {
+            return modelApi.clear(exp);//清空数据
         }
-        return modelApi.setVal(exp, vl);
+        Map<String, Object> keyvalues = new HashMap<>();
+        for (String dimexp : exp.split("#")) {
+            String[] dimToValues = dimexp.split("\\.");
+            keyvalues.put(dimToValues[0], dimToValues[1]);
+        }
+        keyvalues.put("TXTVALUE", value);
+        modelApi.set(Arrays.asList(keyvalues));
+        return 1;
     }
 
     public void setData(String exp, Object value) throws MdeException {
         Double vl = 0d;
+        if (value == null) {
+            modelApi.clear(exp);//清空数据
+            return;
+        }
         if (value instanceof String) {//区分 0 跟 空
             String vlstr = value.toString();
             if (StringUtils.isNotBlank(vlstr)) {
                 vl = Double.parseDouble(vlstr);
-            }else {
+            } else {
                 modelApi.clear(exp);//清空数据
                 return;
             }

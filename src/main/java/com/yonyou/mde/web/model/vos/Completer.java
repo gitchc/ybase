@@ -14,4 +14,10 @@ public class Completer {
         this.value = value;
         this.meta = meta;
     }
+    public Completer(String caption, String value,String meta,int score) {
+        this.caption = caption;
+        this.value = value;
+        this.meta = meta;
+        this.score =score;
+    }
 }

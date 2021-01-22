@@ -24,6 +24,6 @@ public interface CubeMapper extends Mapper<Cube> {
     @Select("select * from cube order by position")
     List<Cube> getAll();
 
-    @Select("select cubecode from cube")
-    List<String> getAllCubeCodes();
+    @Select("select cubename,cubecode from cube")
+    List<Cube> getAllCubeCodes();
 }

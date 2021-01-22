@@ -47,6 +47,6 @@ public interface MemberMapper extends Mapper<Member> {
     @Select("select  id from Member where membertype<>0 and dimid = #{dimid} and code=#{code}")
     String getMemberIdByCode(String dimid, String code);
 
-    @Select("select distinct  code from Member where membertype<>0  ")
-    List<String> getAllMemberCodes();
+    @Select("select distinct  dimid,code ,name from Member where membertype<>0  ")
+    List<Member> getAllMemberCodes();
 }

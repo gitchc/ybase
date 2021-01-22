@@ -84,7 +84,7 @@ public class CubeAction {
             Mde.setModelDimTree(cubeName, code, members.get(code), isRollUp);
         }
         if (StringUtils.isBlank(loadSql)) {
-//            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName+" where isdeleted=0";
+            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName+" where isdeleted=0";
         } else {
             this.tableName = getTableName(loadSql);
         }
