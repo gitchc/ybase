@@ -4,18 +4,24 @@ import com.yonyou.mde.web.core.AbstractService;
 import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.ScriptMapper;
-import com.yonyou.mde.web.model.vos.Completer;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Script;
+import com.yonyou.mde.web.model.types.KeywordType;
 import com.yonyou.mde.web.model.types.ScriptType;
+import com.yonyou.mde.web.model.vos.Completer;
 import com.yonyou.mde.web.model.vos.ScriptVo;
-import com.yonyou.mde.web.script.utils.KeyWordUtil;
 import com.yonyou.mde.web.script.classloder.JavaClassUtils;
+import com.yonyou.mde.web.script.utils.KeyWordUtil;
+import com.yonyou.mde.web.service.CubeService;
+import com.yonyou.mde.web.service.DimensionService;
+import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +34,12 @@ import java.util.Map;
 public class ScriptServiceImpl extends AbstractService<Script> implements ScriptService {
     @Resource
     private ScriptMapper scriptMapper;
+    @Resource
+    private MemberService memberService;
+    @Resource
+    private DimensionService dimensionService;
+    @Resource
+    private CubeService cubeService;
 
     @Override
     public void insertScript(Script script) {
@@ -96,7 +108,30 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
 
     @Override
     public List<Completer> getKeywords() {
-        return KeyWordUtil.getKeyWords();
+        List<Completer> all = new ArrayList<>();
+        all.addAll(KeyWordUtil.getKeyWords());
+        getMetaKeyWords(all);
+        return all;
+    }
+
+    /**
+     * @description: 获取主数据关键字
+     * @param: all
+     * @author chenghch
+     */
+    private void getMetaKeyWords(List<Completer> all) {
+        List<Dimension> allDims = dimensionService.getAllDims();
+        for (Dimension allDim : allDims) {
+            all.add(new Completer(allDim.getCode(), allDim.getCode(), KeywordType.DIM));//添加维度关键字
+        }
+        List<String> memberCodes = memberService.getAllMemberCodes();
+        for (String memberCode : memberCodes) {
+            all.add(new Completer(memberCode, memberCode, KeywordType.MEMBER));//添加成员关键字
+        }
+        List<String> cubeCodes = cubeService.getAllCubeCodes();
+        for (String cubeCode : cubeCodes) {
+            all.add(new Completer(cubeCode, cubeCode, KeywordType.CUBE));//添加模型关键字
+        }
     }
 
     //执行脚本

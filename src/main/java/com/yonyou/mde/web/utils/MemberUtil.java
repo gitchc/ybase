@@ -16,7 +16,7 @@ public class MemberUtil {
         if (member.getDatatype() >= 10) {
             sb.append("▼");
         }
-        sb.append(member.getCode());
+        sb.append(member.getName());
         return sb.toString();
     }
 

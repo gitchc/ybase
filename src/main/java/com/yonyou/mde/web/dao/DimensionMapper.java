@@ -30,5 +30,6 @@ public interface DimensionMapper extends Mapper<Dimension> {
 
     @Select("select  id from Member where membertype=0 and code = #{dimCode}")
     String getDimIdByCode(@Param(value = "dimCode") String dimCode);
-
+    @Select("select  * from Member where membertype=0 and code = #{dimCode}")
+    List<Dimension> getDimsByCode(String code);
 }

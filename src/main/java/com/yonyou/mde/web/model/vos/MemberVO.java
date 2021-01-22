@@ -67,5 +67,5 @@ public class MemberVO extends Position {
 
     private String datatypedetail;
     private String statusdetail;
-    private String codedetail;
+    private String namedetail;
 }

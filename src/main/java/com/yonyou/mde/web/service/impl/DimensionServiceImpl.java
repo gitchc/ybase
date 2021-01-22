@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.yonyou.mde.web.core.AbstractService;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.AttrMapper;
@@ -37,11 +38,7 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
     private AttrvalueMapper attrvalueMapper;
 
     public String insertDim(Dimension dimension) throws ServiceException {
-        Condition condition = new Condition(Member.class);
-        Example.Criteria criteria = condition.createCriteria();
-        criteria.andEqualTo("membertype", MemberType.DIM);
-        criteria.andEqualTo("code", dimension.getCode());
-        List<Dimension> old = dimensionMapper.selectByCondition(condition);
+        List<Dimension> old = dimensionMapper.getDimsByCode(dimension.getCode());
         if (old.size() > 0) {
             throw new ServiceException("维度编码不能重复!");
         }
@@ -57,12 +54,14 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
         Integer maxPos = dimensionMapper.getMaxPosition(pid);
         Integer nextPos = maxPos == null ? 1 : maxPos + 1;
         dimension.setPosition(nextPos);
-        dimensionMapper.insert(dimension);
-        return dimension.getId();
+        Member insermember = new Member();
+        BeanUtil.copyProperties(dimension,insermember);
+        memberMapper.insert(insermember);
+        return insermember.getId();
     }
 
 
-    public List<Dimension> findAllDim() {
+    public List<Dimension> getAllDims() {
         return dimensionMapper.selectAllDim();
     }
 

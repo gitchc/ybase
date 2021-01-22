@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Update;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 public interface MemberMapper extends Mapper<Member> {
     @Select("select max(position) from Member where pid = #{pid}")
@@ -47,4 +46,7 @@ public interface MemberMapper extends Mapper<Member> {
 
     @Select("select  id from Member where membertype<>0 and dimid = #{dimid} and code=#{code}")
     String getMemberIdByCode(String dimid, String code);
+
+    @Select("select distinct  code from Member where membertype<>0  ")
+    List<String> getAllMemberCodes();
 }

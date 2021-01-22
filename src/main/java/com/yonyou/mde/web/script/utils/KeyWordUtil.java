@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.script.utils;
 
+import com.yonyou.mde.web.model.types.KeywordType;
 import com.yonyou.mde.web.script.IScript;
 import com.yonyou.mde.web.model.vos.Completer;
 import sun.plugin.javascript.ReflectUtil;
@@ -23,7 +24,6 @@ public class KeyWordUtil {
         Method[] jScriptMethods = ReflectUtil.getJScriptMethods(IScript.class);
         for (Method jScriptMethod : jScriptMethods) {
             String caption = jScriptMethod.getName();
-            Completer completer = new Completer("", "");
             String value = caption + "(";
             Class<?>[] parameterTypes = jScriptMethod.getParameterTypes();
             Parameter[] parameters = jScriptMethod.getParameters();
@@ -38,7 +38,7 @@ public class KeyWordUtil {
                 value += parameters[i].getName();
             }
             value += ");";
-            keywords.add(new Completer(caption, value));
+            keywords.add(new Completer(caption, value, KeywordType.METHOD));
         }
         return keywords;
     }

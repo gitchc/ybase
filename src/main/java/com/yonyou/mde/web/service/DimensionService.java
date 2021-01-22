@@ -15,7 +15,7 @@ public interface DimensionService extends Service<Dimension> {
 
     String insertDim(Dimension member) throws ServiceException;
 
-    List<Dimension> findAllDim();
+    List<Dimension> getAllDims();
 
     void switchDim(Dimension member);
 

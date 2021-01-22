@@ -36,4 +36,6 @@ public interface CubeService extends Service<Cube> {
     List<PageDim> getCubeDims(String id);
 
     Cube getCubeById(String cubeid);
+
+    List<String> getAllCubeCodes();
 }

@@ -27,6 +27,11 @@ public interface ScriptService extends Service<Script> {
     Map<String, Object> run(String scriptName, Map<String, Object> params) throws ScriptException;
 
     String getId(String scriptName);
-
+    /**
+     * @description: 获取关键字信息
+     * @param:
+     * @author chenghch
+     *
+     */
     List<Completer> getKeywords();
 }

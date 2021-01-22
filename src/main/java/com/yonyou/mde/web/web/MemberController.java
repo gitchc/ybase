@@ -36,7 +36,7 @@ public class MemberController {
 
     @RequestMapping("/listDim")
     public Result listDim() {
-        List<Dimension> list = dimensionService.findAllDim();
+        List<Dimension> list = dimensionService.getAllDims();
         return ResultGenerator.genSuccessResult(list);
     }
 

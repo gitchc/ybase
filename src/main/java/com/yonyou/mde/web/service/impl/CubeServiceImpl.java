@@ -117,6 +117,11 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     }
 
     @Override
+    public List<String> getAllCubeCodes() {
+        return cubeMapper.getAllCubeCodes();
+    }
+
+    @Override
     public List<PageDim> getCubeDims(String id) {
         Cube cube = cubeMapper.selectByPrimaryKey(id);
         String dimids = cube.getDimids();

@@ -7,10 +7,11 @@ public class Completer {
     private String caption;
     private String value;
     private int score = 100;
-    private String meta = "自定义函数";
+    private String meta;
 
-    public Completer(String caption, String value) {
+    public Completer(String caption, String value,String meta) {
         this.caption = caption;
         this.value = value;
+        this.meta = meta;
     }
 }
