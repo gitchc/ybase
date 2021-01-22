@@ -1,27 +1,28 @@
 package com.yonyou.mde.web.script.utils;
 
+import cn.hutool.core.util.ReflectUtil;
 import com.yonyou.mde.web.model.types.KeywordType;
-import com.yonyou.mde.web.script.IScript;
 import com.yonyou.mde.web.model.vos.Completer;
-import sun.plugin.javascript.ReflectUtil;
+import com.yonyou.mde.web.script.IScript;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
+
 /*
-* 脚本的关键字
-* */
+ * 脚本的关键字
+ * */
 public class KeyWordUtil {
     private static List<Completer> keywords;
 
     public static List<Completer> getKeyWords() {
         if (keywords == null) {
             keywords = new ArrayList<>();
-        }else {
+        } else {
             return keywords;
         }
-        Method[] jScriptMethods = ReflectUtil.getJScriptMethods(IScript.class);
+        Method[] jScriptMethods = ReflectUtil.getMethods(IScript.class);
         for (Method jScriptMethod : jScriptMethods) {
             String caption = jScriptMethod.getName();
             String value = caption + "(";

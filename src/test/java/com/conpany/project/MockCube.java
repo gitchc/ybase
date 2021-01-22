@@ -1,3 +1,4 @@
+/*
 package com.conpany.project;
 
 import com.applix.tm1.TM1Server;
@@ -145,3 +146,4 @@ public class MockCube extends Tester {
 
 
 }
+*/

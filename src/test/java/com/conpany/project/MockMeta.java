@@ -1,3 +1,4 @@
+/*
 package com.conpany.project;
 
 import com.applix.tm1.*;
@@ -169,3 +170,4 @@ public class MockMeta extends Tester {
         return treeResult;
     }
 }
+*/

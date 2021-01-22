@@ -260,7 +260,7 @@ body, html {
 }
 
 .leftpd {
-    height: calc(100% - 70px);
+    height: calc(100% - 60px);
     overflow: auto;
 }
 
@@ -275,4 +275,8 @@ body, html {
 
 .layui-form-item .layui-input-inline {
     width: 400px;
+}
+.layui-elem-quote{
+    padding: 8px !important;
+    margin-bottom:5px !important;
 }
