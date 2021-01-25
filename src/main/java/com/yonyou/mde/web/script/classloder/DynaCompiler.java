@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,18 @@ public class DynaCompiler {
         JavaFileManager j = compiler.getStandardFileManager(compileCollector, null, null);
         JavaFileManager javaFileManager = new MyJavaFileManager(j);
         JavaFileObject sourceJavaFileObject = new MyJavaFileObject(className, source);
-        Boolean result = compiler.getTask(null, javaFileManager, compileCollector, null, null, Arrays.asList(sourceJavaFileObject)).call();
+        List<String> options = new ArrayList<String>();
+        options.add("-encoding");
+        options.add("UTF-8");
+//        options.add("-classpath");
+//        options.add(System.getProperty("java.class.path"));
+//        options.add("-bootclasspath");
+//        options.add(System.getProperty("sun.boot.class.path"));
+//        options.add("-extdirs");
+//        options.add(System.getProperty("java.ext.dirs"));
+
+//        -Xbootclasspath/D:/WebALL/jdk1.8.0_101/libtools.jar
+        Boolean result = compiler.getTask(null, javaFileManager, compileCollector, options, null, Arrays.asList(sourceJavaFileObject)).call();
         JavaFileObject byteJavaFileObject = fileObjectMap.get(className);
         if (result) {
             byte[] compiledBytes = ((MyJavaFileObject) byteJavaFileObject).getCompiledBytes();

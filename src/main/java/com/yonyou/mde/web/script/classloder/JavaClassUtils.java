@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @Author:chenghch
@@ -16,7 +17,7 @@ import java.util.Map;
 public class JavaClassUtils {
     private static final int run = 1;
     private static final int check = 0;
-    private static Map<String, IScript> beans = new HashMap<>();
+    private static Map<String, IScript> beans = new ConcurrentHashMap<>();
     public static final String[] importClass = new String[]{
             "import cn.hutool.db.*;"
             , "import com.google.common.base.Stopwatch;"
@@ -64,7 +65,13 @@ public class JavaClassUtils {
                 reloadClass = true;
             }
             if (type == check || reloadClass) {
-                Object instance = DynaCompiler.compile(className, source);
+                Object instance = null;
+                if (true) {
+                    instance = GroovyCompiler.compile(source);
+                } else {
+                    instance = DynaCompiler.compile(className, source);
+                }
+
                 if (instance != null && instance instanceof String) {
                     String error = instance.toString();
                     throw new ScriptException(error);

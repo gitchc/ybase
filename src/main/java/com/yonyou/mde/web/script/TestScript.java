@@ -9,7 +9,7 @@ public class TestScript extends BaseScript {
     public Map<String, Object> execute(Map<String, Object> vars) throws ScriptException {
         initVars(vars);
 
-        return getResults();
+        return super.getResults();
     }
 
 
