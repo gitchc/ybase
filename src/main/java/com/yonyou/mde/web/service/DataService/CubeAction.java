@@ -135,14 +135,16 @@ public class CubeAction {
     }
 
     public static void main(String[] args) {
+        String sql = "select ttt from aaa a leftjoin (select ttt from bbb )b on a.id = b.id";
+        System.out.println(getTableName(sql));
     }
 
-    private static final Pattern pattern = Pattern.compile("(.*from\\s)(\\w*)(.*)");
+    private static final Pattern pattern = Pattern.compile("\\bfrom\\s*\\S*");
 
-    private String getTableName(String loadSql) {
+    private static String getTableName(String loadSql) {
         Matcher matcher = pattern.matcher(loadSql);
         if (matcher.find()) {
-            return matcher.group(2).trim();
+            return matcher.group().trim().replace("from","");
         }
         return "";
     }
