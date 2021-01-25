@@ -352,12 +352,14 @@ public class CubeDataService {
      * @author chenghch
      */
     private final String updateTemplate = "update {} set value={},txtvalue='{}' where isdeleted=0 {}";
+    private final String updateValueTemplate = "update {} set value={} where isdeleted=0 {}";
+    private final String updateTxtTemplate = "update {} set txtvalue='{}' where isdeleted=0 {}";
     private final String updateParamTemplate = "{}='{}'";
 
     private boolean updateValue(String cubename, Map<String, Object> rawRow) {
         StringBuilder keyvalues = new StringBuilder();
-        String value = "";
-        String textvalue = "";
+        String value = null;
+        String textvalue = null;
         for (Map.Entry<String, Object> entry : rawRow.entrySet()) {
             String pkey = entry.getKey();
             String pvalue = entry.getValue().toString();
@@ -370,7 +372,14 @@ public class CubeDataService {
                 keyvalues.append(StrUtil.format(updateParamTemplate, pkey, pvalue));
             }
         }
-        String updatesql = StrUtil.format(updateTemplate, cubename, value, textvalue, keyvalues.toString());
+        String updatesql = null;
+        if (value != null && textvalue != null) {
+            updatesql = StrUtil.format(updateTemplate, cubename, value, textvalue, keyvalues.toString());
+        } else if (value != null) {
+            updatesql = StrUtil.format(updateValueTemplate, cubename, value, keyvalues.toString());
+        } else if (textvalue != null) {
+            updatesql = StrUtil.format(updateTxtTemplate, cubename, textvalue, keyvalues.toString());
+        }
         try {
             return cubeMapper.executeSql(updatesql) > 0;
         } catch (Exception e) {
