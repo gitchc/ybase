@@ -15,9 +15,9 @@ import com.yonyou.mde.model.dataloader.DefaultLoaderConfig;
 import com.yonyou.mde.model.dataloader.config.LoadType;
 import com.yonyou.mde.model.meta.CubeMeta;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
-import com.yonyou.mde.web.model.types.DataType;
-import com.yonyou.mde.web.model.entity.Dim;
 import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.model.entity.Dim;
+import com.yonyou.mde.web.model.types.DataType;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +84,7 @@ public class CubeAction {
             Mde.setModelDimTree(cubeName, code, members.get(code), isRollUp);
         }
         if (StringUtils.isBlank(loadSql)) {
-            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName+" where isdeleted=0";
+            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName + " where isdeleted=0";
         } else {
             this.tableName = getTableName(loadSql);
         }
@@ -99,7 +99,7 @@ public class CubeAction {
     }
 
     private CubeMeta createCubeMeta(String cubeName, String factTableName,
-                                      String tablePkColName, List<Dimension> dimensions) {
+                                    String tablePkColName, List<Dimension> dimensions) {
         return CubeMeta.builder()
                 .modelName(cubeName)
                 .cubeName(cubeName)
@@ -144,7 +144,7 @@ public class CubeAction {
     private static String getTableName(String loadSql) {
         Matcher matcher = pattern.matcher(loadSql);
         if (matcher.find()) {
-            return matcher.group().trim().replace("from","");
+            return matcher.group().trim().replace("from", "");
         }
         return "";
     }
