@@ -16,16 +16,12 @@ public class GroovyCompiler {
         try {
             clazz = groovyClassLoader.parseClass(code);
         } catch (CompilationFailedException e) {
-            String[] error = e.getMessage().split("\r\n");
+            String[] error = e.getMessage().split("\r");
             String errorDetail = "";
-            if (error.length > 0) {
-                String[] ellines = error[1].split(":");
-                errorDetail += "错误行号:" + (Integer.parseInt(ellines[1].trim()) - JavaClassUtils.importClass.length - 4);
-                errorDetail += "<br>错误原因:" + ellines[2];
-                errorDetail += "<br>错误代码:" + error[2];
-            } else {
-                errorDetail = error[0];
-            }
+            String[] ellines = error[1].split(":");
+            errorDetail += "错误行号:" + (Integer.parseInt(ellines[1].trim()) - JavaClassUtils.importClass.length - 4);
+            errorDetail += "<br>错误原因:" + ellines[2];
+            errorDetail += "<br>错误代码:" + error[2];
             return errorDetail;
         }
         Object obj = clazz.newInstance();
