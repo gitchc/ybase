@@ -5,7 +5,7 @@ import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  * @version 1.0
- * @Description: 类描述
+ * @Description: 热编译
  * @Author chenghch
  * @Date 2021/1/25 10:13
  */
@@ -16,7 +16,7 @@ public class GroovyCompiler {
         try {
             clazz = groovyClassLoader.parseClass(code);
         } catch (CompilationFailedException e) {
-            String[] error = e.getMessage().split("\r");
+            String[] error = e.getMessage().split(System.getProperty("line.separator"));
             String errorDetail = "";
             String[] ellines = error[1].split(":");
             errorDetail += "错误行号:" + (Integer.parseInt(ellines[1].trim()) - JavaClassUtils.importClass.length - 4);

@@ -66,12 +66,10 @@ public class JavaClassUtils {
             }
             if (type == check || reloadClass) {
                 Object instance = null;
-                if (true) {
+                synchronized (className) {
                     instance = GroovyCompiler.compile(source);
-                } else {
-                    instance = DynaCompiler.compile(className, source);
                 }
-
+//                instance = DynaCompiler.compile(className, source);
                 if (instance != null && instance instanceof String) {
                     String error = instance.toString();
                     throw new ScriptException(error);
