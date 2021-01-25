@@ -19,9 +19,9 @@ public class GroovyCompiler {
             String[] error = e.getMessage().split(System.getProperty("line.separator"));
             String errorDetail = "";
             String[] ellines = error[1].split(":");
-            errorDetail += "错误行号:" + (Integer.parseInt(ellines[1].trim()) - JavaClassUtils.importClass.length - 4);
-            errorDetail += "<br>错误原因:" + ellines[2];
-            errorDetail += "<br>错误代码:" + error[2];
+            errorDetail += "错误行号[:" + (Integer.parseInt(ellines[1].trim()) - JavaClassUtils.importClass.length - 4);
+            errorDetail += "]\n<br>错误原因:[" + ellines[2];
+            errorDetail += "]\n<br>错误代码:" + error[2];
             return errorDetail;
         }
         Object obj = clazz.newInstance();

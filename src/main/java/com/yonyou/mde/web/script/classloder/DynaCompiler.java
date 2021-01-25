@@ -52,7 +52,7 @@ public class DynaCompiler {
         long line = diagnostic.getLineNumber() - JavaClassUtils.importClass.length - 4;
         line = line > 0 ? line : 1;
         StringBuffer res = new StringBuffer();
-        res.append("脚本行号:[" + (line) + "]\n<br>");
+        res.append("错误行号:[" + (line) + "]\n<br>");
         res.append("错误原因:[" + diagnostic.getMessage(null) + "]\n<br>");
         return res.toString();
     }
