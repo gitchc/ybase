@@ -396,7 +396,7 @@ public class CubeDataService {
      * @return: void
      * @author chenghch
      */
-    private final String deleteTemplate = "delete from {} where {}";
+    private final String deleteTemplate = "delete from {} where 1=1 {}";
     private final String deleteParamTemplate = "{}='{}'";
     private final String delSoftTemplate = "update {} set isdeleted=1 where isdeleted=0 {}";
 

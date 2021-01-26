@@ -246,7 +246,9 @@
         },
         reloadCubeData: function (cubeid) {
             showConfirm("重新加载数据", "可能耗时比较长,是否重新加载?", () => {
-                fetchGet("/cube/reloadData?id=" + cubeid)
+                fetchGet("/cube/reloadData?id=" + cubeid,function showIF(){
+                    showInfo("装载成功");
+                })
             });
         },
         attr: function () {

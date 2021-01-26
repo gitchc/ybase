@@ -1,8 +1,8 @@
 package com.yonyou.mde.bigCube.main;
 
+import com.yonyou.mde.bigCube.interfaces.IDimension;
 import com.yonyou.mde.model.graph.DimNode;
 import com.yonyou.mde.model.graph.DimTree;
-import com.yonyou.mde.bigCube.interfaces.IDimension;
 import lombok.Data;
 
 import java.util.ArrayList;

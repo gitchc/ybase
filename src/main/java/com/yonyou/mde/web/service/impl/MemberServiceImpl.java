@@ -1,11 +1,10 @@
 package com.yonyou.mde.web.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.yonyou.mde.web.core.AbstractService;
 import com.yonyou.mde.web.core.ServiceException;
-import com.yonyou.mde.web.dao.AttrMapper;
-import com.yonyou.mde.web.dao.AttrvalueMapper;
-import com.yonyou.mde.web.dao.MemberMapper;
+import com.yonyou.mde.web.dao.*;
 import com.yonyou.mde.web.model.*;
 import com.yonyou.mde.web.model.types.DataType;
 import com.yonyou.mde.web.model.types.MemberType;
@@ -37,9 +36,13 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Resource
     private MemberMapper memberMapper;
     @Resource
+    private DimensionMapper dimensionMapper;
+    @Resource
     private AttrMapper attrMapper;
     @Resource
     private AttrvalueMapper attrvalueMapper;
+    @Resource
+    private CubeMapper cubeMapper;
 
     public String insertDim(Member member) throws ServiceException {
         Condition condition = new Condition(Member.class);
@@ -126,7 +129,16 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         if (member != null) {
             attrvalueMapper.deleteByMemberid(id, member.getUnicode() + ",%");//删除属性值
             memberMapper.delMemberByUnicode(id, member.getUnicode() + ",%");//删除维度
+            String dimid = member.getDimid();
+            List<Cube> cubes = cubeMapper.getCubeByHasDimID("%" + dimid + "%");
+            Dimension dimension = dimensionMapper.getDimById(dimid);
+            String temp = "update {} set isdeleted=1 where {}='{}'";
+            for (Cube cube : cubes) {
+                memberMapper.executeSql(StrUtil.format(temp,cube.getCubecode(),dimension.getCode(),member.getCode()));
+            }
         }
+
+
     }
 
     @Override

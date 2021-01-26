@@ -26,4 +26,6 @@ public interface CubeMapper extends Mapper<Cube> {
 
     @Select("select cubename,cubecode from cube")
     List<Cube> getAllCubeCodes();
+    @Select("select cubename,cubecode from cube where autosql=1 and dimids like #{dimids}")
+    List<Cube> getCubeByHasDimID(String dimids);
 }

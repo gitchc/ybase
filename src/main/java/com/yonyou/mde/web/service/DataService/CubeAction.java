@@ -92,14 +92,14 @@ public class CubeAction {
 //        CreateLoadFile(dimCodes);//造数据文件
 
         // 加载维度信息
-        DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions),
+        DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions,loadSql),
                 null);
         configf.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
         DataLoaderTemplate.getInstance().loadModel(configf);
     }
 
     private CubeMeta createCubeMeta(String cubeName, String factTableName,
-                                    String tablePkColName, List<Dimension> dimensions) {
+                                    String tablePkColName, List<Dimension> dimensions, String loadSql) {
         return CubeMeta.builder()
                 .modelName(cubeName)
                 .cubeName(cubeName)
@@ -108,6 +108,7 @@ public class CubeAction {
                 .measureColName(DEFAULT_MEASURE_COLUMN)
                 .txtValueColName(DEFAULT_TXT_VALUE_COLUMN)
                 .dimensions(dimensions)
+                .loadSql(loadSql)
                 .build();
     }
 
