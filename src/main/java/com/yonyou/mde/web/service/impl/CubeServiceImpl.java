@@ -129,6 +129,9 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     @Override
     public List<PageDim> getCubeDims(String id) {
         Cube cube = cubeMapper.selectByPrimaryKey(id);
+        if (cube == null) {
+            throw new ServiceException("Cube不存在~");
+        }
         String dimids = cube.getDimids();
         List<Member> dims = getMemberByIds(dimids);
         List<PageDim> pageDims = new ArrayList<>();

@@ -12,7 +12,7 @@
     <script src="/static/vue/vuedraggable.umd.min.js"></script>
     <script src="/static/element-ui@2.14.1/index.js"></script>
     <script src="crossUtil.js"></script>
-    <link rel="stylesheet" href="app.css" type="text/css"/>
+    <link rel="stylesheet" href="table.css" type="text/css"/>
     <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="/static/layuiadmin/style/admin.css" media="all">
     <link rel="stylesheet" href="/static/element-ui@2.14.1/index.css" media="all">
@@ -41,9 +41,8 @@
                     </div>
                 </div>
                 <div class="layui-row leftpd">
-                    <form class="layui-form" id="leftree">
-
-                    </form>
+                    <div class="layui-form" id="leftree">
+                    </div>
                 </div>
             </div>
         </div>
@@ -136,34 +135,50 @@
 
 <script>
     var cubeid = "";
+    var viewid = "";
+    var viewname = "";
     Vue.component('vuedraggable', window.vuedraggable.name);
     layui.config({
         base: '/static/layuiadmin/' //静态资源所在路径
     }).extend({
         tablePlug: 'lib/extend/tablePlug/tablePlug',
         index: 'lib/index' //主入口模块
-    }).use(['tablePlug', 'index', 'jquery', 'layer', 'form', 'table'], function () {
+    }).use(['tablePlug', 'index', 'jquery', 'layer', 'form', 'table', 'tree', 'util'], function () {
         window.$ = layui.$, window.layer = layui.layer, window.form = layui.form, window.table = layui.table;
+        window.tree = layui.tree;
+        window.util = layui.util;
         cubeEvent.initData();
         cubeEvent.initEvent();
     });
     var cubeEvent = {
         initData: function () {
-            $('#leftree').empty();
             $('#righttable').hide();
-            fetchGet("/cube/list", function (data) {
-                data.forEach((item, index, array) => {
-                    $('#leftree').append(' <div class="layui-row"> ' +
-                        '<div class=" layui-col-md8" ><label cubeid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
-                        '                   class="layui-form-label cubelable">' + item.cubename + '</label> </div> \n' +
-                        '</div>');
-                })
-                form.render();
-                cubeEvent.restInitVars();
+            cubeEvent.restInitVars();
+            fetchGet("/view/list", function (data) {
+                tree.render({
+                    elem: '#leftree'
+                    , data: data
+                    , onlyIconControl: true
+                    , click: function (obj) {
+                        cubeid = obj.data.cubeid;
+                        if (obj.data.viewid) {//打开视图
+                            viewid = obj.data.viewid
+                            viewname = obj.data.title;
+                        } else {//打开集席
+                            viewid = "";
+                            viewname = "";
+                        }
+                        Ctable.initPages();
+                        $('#righttable').show();
+                    }
+                });
             });
+
         },
         restInitVars: function () {
             window.cubeid = "";
+            window.viewid = "";
+            window.viewname = "";
         }, initEvent() {
             //隐藏工具栏
             $('#tabclick').click(function () {
@@ -171,14 +186,6 @@
                 $('#left').toggleClass('hide');
                 $('#right').toggleClass('layui-col-md9 layui-col-md12');
             })
-            //cube点击事件
-            $("#leftree").on("click", ".cubelable", function () {
-                $('.cubelable').removeClass("custom-tree-item-clicked");
-                $(this).addClass("custom-tree-item-clicked");
-                cubeid = $(this).attr('cubeid');
-                Ctable.initPages();
-                $('#righttable').show();
-            });
             //监听单元格编辑
             table.on('edit(maintable)', function (obj) {
                 var value = obj.value //得到修改后的值
@@ -195,7 +202,7 @@
             if (isInit) {
                 app.initPages();
             } else {
-                isInit=true;
+                isInit = true;
                 window.app = new Vue({
                     el: '#app',
                     components: {
