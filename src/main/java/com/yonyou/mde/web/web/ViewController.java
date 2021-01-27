@@ -1,13 +1,10 @@
 package com.yonyou.mde.web.web;
-import cn.hutool.json.JSONUtil;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.model.View;
-import com.yonyou.mde.web.model.entity.ViewLayout;
+import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.model.vos.ViewTree;
 import com.yonyou.mde.web.service.ViewService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -53,8 +50,13 @@ public class ViewController {
         List<ViewTree> list = viewService.findAllViews();
         return ResultGenerator.genSuccessResult(list);
     }
+    @RequestMapping("/deleteview")
+    public Result deleteview(@RequestParam String viewid) {
+        viewService.deleteViewByid(viewid);
+        return ResultGenerator.genSuccessResult();
+    }
     @RequestMapping("/saveview")
-    public Result saveview(@RequestBody ViewLayout viewLayout) {
+    public Result saveview(@RequestBody ViewVO viewLayout) {
         String viewid = viewService.saveview(viewLayout);
         return ResultGenerator.genSuccessResult(viewid);
     }

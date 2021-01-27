@@ -2,7 +2,7 @@ package com.yonyou.mde.web.service;
 
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.core.Service;
-import com.yonyou.mde.web.model.entity.PageDim;
+import com.yonyou.mde.web.model.vos.ViewVO;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ public interface CubeService extends Service<Cube> {
 
     List<Cube> getAll();
 
-    List<PageDim> getCubeDims(String id);
+    ViewVO getView(String id, String viewid);
 
     Cube getCubeById(String cubeid);
 

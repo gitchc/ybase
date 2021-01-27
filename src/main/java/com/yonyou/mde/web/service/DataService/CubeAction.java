@@ -15,7 +15,6 @@ import com.yonyou.mde.model.dataloader.DefaultLoaderConfig;
 import com.yonyou.mde.model.dataloader.config.LoadType;
 import com.yonyou.mde.model.meta.CubeMeta;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
-import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.entity.Dim;
 import com.yonyou.mde.web.model.types.DataType;
 import lombok.Data;
@@ -38,9 +37,9 @@ public class CubeAction {
     private String tableName;
     private Map<String, List<DimColumn>> members;
     private String loadSql;
-    private List<Member> dims;
+    private List<com.yonyou.mde.web.model.Dimension> dims;
 
-    public CubeAction(DataSourceConfig config, String cubeName, String tableName, String loadSql, List<Member> dims, Map<String, List<DimColumn>> members) {
+    public CubeAction(DataSourceConfig config, String cubeName, String tableName, String loadSql, List<com.yonyou.mde.web.model.Dimension> dims, Map<String, List<DimColumn>> members) {
         this.cubeName = cubeName;
         this.tableName = tableName;
         this.members = members;
@@ -76,7 +75,7 @@ public class CubeAction {
         List<String> dimCodes = new ArrayList<>();
         List<Dimension> dimensions = new ArrayList<>();
 
-        for (Member dim : dims) {
+        for (com.yonyou.mde.web.model.Dimension dim : dims) {
             String code = dim.getCode();
             boolean isRollUp = dim.getDatatype() == DataType.AUTOROLLUP;
             dimensions.add(new Dimension(code, code, code));
@@ -92,7 +91,7 @@ public class CubeAction {
         CreateLoadFile(dimCodes);//造数据文件
 
         // 加载维度信息
-        DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions,loadSql),
+        DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions, loadSql),
                 null);
         configf.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
         DataLoaderTemplate.getInstance().loadModel(configf);

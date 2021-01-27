@@ -2,10 +2,8 @@ package com.conpany.testCube.business;
 
 import com.conpany.project.Tester;
 import com.yonyou.mde.bigCube.main.Cube;
-import com.yonyou.mde.bigCube.main.Dimension;
 import com.yonyou.mde.bigCube.main.Server;
 import com.yonyou.mde.error.MdeException;
-import com.yonyou.mde.model.result.BaseSliceResult;
 import com.yonyou.mde.model.result.SliceResult;
 import com.yonyou.mde.web.script.utils.Assert;
 import org.junit.Test;

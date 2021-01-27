@@ -86,4 +86,6 @@ public interface MemberService extends Service<Member> {
      *
      */
     List<Member> getAllMemberMeta();
+
+    List<Member> getMembersByScope(String dimid, String scope);
 }

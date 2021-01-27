@@ -197,4 +197,9 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     public List<Member> getAllMemberMeta() {
         return memberMapper.getAllMemberCodes();
     }
+
+    @Override
+    public List<Member> getMembersByScope(String dimid, String scope) {
+        return new ArrayList<>();//todo 待完善
+    }
 }

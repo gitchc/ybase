@@ -36,4 +36,7 @@ public interface DimensionMapper extends Mapper<Dimension> {
 
     @Select("select  * from Member where membertype=0 and id = #{id}")
     Dimension getDimById(String id);
+
+    @Select("select  * from Member where membertype=0 and id in (${id})")
+    List<Dimension> getdimsByIds(@Param(value = "id") String id);
 }

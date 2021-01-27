@@ -9,7 +9,7 @@ import lombok.Data;
  * @Date 2021/1/14 9:41
  */
 @Data
-public class PageMember {
+public class LayoutMember {
     private String displayName;
     private String id;
     private String code;

@@ -1,5 +1,6 @@
-package com.yonyou.mde.web.model.entity;
+package com.yonyou.mde.web.model.vos;
 
+import com.yonyou.mde.web.model.entity.LayoutDim;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -12,10 +13,10 @@ import java.util.List;
  * @Date 2021/1/27 13:39
  */
 @Data
-public class ViewLayout {
-    private List<PageDim> page = new ArrayList<>();
-    private List<PageDim> row = new ArrayList<>();
-    private List<PageDim> col = new ArrayList<>();
+public class ViewVO {
+    private List<LayoutDim> page = new ArrayList<>();
+    private List<LayoutDim> row = new ArrayList<>();
+    private List<LayoutDim> col = new ArrayList<>();
     private Integer position;
     private String viewid;
     private String cubeid;

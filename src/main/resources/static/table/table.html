@@ -109,6 +109,11 @@
                                             class="layui-btn layui-btn-primary layui-btn-sm">
                                         <i class="layui-icon">&#xe62a;</i>
                                     </button>
+                                    <button type="button" @click="deleteview"
+                                            class="layui-btn layui-btn-primary layui-btn-sm">
+                                        <i class="layui-icon">&#xe640;</i>
+                                    </button>
+
                                     <!--
                                       <button type="button" action="attr" class="layui-btn layui-btn-primary layui-btn-sm">
                                           <i class="layui-icon">&#xe641;</i>
@@ -158,6 +163,9 @@
         initData: function () {
             $('#righttable').hide();
             cubeEvent.restInitVars();
+            cubeEvent.initTree();
+        },
+        initTree: function () {
             fetchGet("/view/list", function (data) {
                 tree.render({
                     elem: '#leftree'
@@ -177,7 +185,6 @@
                     }
                 });
             });
-
         },
         restInitVars: function () {
             window.cubeid = "";
@@ -227,10 +234,14 @@
                     },
                     methods: {
                         initPages() {
-                            fetchGet("/cube/getPages?id=" + cubeid, function (data) {
-                                app.page = data;
-                                app.col = [];
-                                app.row = [];
+                            var params = "id=" + cubeid;
+                            if (viewid) {
+                                params += "&viewid="+viewid;
+                            }
+                            fetchGet("/cube/getView?"+params, function (data) {
+                                app.page = data.page;
+                                app.col = data.col;
+                                app.row = data.row;
                             });
                         }
                         , onStart() {
@@ -262,29 +273,38 @@
                                 showWarn("请先选择模型~");
                                 return;
                             }
-
                             viewlayout.page = copyDim(this.page);
                             viewlayout.row = copyDim(this.row);
                             viewlayout.col = copyDim(this.col);
-
                             if (viewid) {
                                 viewlayout.viewid = viewid;
-                                viewlayout.viewname = name;
-                                showConfirm("更新视图", "需要重新构建视图么?", () => {
-                                    fetchPost("/view/saveview", viewlayout)
+                                viewlayout.viewname = viewname;
+                                showConfirm("更新视图", "需要保存重新构建的视图么?", () => {
+                                    fetchPostJSON("/view/saveview", viewlayout, function () {
+                                        showInfo("更新成功!");
+                                    });
                                 });
                             } else {
                                 showPrompt('视图名称', function (name) {
                                     viewname = name;
                                     viewlayout.viewname = name;
-                                    fetchPostJSON("/view/saveview", viewlayout, function (data) {
-                                        viewid = data.id;
+                                    fetchPostJSON("/view/saveview", viewlayout, function (id) {
+                                        viewid = id;
+                                        cubeEvent.initTree();
                                     });
                                 });
                             }
 
                         }
-
+                    ,deleteview(){
+                            if (!viewid) {
+                                showWarn("请先选择视图~");
+                                return;
+                            }
+                            showConfirm("删除视图", "确认删除该视图么?", () => {
+                                fetchGet("/view/deleteview?viewid="+viewid,cubeEvent.initData)
+                            });
+                        }
                     }
                 });
             }

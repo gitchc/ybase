@@ -2,8 +2,8 @@ package com.yonyou.mde.web.model;
 
 import javax.persistence.*;
 
-@Table(name = "view_detail")
-public class ViewDetail {
+@Table(name = "view_layout")
+public class ViewLayout {
     @Id
     private String id;
 

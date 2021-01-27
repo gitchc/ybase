@@ -1,16 +1,17 @@
 package com.yonyou.mde.web.service.impl;
 
 import com.yonyou.mde.web.core.AbstractService;
-import com.yonyou.mde.web.dao.ViewDetailMapper;
+import com.yonyou.mde.web.dao.ViewLayoutMapper;
 import com.yonyou.mde.web.dao.ViewMapper;
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.View;
-import com.yonyou.mde.web.model.ViewDetail;
-import com.yonyou.mde.web.model.entity.PageDim;
-import com.yonyou.mde.web.model.entity.ViewLayout;
+import com.yonyou.mde.web.model.ViewLayout;
+import com.yonyou.mde.web.model.entity.LayoutDim;
+import com.yonyou.mde.web.model.types.LayoutType;
 import com.yonyou.mde.web.model.vos.ViewTree;
+import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.service.CubeService;
-import com.yonyou.mde.web.service.ViewDetailService;
+import com.yonyou.mde.web.service.ViewLayoutService;
 import com.yonyou.mde.web.service.ViewService;
 import com.yonyou.mde.web.utils.SnowID;
 import org.apache.commons.lang3.StringUtils;
@@ -34,11 +35,11 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
     @Resource
     private ViewMapper viewMapper;
     @Resource
-    private ViewDetailMapper viewDetailMapper;
+    private ViewLayoutMapper viewLayoutMapper;
     @Resource
     private CubeService cubeService;
     @Resource
-    private ViewDetailService viewDetailService;
+    private ViewLayoutService viewLayoutService;
 
     @Override
     public List<ViewTree> findAllViews() {
@@ -59,6 +60,7 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
             ViewTree cubeView = cubeMap.get(view.getCubeid());
             ViewTree viewTree = new ViewTree();
             viewTree.setId(view.getId());
+            viewTree.setViewid(view.getId());
             viewTree.setCubeid(view.getCubeid());
             viewTree.setTitle(view.getName());
             cubeView.add(viewTree);
@@ -71,7 +73,7 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
      * @param: viewLayout
      * @author chenghch
      */
-    private String insertViewLayout(ViewLayout viewLayout) {
+    private String insertViewLayout(ViewVO viewLayout) {
         View view = new View();
         String viewid = SnowID.nextID();
         view.setId(viewid);
@@ -80,36 +82,28 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
         view.setPosition(viewLayout.getPosition());
         viewMapper.insert(view);//更新视图
         viewLayout.setViewid(viewid);
-        insertLayout("page", viewLayout);
-        insertLayout("row", viewLayout);
-        insertLayout("col", viewLayout);
+        insertPageLayout(viewid, viewLayout.getPage());//页面维处理
+        insertRowLayout(viewid, viewLayout.getRow());//行布局处理
+        insertColLayout(viewid, viewLayout.getCol());//列布局处理
         return viewid;
     }
 
     /**
      * @description: 插入视图布局
      * @param: type
-     * @param: viewLayout
+     * @param: viewVO
      * @author chenghch
      */
-    private void insertLayout(String type, ViewLayout viewLayout) {
+    private void insertLayout(String type, String viewid, List<LayoutDim> layouts) {
         int i = 0;
-        List<PageDim> layout = new ArrayList<>();
-        if ("page".equals(type)) {
-            layout = viewLayout.getPage();
-        } else if ("row".equals(type)) {
-            layout = viewLayout.getRow();
-        } else if ("col".equals(type)) {
-            layout = viewLayout.getCol();
-        }
-        for (PageDim pageDim : layout) {
-            ViewDetail viewDetail = new ViewDetail();
-            viewDetail.setId(SnowID.nextID());
-            viewDetail.setViewid(viewDetail.getViewid());
-            viewDetail.setLayouttype(type);
-            viewDetail.setDimid(pageDim.getDimId());
-            viewDetail.setPosition(i++);
-            viewDetailService.insert(viewDetail);
+        for (LayoutDim pageDim : layouts) {
+            ViewLayout vlayout = new ViewLayout();
+            vlayout.setId(SnowID.nextID());
+            vlayout.setViewid(viewid);
+            vlayout.setLayouttype(type);
+            vlayout.setDimid(pageDim.getDimId());
+            vlayout.setPosition(i++);
+            viewLayoutService.insert(vlayout);
         }
     }
 
@@ -118,29 +112,65 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
      * @param: viewLayout
      * @author chenghch
      */
-    private void updateViewLayout(ViewLayout viewLayout) {
+    private void updateViewLayout(ViewVO viewLayout) {
         String viewid = viewLayout.getViewid();
         View view = viewMapper.selectByPrimaryKey(viewid);
         view.setName(viewLayout.getViewname());
         view.setCubeid(viewLayout.getCubeid());
         viewMapper.updateByPrimaryKey(view);//更新视图名称
-        viewDetailMapper.disabled(viewid);//更新老视图布局为软删除
-        insertLayout("page", viewLayout);
-        insertLayout("row", viewLayout);
-        insertLayout("col", viewLayout);
-        viewDetailMapper.deleteDisabledView(viewid);//真删除布局
+        viewLayoutMapper.disabled(viewid);//更新老视图布局为软删除
+        insertPageLayout(viewid, viewLayout.getPage());//页面维处理
+        insertRowLayout(viewid, viewLayout.getRow());//行布局处理
+        insertColLayout(viewid, viewLayout.getCol());//列布局处理
+        viewLayoutMapper.deleteDisabledView(viewid);//真删除布局
+    }
+
+    /**
+     * @description: 处理列布局
+     * @param: viewid
+     * @param: viewLayout
+     * @author chenghch
+     */
+    private void insertColLayout(String viewid, List<LayoutDim> viewLayout) {
+        insertLayout(LayoutType.COL, viewid, viewLayout);
+    }
+
+    /**
+     * @description: 处理行布局
+     * @param: viewid
+     * @param: viewLayout
+     * @author chenghch
+     */
+    private void insertRowLayout(String viewid, List<LayoutDim> viewLayout) {
+        insertLayout(LayoutType.ROW, viewid, viewLayout);
+    }
+
+    /**
+     * @description: 处理页面维布局
+     * @param: viewid
+     * @param: viewLayout
+     * @author chenghch
+     */
+    private void insertPageLayout(String viewid, List<LayoutDim> viewLayout) {
+        insertLayout(LayoutType.PAGE, viewid, viewLayout);
     }
 
     @Override
-    public String saveview(ViewLayout viewLayout) {
+    public String saveview(ViewVO viewLayout) {
         if (StringUtils.isBlank(viewLayout.getViewid())) {//插入
             Integer maxPosition = viewMapper.getMaxPosition(viewLayout.getCubeid());
-            viewLayout.setPosition(maxPosition + 1);
+            viewLayout.setPosition(maxPosition == null ? 0 : maxPosition + 1);
             return insertViewLayout(viewLayout);
         } else {//更新
             updateViewLayout(viewLayout);
             return viewLayout.getViewid();
         }
+    }
+
+    @Override
+    public void deleteViewByid(String viewid) {
+        viewMapper.deleteByPrimaryKey(viewid);
+        viewLayoutMapper.deleteViewLayout(viewid);
     }
 
 

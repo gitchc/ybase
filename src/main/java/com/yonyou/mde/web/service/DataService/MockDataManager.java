@@ -3,7 +3,7 @@ package com.yonyou.mde.web.service.DataService;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
-import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.utils.DBUtil;
 import com.yonyou.mde.web.utils.MuiltCross;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public class MockDataManager {
     private final int batchsize = 10000;//10w一提交
 
     //创造表
-    public void createTable(DataSource dataSource, String tableName, List<Member> dims) throws Exception {
+    public void createTable(DataSource dataSource, String tableName, List<Dimension> dims) throws Exception {
 
         Db db = Db.use(dataSource);
         String querytable = "";
@@ -121,11 +120,11 @@ public class MockDataManager {
         MockDataFinal(tableName, dims, memebrs, mocksize, true);
     }
 
-    private String getCreateTabseSql(String tableName, List<Member> dims) {
+    private String getCreateTabseSql(String tableName, List<Dimension> dims) {
         StringBuilder createsql = new StringBuilder("create table " + tableName + " (");
         createsql.append("id bigint primary key not null,\n");
 
-        for (Member dim : dims) {
+        for (Dimension dim : dims) {
             createsql.append(dim.getCode() + " varchar(100),\n");
         }
         createsql.append("value decimal(19,6),txtvalue varchar(1000),isdeleted int default 0\n");

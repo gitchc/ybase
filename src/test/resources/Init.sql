@@ -82,8 +82,8 @@ CREATE TABLE View
     version    int default 0
 )ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- View定义表
-DROP TABLE IF EXISTS View_Detail;
-CREATE TABLE View_Detail
+DROP TABLE IF EXISTS View_Layout;
+CREATE TABLE View_Layout
 (
     id         varchar(100) primary key not null,
     viewid     varchar (100),

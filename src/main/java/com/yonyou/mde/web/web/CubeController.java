@@ -4,7 +4,7 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.model.Cube;
-import com.yonyou.mde.web.model.entity.PageDim;
+import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeDataService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,10 +69,10 @@ public class CubeController {
         return ResultGenerator.genSuccessResult(list);
     }
 
-    @RequestMapping("/getPages")
-    public Result getPageDims(@RequestParam String id) {
-        List<PageDim> list = cubeService.getCubeDims(id);
-        return ResultGenerator.genSuccessResult(list);
+    @RequestMapping("/getView")
+    public Result getView(@RequestParam String id,@RequestParam(defaultValue = "") String viewid) {
+        ViewVO viewLayout = cubeService.getView(id,viewid);
+        return ResultGenerator.genSuccessResult(viewLayout);
     }
 
     @RequestMapping("/getData")
