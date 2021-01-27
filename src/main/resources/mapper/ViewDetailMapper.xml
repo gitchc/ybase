@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yonyou.mde.web.dao.ViewDetailMapper">
+  <resultMap id="BaseResultMap" type="com.yonyou.mde.web.model.ViewDetail">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="viewid" jdbcType="VARCHAR" property="viewid" />
+    <result column="layouttype" jdbcType="VARCHAR" property="layouttype" />
+    <result column="dimid" jdbcType="VARCHAR" property="dimid" />
+    <result column="scope" jdbcType="VARCHAR" property="scope" />
+    <result column="position" jdbcType="INTEGER" property="position" />
+    <result column="version" jdbcType="INTEGER" property="version" />
+  </resultMap>
+</mapper>
