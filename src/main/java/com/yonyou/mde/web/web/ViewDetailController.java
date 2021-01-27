@@ -13,10 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
+
 /**
-* @Author chenghch
-* @Date 2021-01-27
-*/
+ * @Author chenghch
+ * @Date 2021-01-27
+ */
 @RestController
 @RequestMapping("/viewdetail")
 public class ViewDetailController {

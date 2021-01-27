@@ -17,5 +17,6 @@ public class PageDim {
     String dimName;
     String dimCode;
     String selectedMember;
+    String scope;
     List<PageMember> options;
 }

@@ -23,7 +23,7 @@ public class leiji extends Tester {
 
         Cube cube = Server.getCube("测试属性");
         SliceResult sliceResult = cube.find("VERSION.第1版#YEAR.2021年#QIJIAN.12月");
-        SliceResult sliceResult1 = cube.exp("VERSION.第1版#YEAR.2021年#QIJIAN.12月=VERSION.第1版+1");
+        SliceResult sliceResult1 = cube.calc("VERSION.第1版#YEAR.2021年#QIJIAN.12月=VERSION.第1版+1");
         SliceResult divide = (SliceResult)sliceResult1.subtract(sliceResult);
         for (Row row : divide.toTable()) {
             Assert.assrt("累计值不正确",row.getDouble("VALUE")==1);

@@ -105,6 +105,10 @@
                                             class="layui-btn layui-btn-primary layui-btn-sm">
                                         <i class="layui-icon"> &#xe691;</i>
                                     </button>
+                                    <button type="button" @click="saveview"
+                                            class="layui-btn layui-btn-primary layui-btn-sm">
+                                        <i class="layui-icon">&#xe62a;</i>
+                                    </button>
                                     <!--
                                       <button type="button" action="attr" class="layui-btn layui-btn-primary layui-btn-sm">
                                           <i class="layui-icon">&#xe641;</i>
@@ -228,27 +232,57 @@
                                 app.col = [];
                                 app.row = [];
                             });
-                        },
-                        onStart() {
+                        }
+                        , onStart() {
                             this.drag = true;
-                        },
-                        onEnd() {
+                        }
+                        , onEnd() {
                             this.drag = false;
-                        },
-                        onMove(e) {
+                        }
+                        , onMove(e) {
                             // if (e.draggedContext.element.id == 4) return false;
                             return true;
-                        },
-                        exchange() {
+                        }
+                        , exchange() {//行列转置
                             var temp = this.row;
                             this.row = this.col;
                             this.col = temp;
-                        }, fresh() {
+                        }
+                        , fresh() {//数据刷新
                             if (this.row.length == 0 || this.col.length == 0) {
                                 Ctable.loadTabeData(true);
                             } else {
                                 Ctable.loadTabeData(false, this.page, this.row, this.col);
                             }
+                        }
+                        , saveview() {
+                            var viewlayout = {};
+                            viewlayout.cubeid = cubeid;
+                            if (!cubeid) {
+                                showWarn("请先选择模型~");
+                                return;
+                            }
+
+                            viewlayout.page = copyDim(this.page);
+                            viewlayout.row = copyDim(this.row);
+                            viewlayout.col = copyDim(this.col);
+
+                            if (viewid) {
+                                viewlayout.viewid = viewid;
+                                viewlayout.viewname = name;
+                                showConfirm("更新视图", "需要重新构建视图么?", () => {
+                                    fetchPost("/view/saveview", viewlayout)
+                                });
+                            } else {
+                                showPrompt('视图名称', function (name) {
+                                    viewname = name;
+                                    viewlayout.viewname = name;
+                                    fetchPostJSON("/view/saveview", viewlayout, function (data) {
+                                        viewid = data.id;
+                                    });
+                                });
+                            }
+
                         }
 
                     }
@@ -361,6 +395,21 @@
             var options = $.extend(defaults, toptions);
             table.render(options);//重载
         }
+    }
+
+    function copyDim(layout) {
+        var dims = [];
+        if (layout) {
+            layout.forEach((item) => {
+                var dim = {};
+                dim.dimId = item.dimId;
+                dim.dimName = item.dimName;
+                dim.dimCode = item.dimCode;
+                dim.scope = item.scope;
+                dims.push(dim);
+            });
+        }
+        return dims;
     }
 </script>
 </body>

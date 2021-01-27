@@ -89,7 +89,7 @@ public class CubeAction {
             this.tableName = getTableName(loadSql);
         }
 
-//        CreateLoadFile(dimCodes);//造数据文件
+        CreateLoadFile(dimCodes);//造数据文件
 
         // 加载维度信息
         DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions,loadSql),

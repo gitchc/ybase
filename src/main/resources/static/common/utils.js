@@ -21,6 +21,9 @@ function showInfo(msg, title) {
 }
 //克隆工具
 var clone = function (origin, target) {
+    if (!target) {
+        target = {};
+    }
     for (var prop in origin) {
         if (origin.hasOwnProperty(prop)) {
             target[prop] = origin[prop];
@@ -233,6 +236,30 @@ function fetchGet(url, successFn) {
         }
     });
 }
+
+function fetchPostJSON(url, data, successFn) {
+    $.ajax({
+        url: url,
+        data: JSON.stringify(data),
+        type: "Post",
+        dataType: "json",
+        contentType : 'application/json;charset=utf-8',
+        success: function (data) {
+            if (data.code == 200) {
+                if (successFn) {
+                    successFn(data.data);
+                }
+            } else {
+                showWarn(data.message);
+            }
+        },
+        error: function (data) {
+            showError('错误码:' + data.code + ",错误信息:" + data.message);
+        }
+    });
+
+}
+
 
 function fetchPost(url, data, successFn) {
     $.ajax({

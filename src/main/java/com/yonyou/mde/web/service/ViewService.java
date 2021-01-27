@@ -1,6 +1,7 @@
 package com.yonyou.mde.web.service;
 import com.yonyou.mde.web.model.View;
 import com.yonyou.mde.web.core.Service;
+import com.yonyou.mde.web.model.entity.ViewLayout;
 import com.yonyou.mde.web.model.vos.ViewTree;
 
 import java.util.List;
@@ -13,4 +14,6 @@ import java.util.List;
 public interface ViewService extends Service<View> {
 
     List<ViewTree> findAllViews();
+
+    String saveview(ViewLayout viewLayout);
 }

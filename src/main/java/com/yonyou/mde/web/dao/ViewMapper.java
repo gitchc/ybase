@@ -9,4 +9,7 @@ import java.util.List;
 public interface ViewMapper extends Mapper<View> {
     @Select("select * from view order by cubeid,position")
     List<View> getAll();
+
+    @Select("select max(position) from view where cubeid = #{cubeid}")
+    Integer getMaxPosition(String cubeid);
 }
