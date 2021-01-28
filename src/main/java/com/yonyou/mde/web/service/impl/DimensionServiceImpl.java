@@ -69,9 +69,11 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
     @CacheEvict(cacheNames = "CubeDims")
     public void switchDim(Dimension dimension) {
         dimensionMapper.switchDim(dimension.getDimid(), dimension.getDatatype());
-        Integer olddatatype = DataType.MAROLLUP;
-        if (dimension.getDatatype() == olddatatype) {
+        Integer olddatatype;
+        if (dimension.getDatatype() == DataType.MAROLLUP) {
             olddatatype = DataType.AUTOROLLUP;
+        } else {
+            olddatatype = DataType.MAROLLUP;
         }
         memberMapper.switchMember(dimension.getDimid(), olddatatype, dimension.getDatatype());
     }
@@ -98,7 +100,6 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
      * @description: 启用缓存
      * @param: dimids
      * @author chenghch
-     *
      */
     @Override
     @Cacheable(cacheNames = "CubeDims")
