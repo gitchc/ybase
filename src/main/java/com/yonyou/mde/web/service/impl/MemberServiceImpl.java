@@ -12,7 +12,6 @@ import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.types.DataType;
-import com.yonyou.mde.web.model.types.MemberType;
 import com.yonyou.mde.web.model.types.StatusType;
 import com.yonyou.mde.web.model.vos.MemberFiled;
 import com.yonyou.mde.web.model.vos.MemberVO;
@@ -23,8 +22,6 @@ import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -46,30 +43,6 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Resource
     private CubeMapper cubeMapper;
 
-    public String insertDim(Member member) throws ServiceException {
-        Condition condition = new Condition(Member.class);
-        Example.Criteria criteria = condition.createCriteria();
-        criteria.andEqualTo("membertype", MemberType.DIM);
-        criteria.andEqualTo("code", member.getCode());
-        List<Member> old = memberMapper.selectByCondition(condition);
-        if (old.size() > 0) {
-            throw new ServiceException("维度编码不能重复!");
-        }
-        member.setId(SnowID.nextID());
-        member.setPid("-1");
-        String pid = member.getPid();
-        member.setMembertype(MemberType.DIM);
-        member.setDatatype(DataType.MAROLLUP);//手动上卷
-        member.setGeneration(-1);
-        member.setDimid("-1");
-        member.setUnicode(member.getCode());
-        member.setUnipos("0");
-        Integer maxPos = memberMapper.getMaxPosition(pid);
-        Integer nextPos = maxPos == null ? 1 : maxPos + 1;
-        member.setPosition(nextPos);
-        memberMapper.insert(member);
-        return member.getId();
-    }
 
     @Override
     public Member insertMember(Member member, Member Pmember) {
@@ -164,7 +137,6 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
      * @description: 获取维度全部成员
      * @param: dimid
      * @author chenghch
-     *
      */
     @Override
     public List<Member> getMembersByDimid(String dimid) {
@@ -183,9 +155,14 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         return memberMapper.getMemberIdByCode(dimid, membercode);
     }
 
+    /**
+     * @description: 获取元数据基础信息, 前台显示提示用
+     * @param:
+     * @author chenghch
+     */
     @Override
     public List<Member> getAllMemberMeta() {
-        return memberMapper.getAllMemberCodes();
+        return memberMapper.getAllMemberMeta();
     }
 
     @Override
@@ -195,33 +172,69 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
 
     @Override
     public boolean moveUp(String id) {
-        Member member = memberMapper.selectByPrimaryKey(id);
-        String pid = member.getPid();
-        Member Pmeber = memberMapper.selectByPrimaryKey(pid);
-        String PUnipos = Pmeber.getUnipos();
-        int lowPos = member.getPosition();
-        Integer upPos = memberMapper.getUpPosition(pid, lowPos);
-        if (upPos == null) {
-            return false;
-        }
-        memberMapper.swapPosition(lowPos, upPos, PUnipos + "," + lowPos, pid);
-        memberMapper.updatePosition(upPos, PUnipos + "," + upPos, id);
-        return true;
+        return move(id, true);
     }
 
     @Override
     public boolean moveDown(String id) {
+        return move(id, false);
+    }
+
+    /**
+     * @description: 移动方法
+     * @param: id
+     * @param: up
+     * @author chenghch
+     */
+    private boolean move(String id, boolean up) {
         Member member = memberMapper.selectByPrimaryKey(id);
         String pid = member.getPid();
-        Member Pmeber = memberMapper.selectByPrimaryKey(pid);
-        String PUnipos = Pmeber.getUnipos();
-        int upPos = member.getPosition();
-        Integer lowPos = memberMapper.getDownPosition(pid, upPos);
-        if (lowPos == null) {
-            return false;
+        Member PMember = memberMapper.selectByPrimaryKey(pid);
+        String PUniPosition = PMember.getUnipos();
+        int selfPos = member.getPosition();
+        List<Member> nextmembers;
+        if (up) {
+            nextmembers = memberMapper.getUpPosition(pid, selfPos);
+        } else {
+            nextmembers = memberMapper.getDownPosition(pid, selfPos);
         }
-        memberMapper.swapPosition(upPos, lowPos, PUnipos + "," + upPos, pid);
-        memberMapper.updatePosition(lowPos, PUnipos + "," + lowPos, id);
+        Member nextmember;
+        if (nextmembers == null || nextmembers.size() == 0) {
+            return false;
+        } else {
+            nextmember = nextmembers.get(0);
+        }
+        int nextPos = nextmember.getPosition();
+        String nextid = nextmember.getId();
+        String nextUniPos = PUniPosition + "," + selfPos;
+        String selfUniPos = PUniPosition + "," + nextPos;
+        member.setUnipos(selfUniPos);
+        nextmember.setUnipos(nextUniPos);
+        memberMapper.updatePosition(selfPos, nextUniPos, nextid);
+        memberMapper.updatePosition(nextPos, selfUniPos, id);
+        freshUniPos(member);
+        freshUniPos(nextmember);
         return true;
+    }
+
+
+    /**
+     * @description: 递归替换unionPostion,排序方法
+     * @param: nextmember
+     * @author chenghch
+     *
+     */
+
+    public void freshUniPos(Member nextmember) {
+        if (nextmember.getDatatype() >= DataType.MAROLLUP) {//如果有子项,递归替换
+            String id = nextmember.getId();
+            List<Member> children = memberMapper.getMembersByPid(id);
+            if (children != null) {
+                memberMapper.updateUniPositionByPid(nextmember.getUnipos(), id);
+                for (Member child : children) {
+                    freshUniPos(child);
+                }
+            }
+        }
     }
 }

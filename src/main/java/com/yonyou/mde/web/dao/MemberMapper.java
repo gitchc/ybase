@@ -34,20 +34,26 @@ public interface MemberMapper extends Mapper<Member> {
     String getMemberIdByCode(String dimid, String code);
 
     @Select("select distinct  dimid,code ,name from Member where membertype<>0  ")
-    List<Member> getAllMemberCodes();
+    List<Member> getAllMemberMeta();
 
-    @Select("select max(t.position)  from member t where  t.pid = #{pid} and t.position<#{position}")
-    Integer getUpPosition(String pid, int position);
+    @Select("select *  from member t where  t.pid = #{pid} and t.position<#{position} order by position desc")
+    List<Member> getUpPosition(String pid, int position);
 
-    @Select("select min(t.position)  from member t where  t.pid = #{pid} and t.position>#{position}")
-    Integer getDownPosition(String pid, int position);
-
-    @Update("update member set position = #{lowPos},unipos=#{unipos} where position =#{upPos} and pid = #{pid}")
-    void swapPosition(@Param("lowPos") int lowPos, @Param("upPos") int upPos, String unipos, String pid);
+    @Select("select * from member t where  t.pid = #{pid} and t.position>#{position} order by position")
+    List<Member> getDownPosition(String pid, int position);
 
     @Update("update member set position = #{position},unipos=#{unipos} where id = #{id}")
     void updatePosition(int position, String unipos, String id);
 
+    @Update("update member set unipos=#{unipos} where id = #{id}")
+    void updateUniPosition(String unipos, String id);
+
     @Select("select * from Member where dimid=#{dimid} and status<>2 order by generation, position")
     List<Member> getMembersByDimid(String dimid);
+
+    @Select("select * from Member where pid = #{pid}")
+    List<Member> getMembersByPid(String id);
+
+    @Update("update member set unipos = concat(#{unipos},',',position) where pid=#{pid}")
+    void updateUniPositionByPid(String unipos, String pid);
 }
