@@ -225,11 +225,11 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
      */
 
     public void freshUniPos(Member nextmember) {
+        String id = nextmember.getId();
         if (nextmember.getDatatype() >= DataType.MAROLLUP) {//如果有子项,递归替换
-            String id = nextmember.getId();
-            List<Member> children = memberMapper.getMembersByPid(id);
+            memberMapper.updateUniPositionByPid(nextmember.getUnipos(), id);
+            List<Member> children = memberMapper.getParentMembersByPid(id);
             if (children != null) {
-                memberMapper.updateUniPositionByPid(nextmember.getUnipos(), id);
                 for (Member child : children) {
                     freshUniPos(child);
                 }
@@ -238,16 +238,16 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     }
 
     /**
-     * @description: 递归刷新unionCode, 唯一标识
+     * @description: 递归刷新unionCode, 唯一标识,确保member的UnionCode是正确的
      * @param: nextmember
      * @author chenghch
      */
     public void freshUniCode(Member member) {
+        String id = member.getId();
         if (member.getDatatype() >= DataType.MAROLLUP) {//如果有子项,递归替换
-            String id = member.getId();
-            List<Member> children = memberMapper.getMembersByPid(id);
+            memberMapper.updateUniCodeByPid(member.getUnicode(), id);
+            List<Member> children = memberMapper.getParentMembersByPid(id);
             if (children != null) {
-                memberMapper.updateUniCodeByPid(member.getUnicode(), id);
                 for (Member child : children) {
                     freshUniCode(child);
                 }

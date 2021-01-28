@@ -54,6 +54,9 @@ public interface MemberMapper extends Mapper<Member> {
     @Select("select * from Member where pid = #{pid}")
     List<Member> getMembersByPid(String id);
 
+    @Select("select * from Member where pid = #{pid} and (datatype=10 or datatype=11)")
+    List<Member> getParentMembersByPid(String id);
+
     @Update("update member set unipos = concat(#{unipos},',',position) where pid=#{pid}")
     void updateUniPositionByPid(String unipos, String pid);
 
