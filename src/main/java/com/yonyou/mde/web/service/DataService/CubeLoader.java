@@ -5,7 +5,6 @@ import cn.hutool.core.io.file.FileWriter;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
 import com.yonyou.mde.Mde;
-import com.yonyou.mde.config.MdeConfiguration;
 import com.yonyou.mde.datasource.DataSourceInfo;
 import com.yonyou.mde.dto.DimColumn;
 import com.yonyou.mde.error.MdeException;
@@ -15,6 +14,7 @@ import com.yonyou.mde.model.dataloader.DefaultLoaderConfig;
 import com.yonyou.mde.model.dataloader.config.LoadType;
 import com.yonyou.mde.model.meta.CubeMeta;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
+import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.entity.Dim;
 import com.yonyou.mde.web.model.types.DataType;
 import lombok.Data;
@@ -29,52 +29,17 @@ import java.util.regex.Pattern;
 
 @Data
 @Log4j2
-public class CubeAction {
+public class CubeLoader {
     protected static final String DEFAULT_MEASURE_COLUMN = "VALUE";
     protected static final String DEFAULT_TXT_VALUE_COLUMN = "TXTVALUE";
-    private DataSourceInfo info;
-    private String cubeName;
-    private String tableName;
-    private Map<String, List<DimColumn>> members;
-    private String loadSql;
-    private List<com.yonyou.mde.web.model.Dimension> dims;
-
-    public CubeAction(DataSourceConfig config, String cubeName, String tableName, String loadSql, List<com.yonyou.mde.web.model.Dimension> dims, Map<String, List<DimColumn>> members) {
-        this.cubeName = cubeName;
-        this.tableName = tableName;
-        this.members = members;
-        this.loadSql = loadSql;
-        this.dims = dims;
-        DataSourceInfo info = new DataSourceInfo();
-        info.setUrl(config.getUrl());
-        info.setUsername(config.getUsername());
-        info.setSchema(config.getSchema());
-        info.setPassword(config.getPassword());
-        this.info = info;
-    }
-
-    public void loadCubeData() throws MdeException {
-        MdeConfiguration configuration = new MdeConfiguration();
-        configuration.setDistributed(false);//是否启用分布式
-        configuration.setWriteBackByBiz(true);//回写库
-        configuration.setModelInitializer((cubeName, map) -> {
-            try {
-                CubeAction.this.loadCubeMeta();
-            } catch (MdeException e) {
-                e.printStackTrace();
-            }
-        });
-        configuration.setProcessor(new WriteBackProcesser());//自定义回写数据库方法
-        Mde.init(configuration);
-        loadCubeMeta();//加载元数据信息
-    }
 
     //根据Cube信息加载模型
-    private void loadCubeMeta() throws MdeException {
+    public static void loadCubeData(DataSourceConfig config, String cubeName, String tableName, String loadSql, List<com.yonyou.mde.web.model.Dimension> dims, Map<String, List<DimColumn>> members) throws MdeException {
         //所有维度
+        DataSourceInfo info = getDataSourceInfo(config);//处理数据源数据
+
         List<String> dimCodes = new ArrayList<>();
         List<Dimension> dimensions = new ArrayList<>();
-
         for (com.yonyou.mde.web.model.Dimension dim : dims) {
             String code = dim.getCode();
             boolean isRollUp = dim.getDatatype() == DataType.AUTOROLLUP;
@@ -83,12 +48,12 @@ public class CubeAction {
             Mde.setModelDimTree(cubeName, code, members.get(code), isRollUp);
         }
         if (StringUtils.isBlank(loadSql)) {
-            this.loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName + " where isdeleted=0";
+            loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName + " where isdeleted=0";
         } else {
-            this.tableName = getTableName(loadSql);
+            tableName = getTableName(loadSql);
         }
 
-//        CreateLoadFile(dimCodes);//造数据文件
+//        CreateLoadFile(dimCodes,cubeName,loadSql,members);//造数据文件
 
         // 加载维度信息
         DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions, loadSql),
@@ -97,8 +62,22 @@ public class CubeAction {
         DataLoaderTemplate.getInstance().loadModel(configf);
     }
 
-    private CubeMeta createCubeMeta(String cubeName, String factTableName,
-                                    String tablePkColName, List<Dimension> dimensions, String loadSql) {
+    /**
+     * @description: 处理数据源信息
+     * @param: config
+     * @author chenghch
+     */
+    private static DataSourceInfo getDataSourceInfo(DataSourceConfig config) {
+        DataSourceInfo info = new DataSourceInfo();
+        info.setUrl(config.getUrl());
+        info.setUsername(config.getUsername());
+        info.setSchema(config.getSchema());
+        info.setPassword(config.getPassword());
+        return info;
+    }
+
+    private static CubeMeta createCubeMeta(String cubeName, String factTableName,
+                                           String tablePkColName, List<Dimension> dimensions, String loadSql) {
         return CubeMeta.builder()
                 .modelName(cubeName)
                 .cubeName(cubeName)
@@ -112,7 +91,7 @@ public class CubeAction {
     }
 
     //创建Load文件,方便测试
-    private void CreateLoadFile(List<String> dimCodes) {
+    private static void CreateLoadFile(List<String> dimCodes, String cubeName, String loadSql, List<Member> members) {
         String dirPath = "D:\\mock\\meta\\" + cubeName + "\\";
         String dimPath = dirPath + "dim.json";
         String dimInfoPath = dirPath + "dimInfo.json";

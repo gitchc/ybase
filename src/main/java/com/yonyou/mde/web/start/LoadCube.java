@@ -1,6 +1,7 @@
 package com.yonyou.mde.web.start;
 
 import com.yonyou.mde.web.service.CubeService;
+import com.yonyou.mde.web.service.DataService.MDEManager;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -15,7 +16,8 @@ public class LoadCube {
     private CubeService cubeService;
 
     @PostConstruct
-    public void initLoadCube() {//加载自动装载的cube
+    public void init() {//加载自动装载的cube
+        MDEManager.initMde();//初始化MDE环境
         cubeService.loadAutoCube();
     }
 }
