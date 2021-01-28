@@ -13,11 +13,10 @@ import com.yonyou.mde.web.model.types.DataType;
 import com.yonyou.mde.web.model.types.MemberType;
 import com.yonyou.mde.web.service.DimensionService;
 import com.yonyou.mde.web.utils.SnowID;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import tk.mybatis.mapper.entity.Condition;
-import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -67,6 +66,7 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
     }
 
     @Override
+    @CacheEvict(cacheNames = "CubeDims")
     public void switchDim(Dimension dimension) {
         dimensionMapper.switchDim(dimension.getDimid(), dimension.getDatatype());
         Integer olddatatype = DataType.MAROLLUP;
@@ -84,6 +84,7 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
     }
 
     @Override
+    @CacheEvict(cacheNames = "CubeDims")
     public void updateDim(Dimension member) {
         dimensionMapper.updateDim(member.getId(), member.getName());
     }
@@ -93,14 +94,14 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
         return dimensionMapper.getDimIdByCode(dimCode);
     }
 
-    @Override
-    @Cacheable(cacheNames = "CubeDims")
     /**
      * @description: 启用缓存
      * @param: dimids
      * @author chenghch
      *
      */
+    @Override
+    @Cacheable(cacheNames = "CubeDims")
     public List<Dimension> getDimensionByIds(String dimids) {
         return dimensionMapper.getDimensionByIds(dimids.split(","));
     }
