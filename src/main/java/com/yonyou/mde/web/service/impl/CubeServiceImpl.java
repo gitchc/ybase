@@ -22,6 +22,7 @@ import com.yonyou.mde.web.service.AttrvalueService;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeManager;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
+import com.yonyou.mde.web.service.DimensionService;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
@@ -47,9 +48,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     @Resource
     private CubeMapper cubeMapper;
     @Resource
-    private ViewLayoutMapper viewLayoutMapper;
-    @Resource
-    private DimensionMapper dimensionMapper;
+    private DimensionService dimensionService;
     @Resource
     private MemberService memberService;
     @Resource
@@ -89,7 +88,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
             tableName = "";
         }
         if (cube.getAutoload() == 1 || foceReload) {
-            List<Dimension> dims = getMemberByIds(cube.getDimids());
+            List<Dimension> dims = dimensionService.getDimensionByIds(cube.getDimids());
             Map<String, List<DimColumn>> allmembers = getMembers(dims);
             try {
                 CubeManager.loadCubeData(dataSourceConfig, cube.getCubecode(), tableName, loadSql, dims, allmembers);
@@ -106,7 +105,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         if (cube == null) {
             throw new ScriptException(cubecode + "不存在!");
         }
-        List<Dimension> dims = getMemberByIds(cube.getDimids());
+        List<Dimension> dims = dimensionService.getDimensionByIds(cube.getDimids());
         for (Dimension dim : dims) {
             List<String> membercodes = memberService.getMemberCodesByDimid(dim.getId());
             cubeMap.put(dim.getCode(), membercodes);
@@ -135,89 +134,6 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     }
 
     @Override
-    public ViewVO getView(String cubeid, String viewid) {
-        Cube cube = cubeMapper.selectByPrimaryKey(cubeid);
-        ViewVO viewVO = new ViewVO();
-        viewVO.setCubeid(cubeid);
-        viewVO.setViewid(viewid);
-        if (cube == null) {
-            throw new ServiceException("Cube不存在~");
-        }
-        String dimids = cube.getDimids();
-        List<Dimension> dims = getMemberByIds(dimids);
-        Map<String, Dimension> dimensionMap = new HashMap<>();
-        if (StringUtils.isNotBlank(viewid)) {
-            for (Dimension dim : dims) {
-                dimensionMap.put(dim.getId(), dim);
-            }
-            List<ViewLayout> layouts = viewLayoutMapper.getLayoutsByViewid(viewid);
-            for (ViewLayout layout : layouts) {
-                String dimid = layout.getDimid();
-                Dimension dimension = dimensionMap.get(dimid);
-                String scope = layout.getScope();
-                String layouttype = layout.getLayouttype();
-                if (LayoutType.PAGE.equals(layouttype)) {//页面维
-                    viewVO.getPage().add(getDimLayout(dimension, scope));
-                } else if (LayoutType.ROW.equals(layouttype)) {//行维度处理
-                    viewVO.getRow().add(getDimLayout(dimension, scope));
-                } else if (LayoutType.COL.equals(layouttype)) {//列维度处理
-                    viewVO.getCol().add(getDimLayout(dimension, scope));
-                }
-            }
-        } else {//视图不存在,则全部设置成页面维
-            for (Dimension dim : dims) {
-                viewVO.getPage().add(getDimLayout(dim));//全部加到页面维Page
-            }
-        }
-        return viewVO;
-    }
-
-    /**
-     * @description: 获取多维layout布局
-     * @param: pageDims
-     * @param: dim
-     * @author chenghch
-     */
-    private LayoutDim getDimLayout(Dimension dim) {
-        return getDimLayout(dim, null);
-    }
-
-    /**
-     * @description: 获取多维layout布局
-     * @param: pageDims
-     * @param: dim
-     * @param: scope 维度范围
-     * @author chenghch
-     */
-    private LayoutDim getDimLayout(Dimension dimension, String scope) {
-        List<Member> list;
-        String dimid = dimension.getId();
-        if (StringUtils.isBlank(scope)) {//范围为空,去全部维度集合
-            list = memberService.getMembersBydimid(dimid);
-        } else {
-            list = memberService.getMembersByScope(dimid, scope);
-        }
-        list = SortUtil.sortMember(list);
-        List<LayoutMember> res = new ArrayList<>(list.size());
-        for (Member member : list) {//重构页面元素
-            LayoutMember vo = new LayoutMember();
-            vo.setId(member.getId());
-            vo.setCode(member.getCode());
-            vo.setGeneration(member.getGeneration());
-            vo.setDimCode(dimension.getCode());
-            vo.setDisplayName(MemberUtil.getDisplayName(member));
-            res.add(vo);
-        }
-        LayoutDim layoutdim = new LayoutDim();
-        layoutdim.setDimId(dimid);
-        layoutdim.setDimName(dimension.getName());
-        layoutdim.setDimCode(dimension.getCode());
-        layoutdim.setSelectedMember(res.get(0).getCode());
-        layoutdim.setOptions(res);
-        return layoutdim;
-    }
-
-    @Override
     public List<String> getDimCodes(String cubeCode) {
         List<String> codes = new ArrayList<>();
         Cube cube = cubeMapper.getCubeByCode(cubeCode);
@@ -225,7 +141,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
             throw new ScriptException(cubeCode + "不存在!");
         }
         String dimids = cube.getDimids();
-        List<Dimension> dims = getMemberByIds(dimids);
+        List<Dimension> dims = dimensionService.getDimensionByIds(dimids);
         for (String dimid : dimids.split(",")) {
             for (Dimension dim : dims) {
                 if (dim.getId().equals(dimid)) {
@@ -244,7 +160,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         if (cube == null) {
             throw new ScriptException(cubeid + "不存在!");
         }
-        List<Dimension> dims = getMemberByIds(cube.getDimids());
+        List<Dimension> dims = dimensionService.getDimensionByIds(cube.getDimids());
         for (Dimension dim : dims) {
             codesMap.put(dim.getId(), dim.getCode());
         }
@@ -346,15 +262,11 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         }
     }
 
-    public List<Dimension> getMemberByIds(String dimids) {
-        String ndimids = "'" + dimids.replace(",", "','") + "'";
-        return dimensionMapper.getdimsByIds(ndimids);
-    }
 
     private void CheckTable(Cube cube) {
         String tableName = cube.getCubecode();
         String dimids = cube.getDimids();
-        List<Dimension> dims = getMemberByIds(dimids);
+        List<Dimension> dims = dimensionService.getDimensionByIds(dimids);
         if (cube.getAutosql() == 1) {
             try {
                 mockDataManager.createTable(dataSource, tableName, dims);

@@ -3,9 +3,10 @@ package com.yonyou.mde.web.model;
 import lombok.Data;
 
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Data
-public class Dimension {
+public class Dimension implements Serializable {
     /**
      * 雪花id
      */

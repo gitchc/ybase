@@ -1,19 +1,20 @@
 package com.yonyou.mde.web.service.impl;
 
 import com.yonyou.mde.web.core.AbstractService;
+import com.yonyou.mde.web.core.ServiceException;
+import com.yonyou.mde.web.dao.CubeMapper;
 import com.yonyou.mde.web.dao.ViewLayoutMapper;
 import com.yonyou.mde.web.dao.ViewMapper;
-import com.yonyou.mde.web.model.Cube;
-import com.yonyou.mde.web.model.View;
-import com.yonyou.mde.web.model.ViewLayout;
+import com.yonyou.mde.web.model.*;
 import com.yonyou.mde.web.model.entity.LayoutDim;
+import com.yonyou.mde.web.model.entity.LayoutMember;
 import com.yonyou.mde.web.model.types.LayoutType;
 import com.yonyou.mde.web.model.vos.ViewTree;
 import com.yonyou.mde.web.model.vos.ViewVO;
-import com.yonyou.mde.web.service.CubeService;
-import com.yonyou.mde.web.service.ViewLayoutService;
-import com.yonyou.mde.web.service.ViewService;
+import com.yonyou.mde.web.service.*;
+import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
+import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,12 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
     private CubeService cubeService;
     @Resource
     private ViewLayoutService viewLayoutService;
+    @Resource
+    private CubeMapper cubeMapper;
+    @Resource
+    private DimensionService dimensionService;
+    @Resource
+    private MemberService memberService;
 
     @Override
     public List<ViewTree> findAllViews() {
@@ -173,5 +180,87 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
         viewLayoutMapper.deleteViewLayout(viewid);
     }
 
+    @Override
+    public ViewVO getView(String cubeid, String viewid) {
+        Cube cube = cubeMapper.selectByPrimaryKey(cubeid);
+        ViewVO viewVO = new ViewVO();
+        viewVO.setCubeid(cubeid);
+        viewVO.setViewid(viewid);
+        if (cube == null) {
+            throw new ServiceException("Cube不存在~");
+        }
+        String dimids = cube.getDimids();
+        List<Dimension> dims = dimensionService.getDimensionByIds(dimids);
+        Map<String, Dimension> dimensionMap = new HashMap<>();
+        if (StringUtils.isNotBlank(viewid)) {
+            for (Dimension dim : dims) {
+                dimensionMap.put(dim.getId(), dim);
+            }
+            List<ViewLayout> layouts = viewLayoutMapper.getLayoutsByViewid(viewid);
+            for (ViewLayout layout : layouts) {
+                String dimid = layout.getDimid();
+                Dimension dimension = dimensionMap.get(dimid);
+                String scope = layout.getScope();
+                String layouttype = layout.getLayouttype();
+                if (LayoutType.PAGE.equals(layouttype)) {//页面维
+                    viewVO.getPage().add(getDimLayout(dimension, scope));
+                } else if (LayoutType.ROW.equals(layouttype)) {//行维度处理
+                    viewVO.getRow().add(getDimLayout(dimension, scope));
+                } else if (LayoutType.COL.equals(layouttype)) {//列维度处理
+                    viewVO.getCol().add(getDimLayout(dimension, scope));
+                }
+            }
+        } else {//视图不存在,则全部设置成页面维
+            for (Dimension dim : dims) {
+                viewVO.getPage().add(getDimLayout(dim));//全部加到页面维Page
+            }
+        }
+        return viewVO;
+    }
+
+    /**
+     * @description: 获取多维layout布局
+     * @param: pageDims
+     * @param: dim
+     * @author chenghch
+     */
+    private LayoutDim getDimLayout(Dimension dim) {
+        return getDimLayout(dim, null);
+    }
+
+    /**
+     * @description: 获取多维layout布局
+     * @param: pageDims
+     * @param: dim
+     * @param: scope 维度范围
+     * @author chenghch
+     */
+    private LayoutDim getDimLayout(Dimension dimension, String scope) {
+        List<Member> list;
+        String dimid = dimension.getId();
+        if (StringUtils.isBlank(scope)) {//范围为空,去全部维度集合
+            list = memberService.getMembersBydimid(dimid);
+        } else {
+            list = memberService.getMembersByScope(dimid, scope);
+        }
+        list = SortUtil.sortMember(list);
+        List<LayoutMember> res = new ArrayList<>(list.size());
+        for (Member member : list) {//重构页面元素
+            LayoutMember vo = new LayoutMember();
+            vo.setId(member.getId());
+            vo.setCode(member.getCode());
+            vo.setGeneration(member.getGeneration());
+            vo.setDimCode(dimension.getCode());
+            vo.setDisplayName(MemberUtil.getDisplayName(member));
+            res.add(vo);
+        }
+        LayoutDim layoutdim = new LayoutDim();
+        layoutdim.setDimId(dimid);
+        layoutdim.setDimName(dimension.getName());
+        layoutdim.setDimCode(dimension.getCode());
+        layoutdim.setSelectedMember(res.get(0).getCode());
+        layoutdim.setOptions(res);
+        return layoutdim;
+    }
 
 }

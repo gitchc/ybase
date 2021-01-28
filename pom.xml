@@ -27,6 +27,11 @@
     </parent>
 
     <dependencies>
+        <!--缓存依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
         <!--Spring Boot依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

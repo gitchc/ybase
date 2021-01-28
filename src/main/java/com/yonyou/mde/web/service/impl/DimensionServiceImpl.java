@@ -13,6 +13,7 @@ import com.yonyou.mde.web.model.types.DataType;
 import com.yonyou.mde.web.model.types.MemberType;
 import com.yonyou.mde.web.service.DimensionService;
 import com.yonyou.mde.web.utils.SnowID;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -55,7 +56,7 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
         Integer nextPos = maxPos == null ? 1 : maxPos + 1;
         dimension.setPosition(nextPos);
         Member insermember = new Member();
-        BeanUtil.copyProperties(dimension,insermember);
+        BeanUtil.copyProperties(dimension, insermember);
         memberMapper.insert(insermember);
         return insermember.getId();
     }
@@ -90,6 +91,18 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
     @Override
     public String getDimidByCode(String dimCode) {
         return dimensionMapper.getDimIdByCode(dimCode);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "CubeDims")
+    /**
+     * @description: 启用缓存
+     * @param: dimids
+     * @author chenghch
+     *
+     */
+    public List<Dimension> getDimensionByIds(String dimids) {
+        return dimensionMapper.getDimensionByIds(dimids.split(","));
     }
 
 

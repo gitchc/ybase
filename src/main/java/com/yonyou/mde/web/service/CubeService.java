@@ -33,8 +33,6 @@ public interface CubeService extends Service<Cube> {
 
     List<Cube> getAll();
 
-    ViewVO getView(String id, String viewid);
-
     Cube getCubeById(String cubeid);
 
     List<Cube> getAllCubeMeta();

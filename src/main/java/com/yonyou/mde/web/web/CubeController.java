@@ -7,6 +7,7 @@ import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeDataService;
+import com.yonyou.mde.web.service.ViewService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,8 @@ public class CubeController {
     private CubeService cubeService;
     @Resource
     private CubeDataService cubeDataService;
+    @Resource
+    private ViewService viewService;
 
     @RequestMapping("/insert")
     public Result add(Cube cube) {
@@ -70,8 +73,8 @@ public class CubeController {
     }
 
     @RequestMapping("/getView")
-    public Result getView(@RequestParam String id,@RequestParam(defaultValue = "") String viewid) {
-        ViewVO viewLayout = cubeService.getView(id,viewid);
+    public Result getView(@RequestParam String id, @RequestParam(defaultValue = "") String viewid) {
+        ViewVO viewLayout = viewService.getView(id, viewid);
         return ResultGenerator.genSuccessResult(viewLayout);
     }
 

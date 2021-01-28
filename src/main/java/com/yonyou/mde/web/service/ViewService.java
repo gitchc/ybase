@@ -18,4 +18,6 @@ public interface ViewService extends Service<View> {
     String saveview(ViewVO viewLayout);
 
     void deleteViewByid(String viewid);
+
+    ViewVO getView(String cubeid, String viewid);
 }
