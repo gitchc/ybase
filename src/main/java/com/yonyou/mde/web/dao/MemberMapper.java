@@ -56,4 +56,7 @@ public interface MemberMapper extends Mapper<Member> {
 
     @Update("update member set unipos = concat(#{unipos},',',position) where pid=#{pid}")
     void updateUniPositionByPid(String unipos, String pid);
+
+    @Update("update member set unicode = concat(#{unicode},',',code) where pid=#{pid}")
+    void updateUniCodeByPid(String unicode, String pid);
 }

@@ -219,10 +219,9 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
 
 
     /**
-     * @description: 递归替换unionPostion,排序方法
+     * @description: 递归替换unionPostion, 排序方法
      * @param: nextmember
      * @author chenghch
-     *
      */
 
     public void freshUniPos(Member nextmember) {
@@ -233,6 +232,24 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
                 memberMapper.updateUniPositionByPid(nextmember.getUnipos(), id);
                 for (Member child : children) {
                     freshUniPos(child);
+                }
+            }
+        }
+    }
+
+    /**
+     * @description: 递归刷新unionCode, 唯一标识
+     * @param: nextmember
+     * @author chenghch
+     */
+    public void freshUniCode(Member member) {
+        if (member.getDatatype() >= DataType.MAROLLUP) {//如果有子项,递归替换
+            String id = member.getId();
+            List<Member> children = memberMapper.getMembersByPid(id);
+            if (children != null) {
+                memberMapper.updateUniCodeByPid(member.getUnicode(), id);
+                for (Member child : children) {
+                    freshUniCode(child);
                 }
             }
         }
