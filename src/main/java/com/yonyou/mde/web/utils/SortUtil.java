@@ -25,8 +25,8 @@ public class SortUtil {
     private static final int ToLeft = -1;
 
     private static Comparator<Member> c1 = (t1, t2) -> {
-        String[] str1Split = t1.getUnipos().split("\\.");
-        String[] str2Split = t2.getUnipos().split("\\.");
+        String[] str1Split = t1.getUnipos().split(",");
+        String[] str2Split = t2.getUnipos().split(",");
         int minSplitLength = str1Split.length > str2Split.length ? str2Split.length : str1Split.length;
         // 用长度小的数组长度作为遍历边界，防止数组越界
         for (int i = 0; i < minSplitLength; i++) {
@@ -65,8 +65,8 @@ public class SortUtil {
     };
 
     private static Comparator<Position> c2 = (t1, t2) -> {
-        String[] str1Split = t1.getUnipos().split("\\.");
-        String[] str2Split = t2.getUnipos().split("\\.");
+        String[] str1Split = t1.getUnipos().split(",");
+        String[] str2Split = t2.getUnipos().split(",");
         int minSplitLength = str1Split.length > str2Split.length ? str2Split.length : str1Split.length;
         // 用长度小的数组长度作为遍历边界，防止数组越界
         for (int i = 0; i < minSplitLength; i++) {
@@ -106,9 +106,9 @@ public class SortUtil {
 
 
     public static void main(String[] args) {
-        String[] dataSource = new String[]{"1.1.", "1.1.100.211.1.6.1000.21", "1.3.100.211.1.6.1000.21", "1.9.100.211.1.6.1000.21", "1.7", "1.10.1", "1.10",
-                "1.2.1.6.1000.21", "1.4.1.6.1000.21.1.6.1000.21", "1.5.1.6.1000.21", "1.8.1.6.1000.21", "1.6.1000.21", "1.11.100.211", "2.4.100.211.1.6.1000.21", "2.10.100.211", "1.1.10.100.211", "1.1.8",
-                "1.1.3.1.6.1000.21", "2.1.5.1.6.1000.21", "2.1.10.1.6.1000.21", "2.1.6.1000.21"};
+        String[] dataSource = new String[]{"1,1,", "1,1,100,211,1,6,1000,21", "1,3,100,211,1,6,1000,21", "1,9,100,211,1,6,1000,21", "1,7", "1,10,1", "1,10",
+                "1,2,1,6,1000,21", "1,4,1,6,1000,21,1,6,1000,21", "1,5,1,6,1000,21", "1,8,1,6,1000,21", "1,6,1000,21", "1,11,100,211", "2,4,100,211,1,6,1000,21", "2,10,100,211", "1,1,10,100,211", "1,1,8",
+                "1,1,3,1,6,1000,21", "2,1,5,1,6,1000,21", "2,1,10,1,6,1000,21", "2,1,6,1000,21"};
 
         List<String> data1 = new ArrayList<>();
         int i = 1000000;

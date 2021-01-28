@@ -31,13 +31,15 @@
     .hide {
         display: none;
     }
+
     .leftpd {
         height: calc(100% - 60px);
         overflow: auto;
     }
-    .layui-elem-quote{
+
+    .layui-elem-quote {
         padding: 5px;
-        margin-bottom:5px;
+        margin-bottom: 5px;
     }
 </style>
 <body>
@@ -90,6 +92,12 @@
                             </button>
                             <button type="button" action="del" class="layui-btn layui-btn-primary layui-btn-sm">
                                 <i class="layui-icon">&#xe640;</i>
+                            </button>
+                            <button type="button" action="up" class="layui-btn layui-btn-primary layui-btn-sm">
+                                <i class="layui-icon">&#xe619;</i>
+                            </button>
+                            <button type="button" action="down" class="layui-btn layui-btn-primary layui-btn-sm">
+                                <i class="layui-icon">&#xe61a;</i>
                             </button>
                         </div>
                     </div>
@@ -166,7 +174,7 @@
         attr: function () {
             var dimid = this.getDimid();
             if (dimid) {
-                parent.openUrlDialog("属性信息", '/static/dimension/attr.html?dimid='+dimid,'60%','70%');
+                parent.openUrlDialog("属性信息", '/static/dimension/attr.html?dimid=' + dimid, '60%', '70%');
             }
         },
         getDimid: function () {
@@ -348,6 +356,24 @@
             if (memberid) {
                 showConfirm("提示", "确定删除么?", function () {
                     fetchGet("/member/delMember?id=" + memberid, memberBtnevent.reloadMembers);
+                });
+            }
+        },
+        down: function () {
+            if (memberid) {
+                fetchGet("/member/downMember?id=" + memberid, function (data) {
+                    if (data) {
+                        memberBtnevent.reloadMembers();
+                    }
+                });
+            }
+        },
+        up: function () {
+            if (memberid) {
+                fetchGet("/member/upMember?id=" + memberid, function (data) {
+                    if (data) {
+                        memberBtnevent.reloadMembers();
+                    }
                 });
             }
         },

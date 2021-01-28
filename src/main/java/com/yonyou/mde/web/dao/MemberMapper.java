@@ -7,27 +7,16 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public interface MemberMapper extends Mapper<Member> {
     @Select("select max(position) from Member where pid = #{pid}")
     Integer getMaxPosition(String pid);
 
-    @Select("select * from Member where membertype=0 order by position")
-    List<Member> selectAllDim();
-
-    @Update("update Member set datatype=#{datatype} where id = #{id}")
-    void switchDim(String id, Integer datatype);
-
     @Update("update Member set datatype=#{newdatatype} where dimid = #{dimid} and datatype = #{olddatatype}")
     void switchMember(String dimid, Integer olddatatype, Integer newdatatype);
 
-    @Delete("delete from Member where dimid= #{dimid} or id = #{dimid}")
-    void delDim(String dimid);
-
-    @Update("update Member set name=#{name} where id = #{id}")
-    void updateDim(String id, String name);
 
     @Delete("delete from Member where id= #{id} or unicode like #{unicode}")
     void delMemberByUnicode(String id, String unicode);
@@ -39,14 +28,26 @@ public interface MemberMapper extends Mapper<Member> {
     void updateMember(String code, String dimid, String name, Integer datatype, Float weight);
 
     @Select("select  code from Member where datatype <>10 and datatype<>11 and dimid=#{dimid} order by unipos asc")
-    LinkedHashSet<String> getMemberCodesByDimid(String dimid);
-
-    @Select("select  id from Member where membertype=0 and code = #{dimCode}")
-    String getDimIdByCode(@Param(value = "dimCode") String dimCode);
+    Set<String> getMemberCodesByDimid(String dimid);
 
     @Select("select  id from Member where membertype<>0 and dimid = #{dimid} and code=#{code}")
     String getMemberIdByCode(String dimid, String code);
 
     @Select("select distinct  dimid,code ,name from Member where membertype<>0  ")
     List<Member> getAllMemberCodes();
+
+    @Select("select max(t.position)  from member t where  t.pid = #{pid} and t.position<#{position}")
+    Integer getUpPosition(String pid, int position);
+
+    @Select("select min(t.position)  from member t where  t.pid = #{pid} and t.position>#{position}")
+    Integer getDownPosition(String pid, int position);
+
+    @Update("update member set position = #{lowPos},unipos=#{unipos} where position =#{upPos} and pid = #{pid}")
+    void swapPosition(@Param("lowPos") int lowPos, @Param("upPos") int upPos, String unipos, String pid);
+
+    @Update("update member set position = #{position},unipos=#{unipos} where id = #{id}")
+    void updatePosition(int position, String unipos, String id);
+
+    @Select("select * from Member where dimid=#{dimid} and status<>2 order by generation, position")
+    List<Member> getMembersByDimid(String dimid);
 }

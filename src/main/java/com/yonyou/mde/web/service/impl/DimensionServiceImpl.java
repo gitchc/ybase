@@ -54,10 +54,10 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
         Integer maxPos = dimensionMapper.getMaxPosition(pid);
         Integer nextPos = maxPos == null ? 1 : maxPos + 1;
         dimension.setPosition(nextPos);
-        Member insermember = new Member();
-        BeanUtil.copyProperties(dimension, insermember);
-        memberMapper.insert(insermember);
-        return insermember.getId();
+        Member newMember = new Member();
+        BeanUtil.copyProperties(dimension, newMember);
+        memberMapper.insert(newMember);
+        return newMember.getId();
     }
 
 

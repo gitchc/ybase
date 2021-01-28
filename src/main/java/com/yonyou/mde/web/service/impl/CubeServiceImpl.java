@@ -183,8 +183,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                 dimColumns = new ArrayList<>();
                 result.put(dimcode, dimColumns);
             }
-            List<Member> members = memberService.getMembersBydimid(dimId);
-            members = SortUtil.sortMember(members);
+            List<Member> members = memberService.getMembersByDimid(dimId);
             Map<String, Map<String, Object>> attrValues = attrvalueService.getAttrValues(dimId);
             Map<String, String> parentMap = new HashMap<>();
             parentMap.put(dimId, dim.getCode());

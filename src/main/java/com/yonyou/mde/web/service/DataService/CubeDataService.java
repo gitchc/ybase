@@ -289,7 +289,7 @@ public class CubeDataService {
     private List<Member[]> getDims(String[] Arr) {
         List<Member[]> dims = new ArrayList<>();
         for (String rowDimid : Arr) {
-            List<Member> memberList = memberService.getMembersBydimid(rowDimid);
+            List<Member> memberList = memberService.getMembersByDimid(rowDimid);
             dims.add(ArrayUtil.toArray(memberList, Member.class));
         }
         return dims;

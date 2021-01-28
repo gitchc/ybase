@@ -69,7 +69,16 @@ public class MemberController {
         memberService.deleteMember(id);
         return ResultGenerator.genSuccessResult();
     }
-
+    @RequestMapping("/upMember")
+    public Result upMember(@RequestParam String id) {
+        boolean suc = memberService.moveUp(id);
+        return ResultGenerator.genSuccessResult(suc);
+    }
+    @RequestMapping("/downMember")
+    public Result downMember(@RequestParam String id) {
+        boolean suc = memberService.moveDown(id);
+        return ResultGenerator.genSuccessResult(suc);
+    }
     @RequestMapping("/updateField")
     public Result updateField(MemberFiled filed) {
         memberService.updateFiled(filed);

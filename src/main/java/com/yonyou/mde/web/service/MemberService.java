@@ -2,7 +2,6 @@ package com.yonyou.mde.web.service;
 
 import com.yonyou.mde.web.core.Service;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.model.vos.Completer;
 import com.yonyou.mde.web.model.vos.MemberFiled;
 import com.yonyou.mde.web.model.vos.MemberVO;
 
@@ -63,7 +62,7 @@ public interface MemberService extends Service<Member> {
      * @param: dimid
      * @author chenghch
      */
-    List<Member> getMembersBydimid(String id);
+    List<Member> getMembersByDimid(String dimid);
 
     /**
      * @description: 返回维度的所有编码
@@ -79,13 +78,27 @@ public interface MemberService extends Service<Member> {
      * @author chenghch
      */
     String getMemberIdByCode(String dimid, String memberName);
+
     /**
      * @description: 获取所有的成员编码和名称
      * @param:
      * @author chenghch
-     *
      */
     List<Member> getAllMemberMeta();
 
     List<Member> getMembersByScope(String dimid, String scope);
+
+    /**
+     * @description: 上移
+     * @param: id
+     * @author chenghch
+     */
+    boolean moveUp(String id);
+
+    /**
+     * @description: 下移
+     * @param: id
+     * @author chenghch
+     */
+    boolean moveDown(String id);
 }

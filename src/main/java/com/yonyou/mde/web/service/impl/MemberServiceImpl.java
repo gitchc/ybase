@@ -4,8 +4,13 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.yonyou.mde.web.core.AbstractService;
 import com.yonyou.mde.web.core.ServiceException;
-import com.yonyou.mde.web.dao.*;
-import com.yonyou.mde.web.model.*;
+import com.yonyou.mde.web.dao.AttrvalueMapper;
+import com.yonyou.mde.web.dao.CubeMapper;
+import com.yonyou.mde.web.dao.DimensionMapper;
+import com.yonyou.mde.web.dao.MemberMapper;
+import com.yonyou.mde.web.model.Cube;
+import com.yonyou.mde.web.model.Dimension;
+import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.types.DataType;
 import com.yonyou.mde.web.model.types.MemberType;
 import com.yonyou.mde.web.model.types.StatusType;
@@ -23,7 +28,6 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -37,8 +41,6 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     private MemberMapper memberMapper;
     @Resource
     private DimensionMapper dimensionMapper;
-    @Resource
-    private AttrMapper attrMapper;
     @Resource
     private AttrvalueMapper attrvalueMapper;
     @Resource
@@ -75,17 +77,13 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         String pid = member.getPid();
         String dimid = member.getDimid();
         if (StringUtils.isBlank(pid)) {
-            pid = dimid;
             member.setPid(dimid);
         }
         member.setStatus(StatusType.NORMAL);
         member.setWeight(member.getWeight() == null ? 1L : member.getWeight());
-      /*  Integer maxPos = memberMapper.getMaxPosition(pid);
-        Integer nextPos = maxPos == null ? 1 : maxPos + 1;
-        member.setPosition(nextPos);*/
         member.setGeneration(Pmember.getGeneration() + 1);
         member.setUnicode(Pmember.getUnicode() + "," + member.getCode());
-        member.setUnipos(Pmember.getUnipos() + "." + member.getPosition());
+        member.setUnipos(Pmember.getUnipos() + "," + member.getPosition());
         memberMapper.insert(member);
         return member;
     }
@@ -113,13 +111,9 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
         member.setPosition(nextPos);
         member.setGeneration(Pmember.getGeneration() + 1);
         member.setUnicode(Pmember.getUnicode() + "," + member.getCode());
-        member.setUnipos(Pmember.getUnipos() + "." + member.getPosition());
+        member.setUnipos(Pmember.getUnipos() + "," + member.getPosition());
         memberMapper.insert(member);
         return member.getId();
-    }
-
-    public List<Member> findAllDim() {
-        return memberMapper.selectAllDim();
     }
 
 
@@ -134,7 +128,7 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
             Dimension dimension = dimensionMapper.getDimById(dimid);
             String temp = "update {} set isdeleted=1 where {}='{}'";
             for (Cube cube : cubes) {
-                memberMapper.executeSql(StrUtil.format(temp,cube.getCubecode(),dimension.getCode(),member.getCode()));
+                memberMapper.executeSql(StrUtil.format(temp, cube.getCubecode(), dimension.getCode(), member.getCode()));
             }
         }
 
@@ -153,33 +147,29 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
 
     @Override
     public List<MemberVO> getMemberVOsBydimid(String dimid) {
-        Condition condition = new Condition(Member.class);
-        Example.Criteria criteria = condition.createCriteria();
-        criteria.andEqualTo("dimid", dimid);
-        criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
-        List<Member> list = findByCondition(condition);
+        List<Member> list = getMembersByDimid(dimid);
         List<MemberVO> res = new ArrayList<>(list.size());
-        list.forEach(item -> {
+        for (Member member : list) {
             MemberVO vo = new MemberVO();
-            BeanUtil.copyProperties(item, vo);
-            vo.setDatatypedetail(DataType.getStr(item.getDatatype()));
-            vo.setStatusdetail(StatusType.getStr(item.getStatus()));
-            vo.setNamedetail(MemberUtil.getLevelName(item));
+            BeanUtil.copyProperties(member, vo);
+            vo.setDatatypedetail(DataType.getStr(member.getDatatype()));
+            vo.setStatusdetail(StatusType.getStr(member.getStatus()));
+            vo.setNamedetail(MemberUtil.getLevelName(member));
             res.add(vo);
-        });
-        List<MemberVO> finalRes = SortUtil.sort(res);
-        return finalRes;
+        }
+        return res;
     }
 
+    /**
+     * @description: 获取维度全部成员
+     * @param: dimid
+     * @author chenghch
+     *
+     */
     @Override
-    public List<Member> getMembersBydimid(String id) {
-        Condition condition = new Condition(Member.class);
-        Example.Criteria criteria = condition.createCriteria();
-        criteria.andEqualTo("dimid", id);
-        criteria.andNotIn("status", Arrays.asList(StatusType.DISABLED));
-        List<Member> list = findByCondition(condition);
-        List<Member> finalRes = SortUtil.sortMember(list);
-        return finalRes;
+    public List<Member> getMembersByDimid(String dimid) {
+        List<Member> list = memberMapper.getMembersByDimid(dimid);
+        return SortUtil.sortMember(list);//排序
     }
 
     @Override
@@ -201,5 +191,37 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     @Override
     public List<Member> getMembersByScope(String dimid, String scope) {
         return new ArrayList<>();//todo 待完善
+    }
+
+    @Override
+    public boolean moveUp(String id) {
+        Member member = memberMapper.selectByPrimaryKey(id);
+        String pid = member.getPid();
+        Member Pmeber = memberMapper.selectByPrimaryKey(pid);
+        String PUnipos = Pmeber.getUnipos();
+        int lowPos = member.getPosition();
+        Integer upPos = memberMapper.getUpPosition(pid, lowPos);
+        if (upPos == null) {
+            return false;
+        }
+        memberMapper.swapPosition(lowPos, upPos, PUnipos + "," + lowPos, pid);
+        memberMapper.updatePosition(upPos, PUnipos + "," + upPos, id);
+        return true;
+    }
+
+    @Override
+    public boolean moveDown(String id) {
+        Member member = memberMapper.selectByPrimaryKey(id);
+        String pid = member.getPid();
+        Member Pmeber = memberMapper.selectByPrimaryKey(pid);
+        String PUnipos = Pmeber.getUnipos();
+        int upPos = member.getPosition();
+        Integer lowPos = memberMapper.getDownPosition(pid, upPos);
+        if (lowPos == null) {
+            return false;
+        }
+        memberMapper.swapPosition(upPos, lowPos, PUnipos + "," + upPos, pid);
+        memberMapper.updatePosition(lowPos, PUnipos + "," + lowPos, id);
+        return true;
     }
 }
