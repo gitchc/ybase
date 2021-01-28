@@ -5,6 +5,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.yonyou.mde.constant.DataEventType;
 import com.yonyou.mde.model.processor.BaseEventDataProcessor;
 import com.yonyou.mde.model.wal.DataEvent;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.Map;
  * @Author chenghch
  * @Date 2021/1/20 10:47
  */
+@Transactional
 public class WriteBackProcesser extends BaseEventDataProcessor {
     @Override
     public DataEvent processEventSingle(String cubeName, DataEvent dataEvent) {
