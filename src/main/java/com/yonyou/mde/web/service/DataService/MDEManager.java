@@ -4,6 +4,7 @@ import com.yonyou.mde.Mde;
 import com.yonyou.mde.config.KafkaConfig;
 import com.yonyou.mde.config.MdeConfiguration;
 import com.yonyou.mde.config.ZkConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,9 +15,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MDEManager {
-    public static void initMde() {
+    @Value("${single}")
+    private String type;
+
+    public void initMde() {
         MdeConfiguration configuration = new MdeConfiguration();
-        configuration.setDistributed(true);//是否启用分布式
+        if ("true".equals(type)) {
+            configuration.setDistributed(false);//不启用分布式
+        } else {
+            configuration.setDistributed(true);//启用分布式
+        }
         configuration.setWriteBackByBiz(true);//回写库
         configuration.setProcessor(new WriteBackProcesser());//自定义回写数据库方法
         if (configuration.isDistributed()) {

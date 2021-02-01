@@ -14,7 +14,6 @@ import com.yonyou.mde.model.dataloader.DefaultLoaderConfig;
 import com.yonyou.mde.model.dataloader.config.LoadType;
 import com.yonyou.mde.model.meta.CubeMeta;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
-import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.entity.Dim;
 import com.yonyou.mde.web.model.types.DataType;
 import lombok.Data;
@@ -53,7 +52,7 @@ public class CubeLoader {
             tableName = getTableName(loadSql);
         }
 
-//        CreateLoadFile(dimCodes,cubeName,loadSql,members);//造数据文件
+//       CreateLoadFile(dimCodes,cubeName,loadSql,members);//造数据文件
 
         // 加载维度信息
         DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions, loadSql),
@@ -91,7 +90,7 @@ public class CubeLoader {
     }
 
     //创建Load文件,方便测试
-    private static void CreateLoadFile(List<String> dimCodes, String cubeName, String loadSql, List<Member> members) {
+    private static void CreateLoadFile(List<String> dimCodes, String cubeName, String loadSql, Map<String, List<DimColumn>> members) {
         String dirPath = "D:\\mock\\meta\\" + cubeName + "\\";
         String dimPath = dirPath + "dim.json";
         String dimInfoPath = dirPath + "dimInfo.json";

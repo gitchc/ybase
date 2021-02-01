@@ -14,10 +14,11 @@ import javax.annotation.Resource;
 public class LoadCube {
     @Resource
     private CubeService cubeService;
-
+    @Resource
+    private MDEManager mdeManager;
     @PostConstruct
     public void init() {//加载自动装载的cube
-        MDEManager.initMde();//初始化MDE环境
+        mdeManager.initMde();//初始化MDE环境
         cubeService.loadAutoCube();
     }
 }
