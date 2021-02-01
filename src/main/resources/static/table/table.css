@@ -15,7 +15,10 @@ html, body {
     font-family: roboto, sans-serif;
     font-weight: 300
 }
-
+.layui-btn-sm{
+    height: 24px !important;
+    line-height: 24px !important;
+}
 
 ul {
     margin: 0;
@@ -24,7 +27,7 @@ ul {
 }
 
 .container {
-    margin: 5px;
+    margin: 0px 5px 5px 5px;
     position: relative;
     font-size: 14px;
 }
@@ -104,12 +107,15 @@ img {
     text-overflow: ellipsis;
 }
 
-#row {
-    width: 90px;
-}
 
 #row .drag-handle {
     width: 80px;
+    /*height: 80px;*/
+    /*line-height: 24px;*/
+    /*width: 20px;*/
+    /*text-align: center;*/
+    /*margin: 0px;*/
+    /*white-space:normal;*/
 }
 
 
@@ -162,12 +168,10 @@ img {
 }
 
 
-.row .item {
-    margin-top: 5px;
-}
 
 #row {
-    height: calc(100% - 55px);
+    width: 90px;
+    height: calc(100% - 30px);
     border: #e6e6e6 1px solid;
 }
 
