@@ -27,7 +27,7 @@ public interface CubeService extends Service<Cube> {
 
     List<Cube> getAutoLoadCubes();
 
-    void loadAutoCube();
+    void loadAllAutoCube();
 
     Map<String, List<String>> getCubeMembers(String cubecode);
 

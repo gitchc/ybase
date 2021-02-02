@@ -59,11 +59,17 @@ public interface MemberService extends Service<Member> {
 
     /**
      * @description: 返回维度的所有成员
-     * @param: dimid
+     * @param: dimid 维度id
      * @author chenghch
      */
     List<Member> getMembersByDimid(String dimid);
-
+    /**
+     * @description: 返回维度的所有成员
+     * @param: dimid 维度id
+     * @param: scope 维度成员表达式
+     * @author chenghch
+     */
+    List<Member> getMembersByScope(String dimid, String scope);
     /**
      * @description: 返回维度的所有编码
      * @param: dimid
@@ -86,7 +92,6 @@ public interface MemberService extends Service<Member> {
      */
     List<Member> getAllMemberMeta();
 
-    List<Member> getMembersByScope(String dimid, String scope);
 
     /**
      * @description: 上移

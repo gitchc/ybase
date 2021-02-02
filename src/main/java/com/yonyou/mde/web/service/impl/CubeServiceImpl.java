@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.service.impl;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.yonyou.mde.dto.DimColumn;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
@@ -255,9 +256,11 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
 
     //加载启动需要加载的cube
     @Override
-    public void loadAutoCube() {
+    public void loadAllAutoCube() {
         for (Cube autoLoadCube : getAutoLoadCubes()) {
-            ReloadModeAndData(autoLoadCube, false);
+            ThreadUtil.execute(() ->{
+                ReloadModeAndData(autoLoadCube, false);
+            });
         }
     }
 
