@@ -71,7 +71,8 @@ public class ScriptServiceImpl extends AbstractService<Script> implements Script
     public void updateContent(Script script) throws ScriptException {
         String nowuser = "admin";
         scriptMapper.updateContent(script.getId(), script.getContent(), nowuser);
-        JavaClassUtils.Check(script);
+        Script scriptnew = scriptMapper.selectByPrimaryKey(script.getId());
+        JavaClassUtils.Check(scriptnew);
     }
 
     @Override

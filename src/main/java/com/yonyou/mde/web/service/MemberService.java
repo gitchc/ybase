@@ -95,14 +95,14 @@ public interface MemberService extends Service<Member> {
 
     /**
      * @description: 上移
-     * @param: id
+     * @param: id 成员id
      * @author chenghch
      */
     boolean moveUp(String id);
 
     /**
      * @description: 下移
-     * @param: id
+     * @param: id 成员id
      * @author chenghch
      */
     boolean moveDown(String id);
