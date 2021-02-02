@@ -16,7 +16,7 @@ import javax.annotation.Resource;
 /**
  * 单元测试继承该类即可
  */
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 /*@Transactional
 @Rollback*/

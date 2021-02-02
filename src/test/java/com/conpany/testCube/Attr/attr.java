@@ -1,20 +1,17 @@
 package com.conpany.testCube.Attr;
 
 import com.conpany.project.Tester;
-import com.yonyou.mde.error.MdeException;
-import com.yonyou.mde.model.result.SliceResult;
 import com.yonyou.mde.bigCube.main.Cube;
 import com.yonyou.mde.bigCube.main.Dimension;
 import com.yonyou.mde.bigCube.main.Member;
 import com.yonyou.mde.bigCube.main.Server;
+import com.yonyou.mde.error.MdeException;
+import com.yonyou.mde.model.result.SliceResult;
 import com.yonyou.mde.web.script.utils.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Row;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ATTR extends Tester {
+public class attr extends Tester {
 
     @Test
     public void exp() throws MdeException {

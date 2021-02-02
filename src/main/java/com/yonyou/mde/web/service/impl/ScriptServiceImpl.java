@@ -20,7 +20,6 @@ import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

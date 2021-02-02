@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Data
+@Table(name = "attrvalue")
 public class AttrValue {
     /**
      * 雪花id

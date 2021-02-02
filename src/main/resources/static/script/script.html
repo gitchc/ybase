@@ -18,10 +18,12 @@
     #dimlayout {
         height: calc(100% - 10px);
     }
+
     .leftpd {
         height: calc(100% - 70px);
         overflow: auto;
     }
+
     #editor {
         height: calc(100% - 70px);
     }
@@ -52,9 +54,10 @@
         background-color: #FF5722 !important;
         color: white;
     }
-    .layui-elem-quote{
+
+    .layui-elem-quote {
         padding: 5px;
-        margin-bottom:5px;
+        margin-bottom: 5px;
     }
 </style>
 <body>
@@ -254,25 +257,27 @@
                 success: function (data) {
                     var isError = false;
                     if (data.code == 200) {
-                        if (data.data && data.data.code==-1) {
-                             isError = true;
+                        if (data.data && data.data.code == -1) {
+                            isError = true;
                         }
-                        $('#' + id).text("DONE");
-                        $('#' + id).removeClass('notpass');
-                        $('#' + id).addClass('pass');
-                        if (data.data.msg) {
-                            $('#' + id).attr("title", data.data.msg);
-                            showInfo(data.data.msg);
-                        }else {
-                            tipsInfo("执行成功!");
+                        if (!isError) {
+                            $('#' + id).text("DONE");
+                            $('#' + id).removeClass('notpass');
+                            $('#' + id).addClass('pass');
+                            if (data.data.msg) {
+                                $('#' + id).attr("title", data.data.msg);
+                                showInfo(data.data.msg);
+                            } else {
+                                tipsInfo("执行成功!");
+                            }
+                            return;
                         }
-                    } else {
-                        $('#' + id).text("ERROR");
-                        $('#' + id).removeClass('pass');
-                        $('#' + id).addClass('notpass');
-                        $('#' + id).attr("title", !isError?data.message : data.data.msg);
-                        showWarn(!isError?data.message : data.data.msg);
                     }
+                    $('#' + id).text("ERROR");
+                    $('#' + id).removeClass('pass');
+                    $('#' + id).addClass('notpass');
+                    $('#' + id).attr("title", !isError ? data.message : data.data.msg);
+                    showWarn(!isError ? data.message : data.data.msg);
                 },
                 error: function (data) {
                     showError('错误码:' + data.code + ",错误信息:" + data.message);

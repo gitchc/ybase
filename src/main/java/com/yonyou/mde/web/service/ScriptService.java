@@ -3,8 +3,8 @@ package com.yonyou.mde.web.service;
 import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.core.Service;
 import com.yonyou.mde.web.core.ServiceException;
-import com.yonyou.mde.web.model.vos.Completer;
 import com.yonyou.mde.web.model.Script;
+import com.yonyou.mde.web.model.vos.Completer;
 import com.yonyou.mde.web.model.vos.ScriptVo;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public interface ScriptService extends Service<Script> {
 
     void updateName(Script script) throws ServiceException;
 
-    void updateContent(Script script);
+    void updateContent(Script script) ;
 
     Map<String, Object> run(ScriptVo vo) throws ScriptException;
 

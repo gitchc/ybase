@@ -18,7 +18,6 @@ import tech.tablesaw.api.Row;
 public class leiji extends Tester {
     @Test
     public void exp() throws MdeException {
-
         Cube cube = Server.getCube("测试属性");
         SliceResult sliceResult = cube.find("VERSION.第1版#YEAR.2021年#QIJIAN.12月");
         SliceResult sliceResult1 = cube.calc("VERSION.第1版#YEAR.2021年#QIJIAN.12月=VERSION.第1版+1");

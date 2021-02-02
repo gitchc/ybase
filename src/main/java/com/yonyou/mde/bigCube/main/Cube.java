@@ -76,6 +76,10 @@ public class Cube implements ICube {
             }
         } else if (value instanceof Double) {
             vl = (Double) value;
+        } else if (value instanceof Integer) {
+            vl = ((Integer) value).doubleValue();
+        } else if (value instanceof Float) {
+            vl = ((Float) value).doubleValue();
         }
         Map<String, Object> keyvalues = new HashMap<>();
         for (String dimexp : exp.split("#")) {

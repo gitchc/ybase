@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.script.classloder;
 
+import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.model.Script;
 import com.yonyou.mde.web.script.IScript;
@@ -55,7 +56,7 @@ public class JavaClassUtils {
     }
 
     //检查java语法是否通过，执行java代码
-    private static Map<String, Object> runOrCheckClass(String className, String source, long version, int type, Map<String, Object> varMap) throws ScriptException {
+    private static Map<String, Object> runOrCheckClass(String className, String source, long version, int type, Map<String, Object> varMap) {
 
         Map<String, Object> result = new HashMap<>();
         try {

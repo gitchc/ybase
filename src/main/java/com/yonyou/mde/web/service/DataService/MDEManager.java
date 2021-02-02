@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MDEManager {
-    @Value("${single}")
+    @Value("${single:true}")
     private String type;
 
     public void initMde() {

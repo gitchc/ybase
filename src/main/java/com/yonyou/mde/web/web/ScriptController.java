@@ -1,11 +1,11 @@
 package com.yonyou.mde.web.web;
 
+import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
-import com.yonyou.mde.web.model.vos.Completer;
 import com.yonyou.mde.web.model.Script;
+import com.yonyou.mde.web.model.vos.Completer;
 import com.yonyou.mde.web.model.vos.ScriptVo;
-import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.ScriptService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,7 +46,7 @@ public class ScriptController {
     }
 
     @RequestMapping("/updateContent")
-    public Result updateContent(Script script) {
+    public Result updateContent(Script script) throws MdeException {
         scriptService.updateContent(script);
         return ResultGenerator.genSuccessResult();
     }

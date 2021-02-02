@@ -220,7 +220,7 @@ public interface IScript {
      * @param params     参数 new String[]{"a","b"}
      * @return 成功：success,失败：错误原因
      */
-    public  Map<String, Object> RunScript(String scriptName, Map<String, Object> params);
+    public  Map<String, Object> RunScript(String scriptName, Map<String, Object> params) throws MdeException;
 
     /**
      * 方法说明： 执行活动脚本
@@ -230,7 +230,7 @@ public interface IScript {
      * @param scriptName 活动脚本名称
      * @return 成功：success,失败：错误原因
      */
-    public  Map<String, Object> RunScript(String scriptName);
+    public  Map<String, Object> RunScript(String scriptName) throws MdeException;
 
 
     /**

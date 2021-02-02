@@ -52,7 +52,7 @@ public class CubeLoader {
             tableName = getTableName(loadSql);
         }
 
-//       CreateLoadFile(dimCodes,cubeName,loadSql,members);//造数据文件
+       CreateLoadFile(dimCodes,cubeName,loadSql,members);//造数据文件
 
         // 加载维度信息
         DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions, loadSql),
@@ -91,6 +91,9 @@ public class CubeLoader {
 
     //创建Load文件,方便测试
     private static void CreateLoadFile(List<String> dimCodes, String cubeName, String loadSql, Map<String, List<DimColumn>> members) {
+        if (true) {
+            return;
+        }
         String dirPath = "D:\\mock\\meta\\" + cubeName + "\\";
         String dimPath = dirPath + "dim.json";
         String dimInfoPath = dirPath + "dimInfo.json";
