@@ -7,6 +7,8 @@ import com.yonyou.mde.config.ZkConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.naming.InsufficientResourcesException;
+
 /**
  * @version 1.0
  * @Description: 初始化MDE配置信息
@@ -38,6 +40,10 @@ public class MDEManager {
             configuration.setServerPort(200);
             configuration.setServerAddress("127.0.0.1");
         }
-        Mde.init(configuration);
+        try {
+            Mde.init(configuration);
+        } catch (InsufficientResourcesException e) {
+            e.printStackTrace();
+        }
     }
 }

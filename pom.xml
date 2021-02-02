@@ -378,27 +378,33 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--OSHardwareInformation-->
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core</artifactId>
+            <version>5.4.1</version>
+        </dependency>
 
-
-        <!-- The client -->
+<!--
+        &lt;!&ndash; The client &ndash;&gt;
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient</artifactId>
             <version>0.9.0</version>
         </dependency>
-        <!-- Hotspot JVM metrics-->
+        &lt;!&ndash; Hotspot JVM metrics&ndash;&gt;
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_hotspot</artifactId>
             <version>0.9.0</version>
         </dependency>
-        <!-- Exposition HTTPServer-->
+        &lt;!&ndash; Exposition HTTPServer&ndash;&gt;
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_httpserver</artifactId>
             <version>0.9.0</version>
         </dependency>
-        <!-- Pushgateway exposition-->
+        &lt;!&ndash; Pushgateway exposition&ndash;&gt;
         <dependency>
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient_pushgateway</artifactId>
@@ -414,6 +420,7 @@
             <artifactId>micrometer-core</artifactId>
             <version>1.6.2</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>yonyou</groupId>

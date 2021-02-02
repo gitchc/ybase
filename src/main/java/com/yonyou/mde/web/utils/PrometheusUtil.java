@@ -1,3 +1,4 @@
+/*
 package com.yonyou.mde.web.utils;
 
 import io.micrometer.core.instrument.Metrics;
@@ -16,11 +17,13 @@ public class PrometheusUtil {
 
     }
 
-    /**
+    */
+/**
      * 收集api total 埋点数据
      *
      * @param op api名
-     */
+     *//*
+
     public static void total(String op) {
         try {
             Metrics.counter(HTTP_REQUEST_COUNTER_ALL, API, op)
@@ -30,11 +33,13 @@ public class PrometheusUtil {
         }
     }
 
-    /**
+    */
+/**
      * 收集api error 埋点数据
      *
      * @param op api名
-     */
+     *//*
+
     public static void error(String op) {
         try {
 
@@ -45,14 +50,17 @@ public class PrometheusUtil {
         }
     }
 
-    /**
+    */
+/**
      * 收集接口响应时间
      *
      * @param op 接口标识
      * @param rc 返回码
      * @param rt 返回时间
-     */
+     *//*
+
     public static void report(String op, String rc, double rt) {
         Metrics.summary(HTTP_RESPONSE_RT_MS, API, op, RC, rc).record(rt);
     }
 }
+*/

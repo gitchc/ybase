@@ -2,6 +2,7 @@ package com.yonyou.mde.bigCube.main;
 
 import com.yonyou.mde.bigCube.interfaces.IServer;
 import com.yonyou.mde.context.MdeContext;
+import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.model.MultiDimModel;
 import com.yonyou.mde.model.api.MultiDimModelApi;
 
@@ -15,7 +16,7 @@ public class Server implements IServer {
         return server;
     }
 
-    public static Cube getCube(String cubeName) {
+    public static Cube getCube(String cubeName) throws MdeException {
         MultiDimModelApi content = mdeContext.getModelApi(cubeName);
         MultiDimModel model = mdeContext.getModel(cubeName);
         return new Cube(content, model);
