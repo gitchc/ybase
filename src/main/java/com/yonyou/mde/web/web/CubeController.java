@@ -8,6 +8,7 @@ import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeDataService;
 import com.yonyou.mde.web.service.ViewService;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,9 +80,10 @@ public class CubeController {
     }
 
     @RequestMapping("/getData")
-    public Result getData(@RequestParam String cubeid, @RequestParam String pages, @RequestParam String rows, @RequestParam String cols, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) throws MdeException {
-        List<Map<String, Object>> data = cubeDataService.getData(cubeid, pages, rows, cols);
-        return ResultGenerator.genSuccessResult(data);
+    public Result getData(@RequestBody ViewVO view) throws MdeException {
+//        ViewVO view = JsonUtil.parse(viewData.getData(), ViewVO.class);
+        List<Map<String, Object>> datas = cubeDataService.getData(view);
+        return ResultGenerator.genSuccessResult(datas);
     }
 
     @RequestMapping("/setData")

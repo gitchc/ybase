@@ -8,6 +8,8 @@ import com.yonyou.mde.model.result.SliceResult;
 import com.yonyou.mde.web.dao.CubeMapper;
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.model.entity.LayoutDim;
+import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.utils.MemberUtil;
@@ -46,7 +48,7 @@ public class CubeDataService {
      * @param: cols 列维
      * @author chenghch
      */
-    public List<Map<String, Object>> getData(String cubeid, String pages, String rows, String cols) throws MdeException {
+/*    public List<Map<String, Object>> getData(String cubeid, String pages, String rows, String cols) throws MdeException {
         Cube cube = cubeService.getCubeById(cubeid);
         String cubeCode = cube.getCubecode();
         Map<String, String> dimMap = cubeService.getDimMap(cubeid);//获取维度id跟code的map
@@ -60,7 +62,32 @@ public class CubeDataService {
         List<Member[]> colslice = new MuiltCross(colDims).getAll();//获取列维度的笛卡尔积
 
         String queryExp = getQueryExp(pageFindStr, rowslice, colDims, dimMap);//根据前1000条获取要查询的切片组合
-        Map<String, Object> datas = getDatas(cubeCode, rowArr, colArr, queryExp, dimMap);//根据切片和行列,取值
+        Map<String, Object> datas = getDatas(cubeCode, rowArr, colArr, queryExp);//根据切片和行列,取值
+        List<String> colFields = getFileds(colslice, dimMap);//获取拼接表格的filed
+        List<Map<String, Object>> results = getTableData(pageFindStr, dimMap, rowslice, datas, colFields);//获取Table的键对值
+        return results;
+    }*/
+    public List<Map<String, Object>> getData(ViewVO view) throws MdeException {
+        String cubeid = view.getCubeid();
+        Cube cube = cubeService.getCubeById(cubeid);
+        String cubeCode = cube.getCubecode();
+        Map<String, String> dimMap = cubeService.getDimMap(cubeid);//获取维度id跟code的map
+        List<Member[]> rowDims = getDims(view.getRow());//获取行的所有维度
+        List<Member[]> colDims = getDims(view.getCol());//获取列的所有维度
+        List<Member[]> rowslice = new MuiltCross(rowDims).get(0, 1000);//获取维度前1000条笛卡尔积
+        List<Member[]> colslice = new MuiltCross(colDims).getAll();//获取列维度的笛卡尔积
+        StringBuilder pageBuilder = new StringBuilder();
+        for (LayoutDim layoutDim : view.getPage()) {
+            if (pageBuilder.length() > 0) {
+                pageBuilder.append("#");
+            }
+            pageBuilder.append(layoutDim.getDimCode());
+            pageBuilder.append(".");
+            pageBuilder.append(layoutDim.getSelected());
+        }
+        String pageFindStr = pageBuilder.toString();
+        String queryExp = getQueryExp(pageFindStr, rowslice, colDims, dimMap);//根据前1000条获取要查询的切片组合
+        Map<String, Object> datas = getDatas(cubeCode, view.getRow(), view.getCol(), queryExp);//根据切片和行列,取值
         List<String> colFields = getFileds(colslice, dimMap);//获取拼接表格的filed
         List<Map<String, Object>> results = getTableData(pageFindStr, dimMap, rowslice, datas, colFields);//获取Table的键对值
         return results;
@@ -116,20 +143,20 @@ public class CubeDataService {
      * @return: java.util.Map<java.lang.String, java.lang.Object>
      * @author chenghch
      */
-    private Map<String, Object> getDatas(String cubeCode, String[] rowArr, String[] colArr, String queryExp, Map<String, String> dimMap) throws MdeException {
+    private Map<String, Object> getDatas(String cubeCode, List<LayoutDim> rowArr, List<LayoutDim> colArr, String queryExp) throws MdeException {
         SliceResult sliceResult = Server.getCube(cubeCode).find(queryExp);//根据切片查询出来所有值
         Table table = sliceResult.toTable();
         Map<String, Object> datas = new HashMap<>();
         for (Row row : table) {
             StringBuilder sb = new StringBuilder();
-            for (String rowa : rowArr) {
-                String dimCode = dimMap.get(rowa);
+            for (LayoutDim rowa : rowArr) {
+                String dimCode = rowa.getDimCode();
                 sb.append("#");
                 String field = StrUtil.format("{}.{}", dimCode, row.getText(dimCode));
                 sb.append(field);
             }
-            for (String cola : colArr) {
-                String dimCode = dimMap.get(cola);
+            for (LayoutDim cola : colArr) {
+                String dimCode = cola.getDimCode();
                 sb.append("#");
                 String field = StrUtil.format("{}.{}", dimCode, row.getText(dimCode));
                 sb.append(field);
@@ -290,6 +317,15 @@ public class CubeDataService {
         List<Member[]> dims = new ArrayList<>();
         for (String rowDimid : Arr) {
             List<Member> memberList = memberService.getMembersByDimid(rowDimid);
+            dims.add(ArrayUtil.toArray(memberList, Member.class));
+        }
+        return dims;
+    }
+
+    private List<Member[]> getDims(List<LayoutDim> dimScopes) {
+        List<Member[]> dims = new ArrayList<>();
+        for (LayoutDim layoutDim : dimScopes) {
+            List<Member> memberList = memberService.getMembersByScope(layoutDim.getDimId(), layoutDim.getScope());
             dims.add(ArrayUtil.toArray(memberList, Member.class));
         }
         return dims;

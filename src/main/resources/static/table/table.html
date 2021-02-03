@@ -10,11 +10,11 @@
     <script src="/static/vue/vue.min.js"></script>
     <script src="/static/vue/Sortable.min.js"></script>
     <script src="/static/vue/vuedraggable.umd.min.js"></script>
-    <script src="/static/element-ui@2.14.1/index.js"></script>
     <script src="crossUtil.js"></script>
     <link rel="stylesheet" href="table.css" type="text/css"/>
     <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="/static/layuiadmin/style/admin.css" media="all">
+    <script src="/static/element-ui@2.14.1/index.js"></script>
     <link rel="stylesheet" href="/static/element-ui@2.14.1/index.css" media="all">
 </head>
 <body>
@@ -70,7 +70,7 @@
                                            :move="onMove">
                                     <div class="item" v-for="item in page">
                                         <div class="drag-handle">&#9776; {{item.dimName}}</div>
-                                        <el-select v-model="item.selectedMember" placeholder="请选择">
+                                        <el-select v-model="item.selected" placeholder="请选择">
                                             <el-option v-for="option in item.options"
                                                        :class="`indent${option.generation}`"
                                                        :key="option.code" :label="option.displayName"
@@ -88,7 +88,9 @@
                                            ghost-class="ghost"
                                            chosen-class="chosen" @start="onStart" @end="onEnd">
                                     <div class="item" v-for="item in row">
-                                        <div class="drag-handle">&#9776; {{item.dimName}}</div>
+                                        <div class="drag-handle" @dblclick="selectMembers(item.dimId,'row')">&#9776;
+                                            {{item.dimName}}
+                                        </div>
                                     </div>
                                 </draggable>
                             </div>
@@ -105,11 +107,11 @@
                                             class="layui-btn layui-btn-primary layui-btn-sm">
                                         <i class="layui-icon"> &#xe691;</i>
                                     </button>
-                                    <button type="button" @click="saveview"
+                                    <button type="button" @click="saveView"
                                             class="layui-btn layui-btn-primary layui-btn-sm">
                                         <i class="layui-icon">&#xe62a;</i>
                                     </button>
-                                    <button type="button" @click="deleteview"
+                                    <button type="button" @click="deleteView"
                                             class="layui-btn layui-btn-primary layui-btn-sm">
                                         <i class="layui-icon">&#xe640;</i>
                                     </button>
@@ -209,7 +211,24 @@
     };
     var isInit = false;
     var Ctable = {
-        initPages: function () {
+        setScope: function (dimid, layouttype, scope) {
+            var dimitems = [];
+            if (layouttype == "page") {
+                dimitems = app.page;
+            } else if (layouttype == "row") {
+                dimitems = app.row;
+            } else if (layouttype == "col") {
+                dimitems = app.col;
+            }
+            for (item of dimitems) {
+                if (item.dimId == dimid) {
+                    item.scope = scope;
+                    break;
+                }
+            }
+            app.fresh();
+        }
+        , initPages: function () {
             if (isInit) {
                 app.initPages();
             } else {
@@ -236,9 +255,9 @@
                         initPages() {
                             var params = "id=" + cubeid;
                             if (viewid) {
-                                params += "&viewid="+viewid;
+                                params += "&viewid=" + viewid;
                             }
-                            fetchGet("/cube/getView?"+params, function (data) {
+                            fetchGet("/cube/getView?" + params, function (data) {
                                 app.page = data.page;
                                 app.col = data.col;
                                 app.row = data.row;
@@ -254,6 +273,16 @@
                             // if (e.draggedContext.element.id == 4) return false;
                             return true;
                         }
+                        , selectMembers(dimid, layouttype) {
+                            layer.open({
+                                type: 2,
+                                title: '选择维度范围',
+                                area: ['400px', '500px'],
+                                fixed: false, //不固定
+                                maxmin: true,
+                                content: 'selectMembers.html?dimid=' + dimid + "&layouttype=" + layouttype
+                            });
+                        }
                         , exchange() {//行列转置
                             var temp = this.row;
                             this.row = this.col;
@@ -261,24 +290,18 @@
                         }
                         , fresh() {//数据刷新
                             if (this.row.length == 0 || this.col.length == 0) {
-                                Ctable.loadTabeData(true);
+                                Ctable.loadTableData(true);
                             } else {
-                                Ctable.loadTabeData(false, this.page, this.row, this.col);
+                                Ctable.loadTableData(false, this.page, this.row, this.col);
                             }
                         }
-                        , saveview() {
-                            var viewlayout = {};
-                            viewlayout.cubeid = cubeid;
+                        , saveView() {
                             if (!cubeid) {
                                 showWarn("请先选择模型~");
                                 return;
                             }
-                            viewlayout.page = copyDim(this.page);
-                            viewlayout.row = copyDim(this.row);
-                            viewlayout.col = copyDim(this.col);
+                            var viewlayout = app.getNowViewLayout();
                             if (viewid) {
-                                viewlayout.viewid = viewid;
-                                viewlayout.viewname = viewname;
                                 showConfirm("更新视图", "需要保存重新构建的视图么?", () => {
                                     fetchPostJSON("/view/saveview", viewlayout, function () {
                                         showInfo("更新成功!");
@@ -296,14 +319,26 @@
                             }
 
                         }
-                    ,deleteview(){
+                        , deleteView() {
                             if (!viewid) {
                                 showWarn("请先选择视图~");
                                 return;
                             }
                             showConfirm("删除视图", "确认删除该视图么?", () => {
-                                fetchGet("/view/deleteview?viewid="+viewid,cubeEvent.initData)
+                                fetchGet("/view/deleteview?viewid=" + viewid, cubeEvent.initData)
                             });
+                        }
+                        , getNowViewLayout() {
+                            var viewlayout = {};
+                            viewlayout.cubeid = cubeid;
+                            viewlayout.page = copyDim(this.page);
+                            viewlayout.row = copyDim(this.row);
+                            viewlayout.col = copyDim(this.col);
+                            if (viewid) {
+                                viewlayout.viewid = viewid;
+                                viewlayout.viewname = viewname;
+                            }
+                            return viewlayout;
                         }
                     }
                 });
@@ -320,29 +355,17 @@
                     }
 
                 }
-                pages += item.dimCode + "." + item.selectedMember;
+                pages += item.dimCode + "." + item.selected;
             }
             return pages;
-        }, loadTabeData(isBlank, page, row, col) {
-            var defaults = {
-                elem: '#maintable'
-                , id: 'maintable'
-                , height: 'full-250'
-                , cellMinWidth: 100
-                , cols: [[{field: 'col', title: '', width: '1'}]]
-                , data: []
-            };
+        }, loadTableData(isBlank, page, row, col) {
+            var defaults = Ctable.getDefaultOptions();
             if (isBlank) {//空白的时候,清空所有表所有数据
                 table.render(defaults);//重载
                 return;
             }
             var cols = [];
-            var colstrs = "";
             for (var item of col) {//遍历col,拼接列头
-                if (colstrs) {
-                    colstrs += "__";
-                }
-                colstrs += item.dimId;
                 var colOptions = item.options;
                 var slice = [];
                 for (let j = 0; j < colOptions.length; j++) {
@@ -358,7 +381,7 @@
             }
             if (col.length > 1) {//列多余2的,求笛卡尔集合
                 var colCross = CrossUtils.cross(cols);
-                var slicecols = [];
+                var sliceCols = [];
                 while (items = colCross.next()) {
                     var newitems = [];
                     var eventStr = "", filedStr = "";
@@ -376,19 +399,14 @@
                         delete item.event;
                         newitems.push(item);
                     }
-                    slicecols.push(newitems);
+                    sliceCols.push(newitems);
                     newitems[0].field = filedStr;
                     newitems[0].event = eventStr;
                 }
-                cols = CrossUtils.transpose(slicecols);//转置
+                cols = CrossUtils.transpose(sliceCols);//转置
             }
             var newCol0 = [];
-            var rows = "";
             for (var item of row) {
-                if (rows) {
-                    rows += "__";
-                }
-                rows += item.dimId;
                 newCol0.push({
                     field: item.dimCode,
                     title: item.dimName,
@@ -398,11 +416,14 @@
                 })
             }
             cols[0] = newCol0.concat(cols[0]);//设置表头
-            var pages = this.getPage(page, "__");
+            var layout = app.getNowViewLayout();
             //展示已知数据
-            var toptions = {
+            var TOptions = {
                 cols: cols,
-                url: '/cube/getData?cubeid=' + cubeid + '&pages=' + pages + "&rows=" + rows + "&cols=" + colstrs,
+                url: '/cube/getData',
+                method: 'post',
+                contentType: 'application/json;charset=utf-8',
+                where: layout,
                 parseData: function (res) { //res 即为原始返回的数据
                     return {
                         "code": res.code == 200 ? 0 : res.code, //解析接口状态
@@ -412,8 +433,19 @@
                     };
                 }
             };
-            var options = $.extend(defaults, toptions);
+            var options = $.extend(defaults, TOptions);
             table.render(options);//重载
+        }
+        , getDefaultOptions() {
+            var defaults = {
+                elem: '#maintable'
+                , id: 'maintable'
+                , height: 'full-250'
+                , cellMinWidth: 100
+                , cols: [[{field: 'col', title: '', width: '1'}]]
+                , data: []
+            };
+            return defaults;
         }
     }
 
@@ -426,6 +458,7 @@
                 dim.dimName = item.dimName;
                 dim.dimCode = item.dimCode;
                 dim.scope = item.scope;
+                dim.selected = item.selected;
                 dims.push(dim);
             });
         }

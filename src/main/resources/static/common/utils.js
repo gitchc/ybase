@@ -183,10 +183,10 @@ function openUrlDialog(title, url, width, height, fn) {
     layer.open({
         type: 2, // page层
         area: [width, height],
-        title: false,
+        title: title,
         shade: 0.3, // 遮罩透明度
         maxmin: false,
-        moveType: 0, // 拖拽风格，0是默认，1是传统拖动
+        moveType: 1, // 拖拽风格，0是默认，1是传统拖动
         btn: ['确定', '取消'],
         yes: function (index) {
             if (fn)

@@ -1,11 +1,13 @@
 package com.yonyou.mde.web.dao;
 
 import com.yonyou.mde.web.core.Mapper;
+import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.Set;
@@ -48,8 +50,20 @@ public interface MemberMapper extends Mapper<Member> {
     @Update("update member set unipos=#{unipos} where id = #{id}")
     void updateUniPosition(String unipos, String id);
 
-    @Select("select * from Member where dimid=#{dimid} and status<>2 order by generation, position")
+    @Select("select * from Member where dimid=#{dimid} and status<>2 ")
     List<Member> getMembersByDimid(String dimid);
+
+/*    @Select("<script>\n" +
+            "select * from Member where dimid=#{dimid} and status<>2 and id in" +
+            " <foreach item='item' index='index' collection='ids' open='(' separator=',' close=')'>\n" +
+            "                 #{item}\n" +
+            "       </foreach>\n" +
+            " order by generation, position" +
+            "</script>"
+    )*/
+    @Select("select * from Member where dimid=#{dimid} and status<>2 and id in(${scope})")
+    List<Member> getMembersByScope(String dimid, String scope);
+
 
     @Select("select * from Member where pid = #{pid}")
     List<Member> getMembersByPid(String id);

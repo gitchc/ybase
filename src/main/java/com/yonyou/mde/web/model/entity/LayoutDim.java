@@ -15,7 +15,7 @@ public class LayoutDim {
     String dimId;
     String dimName;
     String dimCode;
-    String selectedMember;
+    String selected;
     String scope;
     List<LayoutMember> options;
 }

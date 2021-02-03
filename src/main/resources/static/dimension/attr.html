@@ -30,8 +30,7 @@
 <div class=" layrow" id="right">
     <div class="layui-card">
         <div class="layui-row">
-            <div class="layui-elem-quote layui-quote-nm">
-                <strong>属性信息</strong>
+            <div style="margin-bottom:5px;margin-left: 10px">
                 <div class="layui-btn-group">
                     <button type="button" action="add" class="layui-btn layui-btn-primary layui-btn-sm">
                         <i class="layui-icon">&#xe654;</i>
@@ -145,7 +144,7 @@
                 tableoptions = {
                     elem: '#attrtable'
                     , id: 'attrtable'
-                    , height: 'full-85'
+                    , height: 'full-45'
                     , cols: [[{field: 'col', title: '属性'}]]
                     , data: []
                 };
@@ -154,7 +153,7 @@
                 tableoptions = {
                     elem: '#attrtable'
                     , id: 'attrtable'
-                    , height: 'full-85'
+                    , height: 'full-45'
                     , cols: [data]
                     , url: '/attrvalue/listAttrValues?dimid=' + dimid
                     , parseData: function (res) { //res 即为原始返回的数据

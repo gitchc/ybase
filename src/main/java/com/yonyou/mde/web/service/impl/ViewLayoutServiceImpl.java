@@ -20,4 +20,8 @@ public class ViewLayoutServiceImpl extends AbstractService<ViewLayout> implement
     @Resource
     private ViewLayoutMapper viewLayoutMapper;
 
+    @Override
+    public void updateScope(String viewid, String dimid, String layouttype, String scope) {
+        viewLayoutMapper.updateScope(viewid,dimid,layouttype,scope);
+    }
 }

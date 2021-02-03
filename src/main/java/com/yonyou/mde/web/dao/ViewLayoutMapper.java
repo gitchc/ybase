@@ -18,6 +18,9 @@ public interface ViewLayoutMapper extends Mapper<ViewLayout> {
     @Delete("delete from view_layout where viewid = #{viewid}")
     void deleteViewLayout(String viewid);
 
-    @Select("select * from view_layout where viewid= #{viewid} and version = 0")
+    @Select("select * from view_layout where viewid= #{viewid} and version = 0 order by layouttype,position")
     List<ViewLayout> getLayoutsByViewid(String viewid);
+
+    @Update("update view_layout set scope=#{scope} where viewid = #{viewid} and dimid=#{dimid} and layouttype = #{layouttype}")
+    void updateScope(String viewid, String dimid, String layouttype, String scope);
 }

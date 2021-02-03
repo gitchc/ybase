@@ -2,6 +2,7 @@ package com.yonyou.mde.web.service;
 
 import com.yonyou.mde.web.core.Service;
 import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.model.entity.MemberTree;
 import com.yonyou.mde.web.model.vos.MemberFiled;
 import com.yonyou.mde.web.model.vos.MemberVO;
 
@@ -63,6 +64,12 @@ public interface MemberService extends Service<Member> {
      * @author chenghch
      */
     List<Member> getMembersByDimid(String dimid);
+    /**
+     * @description: 返回维度的所有成员
+     * @param: dimid 维度id
+     * @author chenghch
+     */
+    List<MemberTree> getMemberTreeByDimid(String dimid);
     /**
      * @description: 返回维度的所有成员
      * @param: dimid 维度id

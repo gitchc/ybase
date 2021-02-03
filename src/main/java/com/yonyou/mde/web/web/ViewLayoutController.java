@@ -54,4 +54,9 @@ public class ViewLayoutController {
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
+    @RequestMapping("/setScope")
+    public Result setScope(@RequestParam String viewid,@RequestParam String dimid,@RequestParam String layouttype,@RequestParam String scope) {
+        viewLayoutService.updateScope(viewid,dimid,layouttype,scope);
+        return ResultGenerator.genSuccessResult();
+    }
 }

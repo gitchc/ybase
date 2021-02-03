@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="/static/layuiadmin/layui/layui.js"></script>
+    <script src="/static/common/utils.js"></script>
+    <script src="/static/vue/vue.min.js"></script>
+    <link rel="stylesheet" href="/static/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/layuiadmin/style/admin.css" media="all">
+    <script src="/static/element-ui@2.14.1/index.js"></script>
+    <link rel="stylesheet" href="/static/element-ui@2.14.1/index.css" media="all">
+</head>
+<style>
+    body, html {
+        height: 100%;
+        width: 100%;
+        background-color: white;
+    }
+
+    .main {
+        padding: 5px;
+        height: 400px;
+        max-height: 400px;
+        overflow:auto;
+    }
+
+    .layui-btn-container {
+        text-align: center;
+    }
+</style>
+<body>
+<div id="mdiv">
+    <div id="tpp">
+        <div class="main">
+        <el-tree
+                ref="tree"
+                :data="treedata"
+                show-checkbox
+                check-strictly="true"
+                node-key="id"
+                :props="defaultProps">
+        </el-tree>
+    </div>
+    <div class="layui-btn-container">
+        <el-button @click="setChecked">确定</el-button>
+        <el-button @click="cancel">取消</el-button>
+    </div>
+</div>
+</div>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+
+    layui.config({
+        base: '/static/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['jquery', 'layer', 'util'], function () {
+        window.$ = layui.$, window.layer = layui.layer, window.util = layui.util;
+        var dimid = getUrlParam("dimid");
+        var layouttype = getUrlParam("layouttype");
+        window.tpp = new Vue({
+            el: '#tpp'
+            , components: {}
+            , created: function () {
+                this.initDimTree();
+            }
+            , data() {
+                return {
+                    treedata: [],
+                    defaultProps: {
+                        children: 'children',
+                        label: 'name'
+                    }
+                };
+            },
+            methods: {
+                initDimTree() {//初始化数据
+                    fetchGet("/member/getDimTree?dimid=" + dimid, function (data) {
+                        tpp.treedata = data;
+                    });
+                },
+                setChecked() {
+                    var scopes = [];
+                    this.$refs.tree.getCheckedNodes().forEach((item) => {
+                        scopes.push(item.id);
+                    });
+                    parent.Ctable.setScope(dimid, layouttype, scopes.join(","))
+                    this.cancel();
+                },
+                cancel() {
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

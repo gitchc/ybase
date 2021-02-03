@@ -5,6 +5,7 @@ import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.model.entity.MemberTree;
 import com.yonyou.mde.web.model.vos.MemberFiled;
 import com.yonyou.mde.web.model.vos.MemberVO;
 import com.yonyou.mde.web.service.DimensionService;
@@ -102,4 +103,10 @@ public class MemberController {
         List<MemberVO> finalRes = memberService.getMemberVOsBydimid(dimid);
         return ResultGenerator.genSuccessResult(finalRes);
     }
+    @RequestMapping("/getDimTree")
+    public Result getDimTree(@RequestParam String dimid) {
+        List<MemberTree> tree = memberService.getMemberTreeByDimid(dimid);
+        return ResultGenerator.genSuccessResult(tree);
+    }
+
 }

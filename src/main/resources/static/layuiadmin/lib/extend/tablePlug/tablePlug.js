@@ -498,7 +498,7 @@ layui.define(['table'], function (exports) {
       if (typeof options.renderRequest === 'function') {
         data = options.renderRequest(data);
       }
-      if(options.contentType && options.contentType.indexOf("application/json") == 0){ //提交 json 格式
+      if(options.contentType && options.contentType.indexOf("application/json") > -1){ //提交 json 格式
         data = JSON.stringify(data);
       }
 

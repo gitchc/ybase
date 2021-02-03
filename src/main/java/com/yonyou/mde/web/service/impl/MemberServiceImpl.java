@@ -11,6 +11,7 @@ import com.yonyou.mde.web.dao.MemberMapper;
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
+import com.yonyou.mde.web.model.entity.MemberTree;
 import com.yonyou.mde.web.model.types.DataType;
 import com.yonyou.mde.web.model.types.StatusType;
 import com.yonyou.mde.web.model.vos.MemberFiled;
@@ -25,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -145,6 +148,25 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
     }
 
     @Override
+    public List<MemberTree> getMemberTreeByDimid(String dimid) {
+        List<MemberTree> newlist = new ArrayList<>();
+        List<Member> list = getMembersByDimid(dimid);
+        Map<String, MemberTree> treeMap = new HashMap<>();
+        for (Member member : list) {
+            String id = member.getId();
+            MemberTree memberTree = new MemberTree(id, member.getName());
+            treeMap.put(id, memberTree);
+            MemberTree PMember = treeMap.get(member.getPid());
+            if (PMember != null) {
+                PMember.add(memberTree);
+            } else {
+                newlist.add(memberTree);
+            }
+        }
+        return newlist;
+    }
+
+    @Override
     public List<String> getMemberCodesByDimid(String dimid) {
         return new ArrayList<>(memberMapper.getMemberCodesByDimid(dimid));
     }
@@ -167,7 +189,14 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
 
     @Override
     public List<Member> getMembersByScope(String dimid, String scope) {
-        return new ArrayList<>();//todo 待完善
+        if (StringUtils.isBlank(scope)) {
+            return getMembersByDimid(dimid);
+        } else {
+            String scopes = "'" + scope.replaceAll(",", "','") + "'";
+            List<Member> list = memberMapper.getMembersByScope(dimid, scopes);
+            return SortUtil.sortMember(list);
+        }
+
     }
 
     @Override

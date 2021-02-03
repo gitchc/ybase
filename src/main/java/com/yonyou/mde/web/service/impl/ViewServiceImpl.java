@@ -14,7 +14,6 @@ import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.service.*;
 import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
-import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -196,12 +195,12 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
             for (Dimension dim : dims) {
                 dimensionMap.put(dim.getId(), dim);
             }
-            List<ViewLayout> layouts = viewLayoutMapper.getLayoutsByViewid(viewid);
+            List<ViewLayout> layouts = viewLayoutMapper.getLayoutsByViewid(viewid);//获取view的布局结构
             for (ViewLayout layout : layouts) {
                 String dimid = layout.getDimid();
                 Dimension dimension = dimensionMap.get(dimid);
-                String scope = layout.getScope();
-                String layouttype = layout.getLayouttype();
+                String scope = layout.getScope();//成员表达式
+                String layouttype = layout.getLayouttype();//判断是行,列,页面维
                 if (LayoutType.PAGE.equals(layouttype)) {//页面维
                     viewVO.getPage().add(getDimLayout(dimension, scope));
                 } else if (LayoutType.ROW.equals(layouttype)) {//行维度处理
@@ -257,7 +256,7 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
         layoutdim.setDimId(dimid);
         layoutdim.setDimName(dimension.getName());
         layoutdim.setDimCode(dimension.getCode());
-        layoutdim.setSelectedMember(res.get(0).getCode());
+        layoutdim.setSelected(res.get(0).getCode());
         layoutdim.setOptions(res);
         return layoutdim;
     }
