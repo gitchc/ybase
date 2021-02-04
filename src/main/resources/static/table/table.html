@@ -20,7 +20,7 @@
 <body>
 <div id="dimlayout">
     <div class="layui-row layui-col-space10 layrow">
-        <div class=" layui-col-md3 layrow" id="left">
+        <div class=" layui-col-md2 layrow" id="left">
             <!-- 填充内容 -->
             <div class="layui-card">
                 <div class="layui-row">
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class=" layui-col-md9 layrow" id="right">
+        <div class=" layui-col-md10 layrow" id="right">
             <div class="layui-card">
                 <div class="layui-row">
                     <div class="layui-elem-quote layui-quote-nm">
@@ -148,9 +148,9 @@
 </div>
 
 <script>
-    var cubeid = "";
-    var viewid = "";
-    var viewname = "";
+    let cubeid = "";
+    let viewid = "";
+    let viewname = "";
     Vue.component('vuedraggable', window.vuedraggable.name);
     layui.config({
         base: '/static/layuiadmin/' //静态资源所在路径
@@ -164,7 +164,7 @@
         cubeEvent.initData();
         cubeEvent.initEvent();
     });
-    var cubeEvent = {
+    let cubeEvent = {
         initData: function () {
             $('#righttable').hide();
             cubeEvent.restInitVars();
@@ -204,7 +204,7 @@
             })
             //监听单元格编辑
             table.on('edit(maintable)', function (obj) {
-                var value = obj.value //得到修改后的值
+                let value = obj.value //得到修改后的值
                     , data = obj.data.rowkey //得到所在行所有键值
                     , field = obj.field; //得到字段
                 fetchPost("/cube/setData", {path: field + "#" + data, cubeid: cubeid, value: value})
@@ -212,14 +212,14 @@
 
         }
     };
-    var isInit = false;
+    let isInit = false;
     var Ctable = {
         setScope: function (dimid, layouttype, scope) {
-            var dimitems = app[layouttype];
+            let dimitems = app[layouttype];
 
-            var newItems = [], updateindex = 0;
-            for (var i = 0; i < dimitems.length; i++) {
-                var item = dimitems[i];
+            let newItems = [], updateindex = 0;
+            for (let i = 0; i < dimitems.length; i++) {
+                let item = dimitems[i];
                 newItems[i] = item;
                 if (item.dimId == dimid) {
                     item.scope = scope;
@@ -262,7 +262,7 @@
                     },
                     methods: {
                         initPages() {
-                            var params = "id=" + cubeid;
+                            let params = "id=" + cubeid;
                             if (viewid) {
                                 params += "&viewid=" + viewid;
                             }
@@ -293,7 +293,7 @@
                             });
                         }
                         , exchange() {//行列转置
-                            var temp = this.row;
+                            let temp = this.row;
                             this.row = this.col;
                             this.col = temp;
                         }
@@ -314,7 +314,7 @@
                                 showWarn("请先选择模型~");
                                 return;
                             }
-                            var viewlayout = app.getNowViewLayout();
+                            let viewlayout = app.getNowViewLayout();
                             if (viewid) {
                                 showConfirm("更新视图", "需要保存重新构建的视图么?", () => {
                                     fetchPostJSON("/view/saveview", viewlayout, function () {
@@ -334,7 +334,7 @@
                         }
                         , saveOtherView() {
                             showPrompt('另存视图名称', function (name) {
-                                var viewlayout = app.getNowViewLayout();
+                                let viewlayout = app.getNowViewLayout();
                                 viewlayout.viewname = name;
                                 delete viewlayout.viewid;
                                 fetchPostJSON("/view/saveview", viewlayout, function () {
@@ -353,7 +353,7 @@
                             });
                         }
                         , getNowViewLayout() {
-                            var viewlayout = {};
+                            let viewlayout = {};
                             viewlayout.cubeid = cubeid;
                             viewlayout.page = copyDim(this.page);
                             viewlayout.row = copyDim(this.row);
@@ -369,8 +369,8 @@
             }
 
         }, getPage(page, split) {//获取当前页面维
-            var pages = "";
-            for (var item of page) {
+            let pages = "";
+            for (let item of page) {
                 if (pages) {
                     if (split) {
                         pages += split;
@@ -383,17 +383,17 @@
             }
             return pages;
         }, loadTableData(isBlank, page, row, col) {
-            var defaults = Ctable.getDefaultOptions();
+            let defaults = Ctable.getDefaultOptions();
             if (isBlank) {//空白的时候,清空所有表所有数据
                 table.render(defaults);//重载
                 return;
             }
-            var cols = [];
-            for (var item of col) {//遍历col,拼接列头
-                var colOptions = item.options;
-                var slice = [];
+            let cols = [];
+            for (let item of col) {//遍历col,拼接列头
+                let colOptions = item.options;
+                let slice = [];
                 for (let j = 0; j < colOptions.length; j++) {
-                    var option = colOptions[j];
+                    let option = colOptions[j];
                     slice.push({
                         field: option.dimCode + '.' + option.code,
                         title: option.displayName,
@@ -404,13 +404,13 @@
                 cols.push(slice);
             }
             if (col.length > 1) {//列多余2的,求笛卡尔集合
-                var colCross = CrossUtils.cross(cols);
-                var sliceCols = [];
+                let colCross = CrossUtils.cross(cols);
+                let sliceCols = [];
                 while (items = colCross.next()) {
-                    var newitems = [];
-                    var eventStr = "", filedStr = "";
-                    for (var olditem of items) {
-                        var item = {};
+                    let newitems = [];
+                    let eventStr = "", filedStr = "";
+                    for (let olditem of items) {
+                        let item = {};
                         item = clone(olditem, item);
                         if (eventStr) {
                             filedStr = filedStr + "#" + item.field;
@@ -429,8 +429,8 @@
                 }
                 cols = CrossUtils.transpose(sliceCols);//转置
             }
-            var newCol0 = [];
-            for (var item of row) {
+            let newCol0 = [];
+            for (let item of row) {
                 newCol0.push({
                     field: item.dimCode,
                     title: item.dimName,
@@ -440,9 +440,9 @@
                 })
             }
             cols[0] = newCol0.concat(cols[0]);//设置表头
-            var layout = app.getNowViewLayout();
+            let layout = app.getNowViewLayout();
             //展示已知数据
-            var TOptions = {
+            let TOptions = {
                 cols: cols,
                 url: '/cube/getData',
                 method: 'post',
@@ -457,11 +457,11 @@
                     };
                 }
             };
-            var options = $.extend(defaults, TOptions);
+            let options = $.extend(defaults, TOptions);
             table.render(options);//重载
         }
         , getDefaultOptions() {
-            var defaults = {
+            let defaults = {
                 elem: '#maintable'
                 , id: 'maintable'
                 , height: 'full-250'
@@ -474,10 +474,10 @@
     }
 
     function copyDim(layout) {
-        var dims = [];
+        let dims = [];
         if (layout) {
             layout.forEach((item) => {
-                var dim = {};
+                let dim = {};
                 dim.dimId = item.dimId;
                 dim.dimName = item.dimName;
                 dim.dimCode = item.dimCode;

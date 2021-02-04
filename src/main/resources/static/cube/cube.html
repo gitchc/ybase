@@ -40,16 +40,25 @@
     .layui-form-item .layui-input-inline {
         width: 400px;
     }
-    .layui-elem-quote{
+
+    .layui-elem-quote {
         padding: 5px;
-        margin-bottom:5px;
+        margin-bottom: 5px;
     }
 
+    .rbt {
+        padding-right: 10px;
+        text-align: right;
+    }
+
+    .layui-form-label {
+        width: auto;
+    }
 </style>
 <body>
 <div id="dimlayout">
     <div class="layui-row layui-col-space10 layrow">
-        <div class=" layui-col-md3 layrow" id="left">
+        <div class=" layui-col-md2 layrow" id="left">
             <!-- 填充内容 -->
             <div class="layui-card">
                 <div class="layui-row">
@@ -76,7 +85,7 @@
                 </div>
             </div>
         </div>
-        <div class=" layui-col-md9 layrow">
+        <div class=" layui-col-md10 layrow">
             <div class="layui-card">
                 <div class="layui-row" id="right">
                     <div class="layui-elem-quote layui-quote-nm">
@@ -92,16 +101,16 @@
                 <div class="layui-row" id="righttable" style="display: none">
                     <form class="layui-form" lay-filter="cubeform">
                         <div class="layui-form-item">
+                            <label class="layui-form-label">名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="cubename" class="layui-input" lay-verify="required">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
                             <label class="layui-form-label">编码</label>
                             <div class="layui-input-inline">
                                 <input type="text" name="cubecode" id="cubecode" class="layui-input"
                                        lay-verify="required">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">名称</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="cubename" class="layui-input" lay-verify="required">
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -165,10 +174,12 @@
     //维度工具栏操作区域
     var eventBtn = {
         add: function () {
-            showPrompt('输入模型编码', function (name) {
+            openPromptDialog('输入模型信息', 100, 200, this.initNameToCode({name: "", code: ""}), function (data) {
+                var name = $('#editid').val();
+                var code = $('#editcode').val();
                 var cube = {
                     cubename: name
-                    , cubecode: name
+                    , cubecode: code
                     , autoload: 1//自动加载
                     , autosql: 1//自动生成sql
                     , loadsql: ""
@@ -176,8 +187,6 @@
                 };
                 fetchPost("/cube/save", cube, eventBtn.init);
             });
-
-
         },
         edit: function () {
             fetchGet("/cube/detail?id=" + cubeid, eventBtn.initDetail);
@@ -200,9 +209,9 @@
                 $('#alldim').html(content);
                 form.render('', 'cubeform');
                 form.val('cubeform', data);
-                if (data.autosql==1) {
+                if (data.autosql == 1) {
                     $('#showsql').hide();
-                }else {
+                } else {
                     $('#showsql').show();
                 }
                 $('#righttable').show();
@@ -230,9 +239,9 @@
             fetchGet("/cube/list", function (data) {
                 data.forEach((item, index, array) => {
                     $('#leftree').append(' <div class="layui-row"> ' +
-                        '<div class=" layui-col-md8" ><label cubeid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
+                        '<div class=" layui-col-md7" ><label cubeid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
                         '                   class="layui-form-label cubelable">' + item.cubename + '</label> </div> \n' +
-                        ' <div class=" layui-col-md2">  <button cubeid = "' + item.id + '" type="button" class="reloaddata layui-btn layui-btn-sm layui-btn-radius layui-btn-danger" >重新装载数据</button></div></div>');
+                        ' <div class="rbt"><button cubeid = "' + item.id + '" type="button" class="reloaddata layui-btn layui-btn-sm layui-btn-radius layui-btn-warm" >Reload</button></div></div>');
                 })
                 form.render();
                 restInitVars();
@@ -246,7 +255,7 @@
         },
         reloadCubeData: function (cubeid) {
             showConfirm("重新加载数据", "可能耗时比较长,是否重新加载?", () => {
-                fetchGet("/cube/reloadData?id=" + cubeid,function showIF(){
+                fetchGet("/cube/reloadData?id=" + cubeid, function showIF() {
                     showInfo("装载成功");
                 })
             });
@@ -257,6 +266,18 @@
                 fetchGet("/cube/attr?id="+cubeid)
                 alert("功能未实装");
             });*/
+        }
+        , initNameToCode: function (data) { //拼接维度信息
+            var content = '<div class="layui-form-item">' +
+                '<label class="layui-form-label">名称</label>' +
+                '<input type="text" id="editid" required  lay-verify="required" class="layui-layer-input" value="' + data.name + '">' +
+                '</div>' +
+                '<div class="layui-form-item">' +
+                '<label class="layui-form-label">编码</label>' +
+                '<input type="text"  id="editcode"  required  lay-verify="required" class="layui-layer-input" value="' + data.code + '">' +
+                '</div>';
+
+            return content;
         }
     }
 
@@ -298,7 +319,7 @@
         form.on('submit(cubeform)', function (data) {
             var id = eventBtn.getid();
             if (!id) {
-                return ;
+                return;
             }
             var postdata = data.field;
             var arr = new Array();
@@ -326,7 +347,6 @@
             } else {
                 $('#showsql').hide();
             }
-
 
         });
     };

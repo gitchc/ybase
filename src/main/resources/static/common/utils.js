@@ -289,3 +289,35 @@ function getUrlParam(name) {
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]); return null;
 }
+
+function openPromptDialog(title, width, height, content, yesFn) {// div组件打开弹窗
+    var formid = 'memberInitForm';
+    layer.open({
+        id: formid,
+        type: 1, // page层
+        area: [width, height],
+        title: title,
+        shade: 0.3, // 遮罩透明度
+        moveType: 1, // 拖拽风格，0是默认，1是传统拖动
+        maxmin: false,
+        skin: 'layui-layer-prompt',
+        btn: ['确定', '取消'],
+        yes: function (index) {
+
+        },
+        no: function (index) {
+            layer.close(index);
+        }, success: function (layro, index) {
+            layro.addClass('layui-form');
+            layro.find(".layui-layer-btn0").attr('lay-filter', formid).attr("lay-submit", "");
+            form.render('', formid);
+            form.render();
+            form.on('submit(' + formid + ')', function (data) {
+                yesFn(data.field);
+                layer.close(index);
+            });
+        },
+        content: content
+    });
+    return layer;
+}

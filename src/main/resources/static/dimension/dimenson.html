@@ -41,11 +41,19 @@
         padding: 5px;
         margin-bottom: 5px;
     }
+    .rbt{
+        padding-right: 10px;
+        text-align: right;
+    }
+    .layui-form-label{
+        width: auto;
+    }
+
 </style>
 <body>
 <div id="dimlayout">
     <div class="layui-row layui-col-space10 layrow">
-        <div class=" layui-col-md3 layrow" id="left">
+        <div class=" layui-col-md2 layrow" id="left">
             <!-- 填充内容 -->
             <div class="layui-card">
                 <div class="layui-row">
@@ -75,7 +83,7 @@
                 </div>
             </div>
         </div>
-        <div class=" layui-col-md9 layrow" id="right">
+        <div class=" layui-col-md10 layrow" id="right">
             <div class="layui-card">
                 <div class="layui-row">
                     <div class="layui-elem-quote layui-quote-nm">
@@ -130,10 +138,16 @@
     //维度工具栏操作区域
     var dimBtnevent = {
         add: function () {
-            showPrompt('输入维度编码', function (name) {
+            var member = {
+                name: "",
+                code: ""
+            };
+            openPromptDialog('输入维度信息',100, 200, dimBtnevent.initDetail(member,true),function (data) {
+                var name = $('#editid').val();
+                var code =  $('#editcode').val();
                 var member = {
                     name: name,
-                    code: name
+                    code: code
                 };
                 fetchPost("/member/insertDim", member, dimBtnevent.initDims);
             });
@@ -150,14 +164,18 @@
 
             }
         },
-        initDetail: function (data) { //拼接维度信息
+        initDetail: function (data,isedit) { //拼接维度信息
+            var disabled="disabled"
+            if (isedit) {
+                disabled = "";
+            }
             var content = '<div class="layui-form-item">' +
                 '<label class="layui-form-label">名称</label>' +
-                '<input type="text" id="editid" class="layui-layer-input" value="' + data.name + '">' +
+                '<input type="text" id="editid" required  lay-verify="required" class="layui-layer-input" value="' + data.name + '">' +
                 '</div>' +
                 '<div class="layui-form-item">' +
                 '<label class="layui-form-label">编码</label>' +
-                '<input type="text" class="layui-layer-input" disabled value="' + data.code + '">' +
+                '<input type="text"  id="editcode"  required  lay-verify="required" class="layui-layer-input" '+disabled+' value="' + data.code + '">' +
                 '</div>';
 
             return content;
@@ -193,9 +211,9 @@
                 data.forEach((item, index, array) => {
                     var check = item.datatype == DATATYPES.AUTO.value ? 'checked' : '';
                     $('#dimform').append(' <div class="layui-row"> ' +
-                        '<div class=" layui-col-md8" ><label dimid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
+                        '<div class=" layui-col-md7" ><label dimid = "' + item.id + '" style="font-size: 14px;font-weight: bold;width: auto"\n' +
                         '                   class="layui-form-label dimlabel">' + item.name + '</label> </div> \n' +
-                        ' <div class=" layui-col-md2">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="聚合|手动" lay-filter="rollup" ' + check + '></div></div>');
+                        ' <div class="rbt">  <input type="checkbox"   dimid="' + item.id + '" lay-skin="switch" lay-text="聚合|手动" lay-filter="rollup" ' + check + '></div></div>');
                 })
                 form.render();
                 restInitVars();
@@ -423,37 +441,6 @@
 
     }
 
-    function openPromptDialog(title, width, height, content, yesFn) {// div组件打开弹窗
-        var formid = 'memberInitForm';
-        layer.open({
-            id: formid,
-            type: 1, // page层
-            area: [width, height],
-            title: title,
-            shade: 0.3, // 遮罩透明度
-            moveType: 1, // 拖拽风格，0是默认，1是传统拖动
-            maxmin: false,
-            skin: 'layui-layer-prompt',
-            btn: ['确定', '取消'],
-            yes: function (index) {
-
-            },
-            no: function (index) {
-                layer.close(index);
-            }, success: function (layro, index) {
-                layro.addClass('layui-form');
-                layro.find(".layui-layer-btn0").attr('lay-filter', formid).attr("lay-submit", "");
-                form.render('', formid);
-                form.render();
-                form.on('submit(' + formid + ')', function (data) {
-                    yesFn(data.field);
-                    layer.close(index);
-                });
-            },
-            content: content
-        });
-        return layer;
-    }
 </script>
 </body>
 </html>

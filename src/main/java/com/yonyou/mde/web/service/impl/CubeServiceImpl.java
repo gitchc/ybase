@@ -222,7 +222,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         Cube cube = findById(id);
         deleteById(id);
         try {
-            if (cube.getAutosql() == 1) {
+            if (StringUtils.isNotBlank(cube.getDimids()) && cube.getAutosql() == 1) {//自动创建sql,需要把表也删了
                 cubeMapper.dropTable(cube.getCubecode());
             }
         } catch (Exception e) {
