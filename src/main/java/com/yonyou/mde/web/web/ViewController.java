@@ -57,7 +57,6 @@ public class ViewController {
     }
     @RequestMapping("/saveview")
     public Result saveview(@RequestBody ViewVO viewLayout) {
-        // todo 没完成保存
         String viewid = viewService.saveview(viewLayout);
         return ResultGenerator.genSuccessResult(viewid);
     }

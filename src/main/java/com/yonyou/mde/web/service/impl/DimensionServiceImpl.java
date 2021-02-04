@@ -107,5 +107,10 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
         return dimensionMapper.getDimensionByIds(dimids.split(","));
     }
 
+    @Override
+    public Dimension getDimensionById(String dimid) {
+        return dimensionMapper.getDimById(dimid);
+    }
+
 
 }

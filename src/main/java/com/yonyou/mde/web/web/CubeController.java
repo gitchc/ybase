@@ -4,6 +4,7 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.core.Result;
 import com.yonyou.mde.web.core.ResultGenerator;
 import com.yonyou.mde.web.model.Cube;
+import com.yonyou.mde.web.model.entity.LayoutDim;
 import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeDataService;
@@ -77,6 +78,12 @@ public class CubeController {
     public Result getView(@RequestParam String id, @RequestParam(defaultValue = "") String viewid) {
         ViewVO viewLayout = viewService.getView(id, viewid);
         return ResultGenerator.genSuccessResult(viewLayout);
+    }
+
+    @RequestMapping("/getViewPage")
+    public Result getViewPage(@RequestParam String dimid, @RequestParam String scope) {
+        LayoutDim layoutDim = viewService.getViewPage(dimid, scope);
+        return ResultGenerator.genSuccessResult(layoutDim);
     }
 
     @RequestMapping("/getData")

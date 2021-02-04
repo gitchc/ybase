@@ -109,6 +109,7 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
             vlayout.setLayouttype(type);
             vlayout.setDimid(pageDim.getDimId());
             vlayout.setPosition(i++);
+            vlayout.setScope(pageDim.getScope());
             viewLayoutService.insert(vlayout);
         }
     }
@@ -234,6 +235,18 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
      * @param: scope 维度范围
      * @author chenghch
      */
+    public LayoutDim getViewPage(String dimid, String scope) {
+        Dimension dimension = dimensionService.getDimensionById(dimid);
+        return getDimLayout(dimension, scope);
+    }
+
+    /**
+     * @description: 获取多维layout布局
+     * @param: pageDims
+     * @param: dim
+     * @param: scope 维度范围
+     * @author chenghch
+     */
     private LayoutDim getDimLayout(Dimension dimension, String scope) {
         List<Member> list;
         String dimid = dimension.getId();
@@ -258,6 +271,7 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
         layoutdim.setDimCode(dimension.getCode());
         layoutdim.setSelected(res.get(0).getCode());
         layoutdim.setOptions(res);
+        layoutdim.setScope(scope);
         return layoutdim;
     }
 

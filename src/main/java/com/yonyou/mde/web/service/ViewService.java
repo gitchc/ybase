@@ -1,6 +1,7 @@
 package com.yonyou.mde.web.service;
 import com.yonyou.mde.web.model.View;
 import com.yonyou.mde.web.core.Service;
+import com.yonyou.mde.web.model.entity.LayoutDim;
 import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.model.vos.ViewTree;
 
@@ -20,4 +21,6 @@ public interface ViewService extends Service<View> {
     void deleteViewByid(String viewid);
 
     ViewVO getView(String cubeid, String viewid);
+
+    LayoutDim getViewPage(String dimid, String scope);
 }

@@ -26,4 +26,6 @@ public interface DimensionService extends Service<Dimension> {
     String getDimidByCode(String dimCode);
 
     List<Dimension> getDimensionByIds(String dimids);
+
+    Dimension getDimensionById(String dimid);
 }
