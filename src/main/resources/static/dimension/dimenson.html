@@ -41,12 +41,10 @@
         padding: 5px;
         margin-bottom: 5px;
     }
-    .rbt{
+
+    .rbt {
         padding-right: 10px;
         text-align: right;
-    }
-    .layui-form-label{
-        width: auto;
     }
 
 </style>
@@ -142,9 +140,9 @@
                 name: "",
                 code: ""
             };
-            openPromptDialog('输入维度信息',100, 200, dimBtnevent.initDetail(member,true),function (data) {
+            openPromptDialog('输入维度信息', 100, 200, dimBtnevent.initDetail(member, true), function (data) {
                 var name = $('#editid').val();
-                var code =  $('#editcode').val();
+                var code = $('#editcode').val();
                 var member = {
                     name: name,
                     code: code
@@ -164,18 +162,15 @@
 
             }
         },
-        initDetail: function (data,isedit) { //拼接维度信息
-            var disabled="disabled"
-            if (isedit) {
-                disabled = "";
-            }
+        initDetail: function (data, isedit) { //拼接维度信息
+            var disabled = isedit ? "" : "disabled";
             var content = '<div class="layui-form-item">' +
-                '<label class="layui-form-label">名称</label>' +
+                '<label class="layui-form-label" style="width: auto">名称</label>' +
                 '<input type="text" id="editid" required  lay-verify="required" class="layui-layer-input" value="' + data.name + '">' +
                 '</div>' +
                 '<div class="layui-form-item">' +
-                '<label class="layui-form-label">编码</label>' +
-                '<input type="text"  id="editcode"  required  lay-verify="required" class="layui-layer-input" '+disabled+' value="' + data.code + '">' +
+                '<label class="layui-form-label" style="width: auto">编码</label>' +
+                '<input type="text"  id="editcode"  required  lay-verify="required" class="layui-layer-input" ' + disabled + ' value="' + data.code + '">' +
                 '</div>';
 
             return content;
