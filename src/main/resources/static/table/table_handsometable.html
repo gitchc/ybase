@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>VUE自定义组件</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <script src="/static/vue/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@handsontable/vue/dist/vue-handsontable.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" rel="stylesheet">
+</head>
+<style>
+</style>
+<body>
+<div id="mainlayout">
+    <div id="app">
+        <hottable :settings="hotSettings"></hottable>
+    </div>
+</div>
+
+<script>
+    Vue.component('hottable', Handsontable.vue.HotTable);
+    var app = new Vue({
+        el: '#app',
+        components: {}, created: function () {
+        }
+        , updated: function () {
+        }
+        , data() {
+            return {
+                hotSettings: {
+                    licenseKey: "non-commercial-and-evaluation",//隐藏版权文字
+                    //定义数据
+                    data: [
+                        ["2016", 10, 11, 12,],
+                        ["2017", 20, 11, 14,],
+                        ["2018", 30, 15, 12,]
+                    ],
+                    //定义表结构
+                    colHeaders: [
+                        "问题序号", "问题类型", "定性法规", "问题金额"
+                    ],
+                    //定义属性
+                    columns: [
+                        {},
+                        {},
+                        {},
+                        {
+                            colHeaders: '问题金额',
+                            type: 'numeric', //定义值的类型为数字类型
+                        }
+                    ]
+                }
+            };
+        },
+        methods: {}
+    });
+</script>
+</body>
+</html>
