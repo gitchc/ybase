@@ -163,7 +163,7 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
     }
 
     @Override
-    public String saveview(ViewVO viewLayout) {
+    public String saveView(ViewVO viewLayout) {
         if (StringUtils.isBlank(viewLayout.getViewid())) {//插入
             Integer maxPosition = viewMapper.getMaxPosition(viewLayout.getCubeid());
             viewLayout.setPosition(maxPosition == null ? 0 : maxPosition + 1);
@@ -175,7 +175,7 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
     }
 
     @Override
-    public void deleteViewByid(String viewid) {
+    public void deleteViewById(String viewid) {
         viewMapper.deleteByPrimaryKey(viewid);
         viewLayoutMapper.deleteViewLayout(viewid);
     }

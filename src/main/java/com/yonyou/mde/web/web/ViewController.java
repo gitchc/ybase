@@ -52,12 +52,12 @@ public class ViewController {
     }
     @RequestMapping("/deleteview")
     public Result deleteview(@RequestParam String viewid) {
-        viewService.deleteViewByid(viewid);
+        viewService.deleteViewById(viewid);
         return ResultGenerator.genSuccessResult();
     }
     @RequestMapping("/saveview")
     public Result saveview(@RequestBody ViewVO viewLayout) {
-        String viewid = viewService.saveview(viewLayout);
+        String viewid = viewService.saveView(viewLayout);
         return ResultGenerator.genSuccessResult(viewid);
     }
 }

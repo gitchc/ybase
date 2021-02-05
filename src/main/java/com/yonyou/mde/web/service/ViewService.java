@@ -16,9 +16,9 @@ public interface ViewService extends Service<View> {
 
     List<ViewTree> findAllViews();
 
-    String saveview(ViewVO viewLayout);
+    String saveView(ViewVO viewLayout);
 
-    void deleteViewByid(String viewid);
+    void deleteViewById(String viewid);
 
     ViewVO getView(String cubeid, String viewid);
 
