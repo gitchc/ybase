@@ -52,7 +52,7 @@ public class MockDataManager {
     //创造数据
     public void MockDataFinal(String tableName, List<String> dims, Map<String, List<String>> memberMaps, int mocksize, boolean isRandom) throws SQLException {
         memberService.execute("truncate " + tableName);
-        int batchsize = 10000;//10w一提交
+        int batchSize = 10000;//10w一提交
         List<String[]> members = new ArrayList<>();
         if (mocksize > 10000000) {
             int smalsize = (int) Math.pow(mocksize, 1D / (dims.size() - 2));
@@ -60,8 +60,8 @@ public class MockDataManager {
                 List<String> value = memberMaps.get(dim);
                 int last = value.size() > smalsize ? smalsize : value.size();
                 value = value.subList(0, last);
-                String[] strings = value.toArray(new String[value.size()]);
-                members.add(strings);
+                String[] slices = value.toArray(new String[value.size()]);
+                members.add(slices);
             }
         } else {
             for (String dim : dims) {
@@ -79,14 +79,20 @@ public class MockDataManager {
             max++;
             String[] elems = (String[]) cross.next();
             if (sqls.length() == 0) {
-                sqls.append("insert into ").append(tableName).append(" (id,").append(StringUtils.join(dims, ",")).append(",value) values (");
+                sqls.append("insert into ")
+                        .append(tableName)
+                        .append(" (id,")
+                        .append(StringUtils.join(dims, ","))
+                        .append(",value) values (");
             } else {
                 sqls.append(",(");
             }
-            sqls.append(SnowID.nextID());//id
-            sqls.append(",");
-            sqls.append("'").append(StringUtils.join(elems, "','")).append("'");
-            sqls.append(",");
+            sqls.append(SnowID.nextID())
+                    .append(",")
+                    .append("'")
+                    .append(StringUtils.join(elems, "','"))
+                    .append("'")
+                    .append(",");
             if (isRandom) {
                 sqls.append(RandomUtil.randomDouble(0, 10000));
             } else {
@@ -96,10 +102,9 @@ public class MockDataManager {
             if (mocksize > 0 && max >= mocksize) {
                 memberService.execute(sqls.toString());
                 log.info("{}已提交:{}提交数据", tableName, max);
-                sqls = new StringBuilder();
                 return;
             }
-            if (i == batchsize) {
+            if (i == batchSize) {
                 memberService.execute(sqls.toString());
                 log.info("{}已提交:{}提交数据", tableName, max);
                 sqls = new StringBuilder();
@@ -116,7 +121,6 @@ public class MockDataManager {
     private void createTable(String tableName, List<Dimension> dims) throws SQLException {
         StringBuilder createsql = new StringBuilder("create table " + tableName + " (");
         createsql.append("id bigint primary key not null,\n");
-
         for (Dimension dim : dims) {
             createsql.append(dim.getCode() + " varchar(100),\n");
         }
