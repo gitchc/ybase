@@ -29,6 +29,7 @@ import javax.annotation.Resource;
 import javax.script.ScriptException;
 import java.io.File;
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.*;
 
 @Log4j2
@@ -407,13 +408,13 @@ public class BaseScript implements IScript {
 
     @Override
     public void ExecuteSql(String sql) {
-        memberService.executeSql(sql);
+        memberService.execute(sql);
     }
 
     @Override
     public void ExecuteSqls(List<String> sqls) {
         for (String sql : sqls) {
-            memberService.executeSql(sql);
+            memberService.execute(sql);
         }
 
     }
@@ -479,19 +480,17 @@ public class BaseScript implements IScript {
     }
 
     @Override
-    public void MockRandomData(String cubeCode, int size) {
+    public void MockRandomData(String cubeCode, int size) throws SQLException {
         Map<String, List<String>> cubeMembers = cubeService.getCubeMembers(cubeCode);
         List<String> dims = cubeService.getDimCodes(cubeCode);
-        mockDataManager.MockRandomData(cubeCode, dims, cubeMembers, size);
+        mockDataManager.MockDataFinal(cubeCode, dims, cubeMembers, size,true);
     }
 
     @Override
-    public void MockData(String cubeCode, int size) {
-
+    public void MockData(String cubeCode, int size) throws SQLException {
         Map<String, List<String>> cubeMembers = cubeService.getCubeMembers(cubeCode);
         List<String> dims = cubeService.getDimCodes(cubeCode);
-        mockDataManager.MockData(cubeCode, dims, cubeMembers, size);
-
+        mockDataManager.MockDataFinal(cubeCode, dims, cubeMembers, size,false);
     }
 
     public Map<String, Object> getResults() {

@@ -1,5 +1,4 @@
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.druid.sql.ast.SQLStatement;
 import com.yonyou.mde.web.core.ProjectConstant;
 import freemarker.template.TemplateExceptionHandler;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +38,7 @@ public class CodeGenerator {
     private static final String DATE = new SimpleDateFormat("yyyy-MM-dd").format(new Date());//@date
 
     public static void main(String[] args) {
-        genCode("view","view_layout");
+        genCode("view", "view_layout");
         //genCodeByCustomModelName("输入表名","输入自定义Model名称");
     }
 

@@ -8,26 +8,17 @@ import com.yonyou.mde.web.core.AbstractService;
 import com.yonyou.mde.web.core.ScriptException;
 import com.yonyou.mde.web.core.ServiceException;
 import com.yonyou.mde.web.dao.CubeMapper;
-import com.yonyou.mde.web.dao.DimensionMapper;
-import com.yonyou.mde.web.dao.ViewLayoutMapper;
 import com.yonyou.mde.web.model.Cube;
 import com.yonyou.mde.web.model.Dimension;
 import com.yonyou.mde.web.model.Member;
-import com.yonyou.mde.web.model.ViewLayout;
-import com.yonyou.mde.web.model.entity.LayoutDim;
-import com.yonyou.mde.web.model.entity.LayoutMember;
 import com.yonyou.mde.web.model.types.DataType;
-import com.yonyou.mde.web.model.types.LayoutType;
-import com.yonyou.mde.web.model.vos.ViewVO;
 import com.yonyou.mde.web.service.AttrvalueService;
 import com.yonyou.mde.web.service.CubeService;
 import com.yonyou.mde.web.service.DataService.CubeManager;
 import com.yonyou.mde.web.service.DataService.MockDataManager;
 import com.yonyou.mde.web.service.DimensionService;
 import com.yonyou.mde.web.service.MemberService;
-import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
-import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +44,6 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     @Resource
     private MemberService memberService;
     @Resource
-    DataSource dataSource;
-    @Resource
     private DataSourceConfig dataSourceConfig;
     @Resource
     private AttrvalueService attrvalueService;
@@ -74,13 +63,16 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
             insert(cube);
         }
         if (StringUtils.isNotBlank(cube.getDimids())) {
-            CheckTable(cube);//检查SQL表是否需要创建或者更新
-            ReloadModeAndData(cube, false);//检查是否需要重构cube
+            rebuildFactTable(cube);//检查SQL表是否需要创建或者更新
+            reloadModeAndData(cube, false);//检查是否需要重构cube
         }
     }
 
     //检查是否已需要重新load数据和模型
-    private void ReloadModeAndData(Cube cube, boolean foceReload) {
+    private void reloadModeAndData(Cube cube, boolean foceReload) {
+        if (true) {
+            return;
+        }
         String tableName = cube.getCubecode();
         String loadSql = cube.getLoadsql();
         if (cube.getAutosql() == 1) {
@@ -200,7 +192,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                 dimColumn.setParentPk(pkParent);
                 dimColumn.setParentCode(pkParent);
                 boolean isrollup = getRowUp(member);
-                dimColumn.setRollUp(isrollup);//todo 设置节点的自动卷积属性
+                dimColumn.setRollUp(isrollup);//fixed 设置节点的自动卷积属性
                 dimColumn.setWeight(member.getWeight());
                 dimColumn.setExtraParam(attrValues.get(code)); //设置属性
                 dimColumns.add(dimColumn);
@@ -223,7 +215,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         deleteById(id);
         try {
             if (StringUtils.isNotBlank(cube.getDimids()) && cube.getAutosql() == 1) {//自动创建sql,需要把表也删了
-                cubeMapper.dropTable(cube.getCubecode());
+                mockDataManager.dropTable(cube.getCubecode());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -233,12 +225,14 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
 
     @Override
     public void saveCube(Cube cube) {
-        cube.setCubecode(cube.getCubecode().trim());
-        String cubeId = cube.getId();
-        if (StringUtils.isNotBlank(cubeId)) {
-            updateCube(cube);
-        } else {
-            insertCube(cube);
+        synchronized (cube.getCubecode()) {
+            cube.setCubecode(cube.getCubecode().trim());
+            String cubeId = cube.getId();
+            if (StringUtils.isNotBlank(cubeId)) {
+                updateCube(cube);
+            } else {
+                insertCube(cube);
+            }
         }
     }
 
@@ -246,7 +240,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     @Override
     public void reloadData(String id) {
         Cube cube = findById(id);
-        ReloadModeAndData(cube, true);//检查是否需要重构cube,暂时用一个开关控制
+        reloadModeAndData(cube, true);//检查是否需要重构cube,暂时用一个开关控制
     }
 
     @Override
@@ -258,20 +252,20 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
     @Override
     public void loadAllAutoCube() {
         for (Cube autoLoadCube : getAutoLoadCubes()) {
-            ThreadUtil.execute(() ->{
-                ReloadModeAndData(autoLoadCube, false);
+            ThreadUtil.execute(() -> {
+                reloadModeAndData(autoLoadCube, false);
             });
         }
     }
 
 
-    private void CheckTable(Cube cube) {
+    private void rebuildFactTable(Cube cube) {
         String tableName = cube.getCubecode();
         String dimids = cube.getDimids();
         List<Dimension> dims = dimensionService.getDimensionByIds(dimids);
         if (cube.getAutosql() == 1) {
             try {
-                mockDataManager.createTable(dataSource, tableName, dims);
+                mockDataManager.buildFactTable(tableName, dims);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -283,8 +277,8 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
         cube.setPosition(oldcube.getPosition());
         update(cube);
         if (!StringUtils.equals(oldcube.getDimids(), cube.getDimids())) {//维度不匹配,重构模型
-            CheckTable(cube);//重建事实表
-            ReloadModeAndData(cube, false);//重新load模型和数据
+            rebuildFactTable(cube);//重建事实表
+            reloadModeAndData(cube, false);//重新load模型和数据
         }
 
     }

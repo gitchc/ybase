@@ -80,7 +80,7 @@ public abstract class AbstractService<T> implements Service<T> {
     }
 
     @Override
-    public boolean executeSql(String sql) {
+    public boolean execute(String sql) {
         try {
             mapper.executeSql(sql);
             return true;
@@ -89,5 +89,8 @@ public abstract class AbstractService<T> implements Service<T> {
             return false;
         }
     }
-
+    @Override
+    public List<String> query(String sql) {
+        return mapper.query(sql);
+    }
 }

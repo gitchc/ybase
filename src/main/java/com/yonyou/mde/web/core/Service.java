@@ -1,5 +1,6 @@
 package com.yonyou.mde.web.core;
 
+import cn.hutool.db.Entity;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import tk.mybatis.mapper.entity.Condition;
 
@@ -29,5 +30,7 @@ public interface Service<T> {
 
     List<T> findAll();//获取所有
 
-    boolean executeSql(String sql);
+    boolean execute(String sql);
+
+    List<String> query(String sql);
 }

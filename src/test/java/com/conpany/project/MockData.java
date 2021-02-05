@@ -106,7 +106,7 @@ public class MockData extends Tester {
             int total = 0;
             int maxi = 0;
             String cubeCode = cubeCodestrs[i];
-            memberService.executeSql("truncate  " + cubeCode);
+            memberService.execute("truncate  " + cubeCode);
             FileReader fileReader = new FileReader("D:\\mock\\data\\" + cubename + ".cma");
             List<String> dimcodes = cubeService.getDimCodes(cubeCode);
             String cols = "id," + StringUtils.join(dimcodes, ",") + ",value";
@@ -150,7 +150,7 @@ public class MockData extends Tester {
                 maxi++;
                 if (maxi == maxsize) {
                     try {
-                        memberService.executeSql(sqls.toString());
+                        memberService.execute(sqls.toString());
                     } catch (Exception throwables) {
                         throwables.printStackTrace();
                         System.out.println(sqls.toString());
@@ -163,7 +163,7 @@ public class MockData extends Tester {
 
             }
             if (sqls.length() > 0) {
-                memberService.executeSql(sqls.toString());
+                memberService.execute(sqls.toString());
                 sqls.setLength(0);
                 log.info(cubename + "--" + cubeCode + ":最后提交:{}提交数据", total);
             }

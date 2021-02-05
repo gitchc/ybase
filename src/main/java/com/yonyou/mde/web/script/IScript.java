@@ -5,6 +5,7 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.script.utils.DB;
 
 import javax.script.ScriptException;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -574,7 +575,7 @@ public interface IScript {
      * @param cubeCode 多维库编码
      * @param size     总共造多少数
      */
-    public void MockRandomData(String cubeCode, int size);
+    public void MockRandomData(String cubeCode, int size) throws SQLException;
 
     /**
      * 随机造数,1到10000,只能给数字单元格造数
@@ -583,7 +584,7 @@ public interface IScript {
      * @param size     总共造多少数
      *    固定值1
      */
-    public void MockData(String cubeCode, int size);
+    public void MockData(String cubeCode, int size) throws SQLException;
 
 
 }
