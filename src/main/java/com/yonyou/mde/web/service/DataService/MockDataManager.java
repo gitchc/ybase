@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +44,8 @@ public class MockDataManager {
 
     //创造表
     public void buildFactTable(String tableName, List<Dimension> dims) throws Exception {
-        dropTable(tableName);
-        createTable(tableName, dims);
+        dropTable(tableName);//如果表存在删除表
+        createTable(tableName, dims);//新建表
     }
 
 
