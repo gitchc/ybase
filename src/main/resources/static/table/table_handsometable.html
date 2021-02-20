@@ -7,6 +7,7 @@
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
     <script src="/static/vue/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/languages/zh-CN.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@handsontable/vue/dist/vue-handsontable.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" rel="stylesheet">
 </head>
@@ -23,11 +24,14 @@
     Vue.component('hottable', Handsontable.vue.HotTable);
     var app = new Vue({
         el: '#app',
-        components: {}, created: function () {
+        components: {
+
         }
-        , updated: function () {
+        ,created: function () {
         }
-        , data() {
+        ,updated: function () {
+        }
+        ,data() {
             return {
                 hotSettings: {
                     licenseKey: "non-commercial-and-evaluation",//隐藏版权文字
@@ -50,7 +54,8 @@
                             colHeaders: '问题金额',
                             type: 'numeric', //定义值的类型为数字类型
                         }
-                    ]
+                    ],
+                    language: 'zh-CN'
                 }
             };
         },

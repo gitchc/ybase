@@ -102,7 +102,7 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport {
     }
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/static/**","/favicon.ico").addResourceLocations("classpath:/static/");
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
     //添加拦截器

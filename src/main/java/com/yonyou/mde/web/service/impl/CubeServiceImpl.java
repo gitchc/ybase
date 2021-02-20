@@ -70,9 +70,6 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
 
     //检查是否已需要重新load数据和模型
     private void reloadModeAndData(Cube cube, boolean foceReload) {
-        if (true) {
-            return;
-        }
         String tableName = cube.getCubecode();
         String loadSql = cube.getLoadsql();
         if (cube.getAutosql() == 1) {
