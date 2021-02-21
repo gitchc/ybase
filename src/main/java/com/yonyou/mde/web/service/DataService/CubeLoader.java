@@ -2,6 +2,7 @@ package com.yonyou.mde.web.service.DataService;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileWriter;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.ZipUtil;
 import cn.hutool.json.JSONUtil;
 import com.yonyou.mde.Mde;
@@ -33,26 +34,30 @@ public class CubeLoader {
     protected static final String DEFAULT_TXT_VALUE_COLUMN = "TXTVALUE";
 
     //根据Cube信息加载模型
-    public static void loadCubeData(DataSourceConfig config, String cubeName, String tableName, String loadSql, List<com.yonyou.mde.web.model.Dimension> dims, Map<String, List<DimColumn>> members) throws MdeException {
+    public static void loadCubeData(MDEConfig mdeConfig) throws MdeException {
+        String loadSql = mdeConfig.getLoadsql();
+        String tableName = mdeConfig.getTableName();
+        String cubeName = mdeConfig.getModelName();
+        Map<String, List<DimColumn>> members = mdeConfig.getMembers();
         //所有维度
-        DataSourceInfo info = getDataSourceInfo(config);//处理数据源数据
-
+        DataSourceInfo info = getDataSourceInfo(mdeConfig.getConfig());//处理数据源数据
         List<String> dimCodes = new ArrayList<>();
         List<Dimension> dimensions = new ArrayList<>();
-        for (com.yonyou.mde.web.model.Dimension dim : dims) {
+        for (com.yonyou.mde.web.model.Dimension dim : mdeConfig.getDims()) {
             String code = dim.getCode();
             boolean isRollUp = dim.getDatatype() == DataType.AUTOROLLUP;
             dimensions.add(new Dimension(code, code, code));
             dimCodes.add(code);
-            Mde.setModelDimTree(cubeName, code, members.get(code), isRollUp);
+            Mde.setModelDimTree(mdeConfig.getModelName(), code, members.get(code), isRollUp);
         }
+
         if (StringUtils.isBlank(loadSql)) {
             loadSql = "select id," + StringUtils.join(dimCodes, ",") + ",value,txtvalue from " + tableName + " where isdeleted=0";
         } else {
             tableName = getTableName(loadSql);
         }
 
-       CreateLoadFile(dimCodes,cubeName,loadSql,members);//造数据文件
+        CreateLoadFile(dimCodes, cubeName, loadSql, members);//造数据文件
 
         // 加载维度信息
         DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions, loadSql),
@@ -60,7 +65,6 @@ public class CubeLoader {
         configf.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
         DataLoaderTemplate.getInstance().loadModel(configf);
     }
-
     /**
      * @description: 处理数据源信息
      * @param: config
@@ -94,11 +98,11 @@ public class CubeLoader {
         if (true) {
             return;
         }
-        String dirPath = "D:\\mock\\meta\\" + cubeName + "\\";
+        String dirPath = "C:\\Users\\Administrator\\Desktop\\Meta\\" + cubeName + "\\";
         String dimPath = dirPath + "dim.json";
         String dimInfoPath = dirPath + "dimInfo.json";
         String loadSqlPath = dirPath + "loadsql.txt";
-        System.out.println(dirPath);
+        log.info(StrUtil.format("已生成配置文件:{},配置文件:{}", cubeName, dirPath));
         FileUtil.touch(dimPath);
         FileUtil.touch(dimInfoPath);
         FileUtil.touch(loadSql);
@@ -113,12 +117,17 @@ public class CubeLoader {
         FileWriter writer2 = new FileWriter(loadSqlPath);
         writer2.write(loadSql);
         ZipUtil.zip(dirPath);
+        FileUtil.del(dirPath);
     }
 
     public static void main(String[] args) {
         String sql = "select ttt from aaa a leftjoin (select ttt from bbb )b on a.id = b.id";
-        System.out.println(getTableName(sql));
+        Matcher matcher = pattern.matcher(sql);
+        while (matcher.find()) {
+            System.out.println(matcher.group());
+        }
     }
+
 
     private static final Pattern pattern = Pattern.compile("\\bfrom\\s*\\S*");
 
