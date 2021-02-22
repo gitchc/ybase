@@ -18,18 +18,20 @@ public class CubeManager {
         MDEConfig mdeconfig = MDEConfig.builder().config(config).modelName(cubeName).loadsql(loadSql).tableName(tableName).dims(dims).members(members).build();
         loadCubeData(mdeconfig);
     }
+
     public static void loadCubeData(MDEConfig mdeConfig) throws MdeException {
         removeData(mdeConfig.getModelName());//卸载Cube,然后重新Load
         CubeLoader.loadCubeData(mdeConfig);
     }
+
     //卸载数据
     public static void removeData(String cubeName) {
         MdeContext mdeContext = MdeContext.getInstance();
         mdeContext.removeModel(cubeName);
     }
 
-    //重新load数据
-    public static void reloadData(String cubecode) {
-
+    //重新load维度数据
+    public static void reloadDim(String modelName, Dimension dim, List<DimColumn> members) throws MdeException {
+        CubeLoader.reloadDim(modelName, dim, members);
     }
 }

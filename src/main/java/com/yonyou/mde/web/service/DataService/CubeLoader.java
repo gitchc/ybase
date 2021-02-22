@@ -65,6 +65,7 @@ public class CubeLoader {
         configf.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
         DataLoaderTemplate.getInstance().loadModel(configf);
     }
+
     /**
      * @description: 处理数据源信息
      * @param: config
@@ -137,5 +138,12 @@ public class CubeLoader {
             return matcher.group().trim().replace("from", "");
         }
         return "";
+    }
+
+    //重新加载维度
+    public static void reloadDim(String modelName, com.yonyou.mde.web.model.Dimension dim, List<DimColumn> members) throws MdeException {
+        String dimCode = dim.getCode();
+        boolean isRollUp = dim.getDatatype() == DataType.AUTOROLLUP;
+        Mde.setModelDimTree(modelName, dimCode, members, isRollUp);
     }
 }
