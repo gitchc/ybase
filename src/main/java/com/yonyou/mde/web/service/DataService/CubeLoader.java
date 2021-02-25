@@ -30,8 +30,9 @@ import java.util.regex.Pattern;
 @Data
 @Log4j2
 public class CubeLoader {
-    protected static final String DEFAULT_MEASURE_COLUMN = "VALUE";
-    protected static final String DEFAULT_TXT_VALUE_COLUMN = "TXTVALUE";
+    private static final String DEFAULT_MEASURE_COLUMN = "VALUE";
+    private static final String DEFAULT_TXT_VALUE_COLUMN = "TXTVALUE";
+    private static final String DEFAULT_ID = "ID";
 
     //根据Cube信息加载模型
     public static void loadCubeData(MDEConfig mdeConfig) throws MdeException {
@@ -58,9 +59,8 @@ public class CubeLoader {
         }
 
         CreateLoadFile(dimCodes, cubeName, loadSql, members);//造数据文件
-
         // 加载维度信息
-        DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, "id", dimensions, loadSql),
+        DefaultLoaderConfig configf = new DefaultLoaderConfig(info, cubeName, createCubeMeta(cubeName, tableName, dimensions, loadSql),
                 null);
         configf.getLoadConfig().setLoadType(LoadType.DYNAMIC_LOAD);
         DataLoaderTemplate.getInstance().loadModel(configf);
@@ -80,13 +80,12 @@ public class CubeLoader {
         return info;
     }
 
-    private static CubeMeta createCubeMeta(String cubeName, String factTableName,
-                                           String tablePkColName, List<Dimension> dimensions, String loadSql) {
+    private static CubeMeta createCubeMeta(String cubeName, String factTableName, List<Dimension> dimensions, String loadSql) {
         return CubeMeta.builder()
                 .modelName(cubeName)
                 .cubeName(cubeName)
                 .tableName(factTableName)
-                .tablePkColName(tablePkColName)
+                .tablePkColName(DEFAULT_ID)
                 .measureColName(DEFAULT_MEASURE_COLUMN)
                 .txtValueColName(DEFAULT_TXT_VALUE_COLUMN)
                 .dimensions(dimensions)
