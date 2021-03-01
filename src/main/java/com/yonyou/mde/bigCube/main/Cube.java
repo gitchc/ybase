@@ -5,7 +5,7 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.model.MultiDimModel;
 import com.yonyou.mde.model.api.MultiDimModelApi;
 import com.yonyou.mde.model.graph.DimTree;
-import com.yonyou.mde.model.result.MultiSliceResult;
+//import com.yonyou.mde.model.result.MultiSliceResult;
 import com.yonyou.mde.model.result.SliceResult;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,9 +26,9 @@ public class Cube implements ICube {
     public SliceResult find(String exp) throws MdeException {
         return modelApi.find(exp);
     }
-    public MultiSliceResult find(String... exp) throws MdeException {
+   /* public MultiSliceResult find(String... exp) throws MdeException {
         return modelApi.find(exp);
-    }
+    }*/
     public double findVal(String exp) throws MdeException {
         return modelApi.findVal(exp);
     }
@@ -58,6 +58,7 @@ public class Cube implements ICube {
             String[] dimToValues = dimexp.split("\\.");
             keyvalues.put(dimToValues[0], dimToValues[1]);
         }
+        keyvalues.put("VALUE", 0D);
         keyvalues.put("TXTVALUE", value);
         modelApi.set(Arrays.asList(keyvalues));
         return 1;
@@ -65,14 +66,20 @@ public class Cube implements ICube {
 
     public void setData(String exp, Object value) throws MdeException {
         Double vl = 0d;
-        if (value == null) {
+        if (value == null|| StringUtils.isBlank(value.toString())) {
             modelApi.clear(exp);//清空数据
             return;
         }
         if (value instanceof String) {//区分 0 跟 空
             String vlstr = value.toString();
             if (StringUtils.isNotBlank(vlstr)) {
-                vl = Double.parseDouble(vlstr);
+                if (StringUtils.isNumeric(vlstr)) {
+                    vl = Double.parseDouble(vlstr);
+                }else {
+                     setString(exp, vlstr);
+                    return;
+                }
+
             } else {
                 modelApi.clear(exp);//清空数据
                 return;
@@ -90,6 +97,7 @@ public class Cube implements ICube {
             keyvalues.put(dimToValues[0], dimToValues[1]);
         }
         keyvalues.put("VALUE", vl);
+        keyvalues.put("TXTVALUE", "");
         modelApi.set(Arrays.asList(keyvalues));
     }
 

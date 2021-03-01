@@ -17,7 +17,7 @@ import javax.naming.InsufficientResourcesException;
  */
 @Service
 public class MDEManager {
-    @Value("${single:true}")
+    @Value("${single:false}")
     private String type;
 
     public void initMde() {

@@ -1,6 +1,7 @@
 package com.yonyou.mde.web.service.DataService;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.yonyou.mde.bigCube.main.Server;
 import com.yonyou.mde.error.MdeException;
@@ -16,6 +17,7 @@ import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.MuiltCross;
 import com.yonyou.mde.web.utils.SnowID;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import tech.tablesaw.api.Row;
@@ -145,6 +147,7 @@ public class CubeDataService {
      */
     private Map<String, Object> getDatas(String cubeCode, List<LayoutDim> rowArr, List<LayoutDim> colArr, String queryExp) throws MdeException {
         SliceResult sliceResult = Server.getCube(cubeCode).find(queryExp);//根据切片查询出来所有值
+        List<Map<String, Object>> sliceResultText = Server.getCube(cubeCode).findTxt(queryExp);//根据切片查询出来所有值
         Table table = sliceResult.toTable();
         Map<String, Object> datas = new HashMap<>();
         for (Row row : table) {
@@ -161,7 +164,28 @@ public class CubeDataService {
                 String field = StrUtil.format("{}.{}", dimCode, row.getText(dimCode));
                 sb.append(field);
             }
-            datas.put(sb.toString(), row.getDouble("value"));
+            double value = row.getDouble("VALUE");
+            datas.put(sb.toString(), value);
+        }
+        for (Map<String, Object> stringObjectMap : sliceResultText) {
+            StringBuilder sb = new StringBuilder();
+            for (LayoutDim rowa : rowArr) {
+                String dimCode = rowa.getDimCode();
+                sb.append("#");
+                String field = StrUtil.format("{}.{}", dimCode, stringObjectMap.get(dimCode));
+                sb.append(field);
+            }
+            for (LayoutDim cola : colArr) {
+                String dimCode = cola.getDimCode();
+                sb.append("#");
+                String field = StrUtil.format("{}.{}", dimCode, stringObjectMap.get(dimCode));
+                sb.append(field);
+            }
+            Object value = stringObjectMap.get("TXTVALUE");
+            if (ObjectUtil.isNotEmpty(value)) {
+                datas.put(sb.toString(),value);
+            }
+
         }
         return datas;
     }

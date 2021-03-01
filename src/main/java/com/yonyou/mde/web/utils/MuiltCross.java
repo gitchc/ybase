@@ -60,7 +60,7 @@ public class MuiltCross<T> implements Iterator<T[]> {
     }
 
     public List<T[]> getAll() {
-        List<T[]> slices = new ArrayList<>();
+        List<T[]> slices = new ArrayList<>(size);
         while (hasNext()) {
             slices.add(next());
         }
@@ -68,16 +68,14 @@ public class MuiltCross<T> implements Iterator<T[]> {
     }
 
     public List<T[]> get(int start, int end) {
-        List<T[]> slices = new ArrayList<>();
-        if (start > size) {
-            return slices;
+
+        if (start > size || start > end) {
+            return new ArrayList<>();
         }
         if (end > size) {
             end = size;
         }
-        if (start > end) {
-            return slices;
-        }
+        List<T[]> slices = new ArrayList<>(end-start);
         for (int i = 0; i < end; i++) {
             if (i < start) {
                 toNext();

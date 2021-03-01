@@ -4,7 +4,7 @@ import com.conpany.project.Tester;
 import com.yonyou.mde.bigCube.main.Cube;
 import com.yonyou.mde.bigCube.main.Server;
 import com.yonyou.mde.error.MdeException;
-import com.yonyou.mde.model.result.MultiSliceResult;
+//import com.yonyou.mde.model.result.MultiSliceResult;
 import com.yonyou.mde.model.result.SliceResult;
 import com.yonyou.mde.web.script.utils.Assert;
 import org.junit.jupiter.api.Test;
@@ -65,11 +65,11 @@ public class basetst extends Tester {
     }
     @Test
     public void findall() throws MdeException {
-        Cube cube = Server.getCube("testmodel");
+        /*Cube cube = Server.getCube("testmodel");
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.1月", 1);
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.2月", 1);
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.3月", 1);
         MultiSliceResult  allresult = cube.find("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.[1月,2月,3月]", "Area.北京#QIJIAN.1月#YEAR.2021年#VERSION.第1版#account.电费", "Area.北京#YEAR.2020年#QIJIAN.1月#VERSION.第2版#account.电费");
-        System.out.println(allresult.toTable().printAll());
+        System.out.println(allresult.toTable().printAll());*/
     }
 }
