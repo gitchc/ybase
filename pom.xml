@@ -128,11 +128,11 @@
             <version>1.2.47</version>
         </dependency>
         <!--阿里 Druid Spring Boot Starter依赖-->
-       <!-- <dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.17</version>
-        </dependency>-->
+            <version>1.2.5</version>
+        </dependency>
         <!--代码生成器依赖-->
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -384,7 +384,12 @@
             <artifactId>oshi-core</artifactId>
             <version>5.4.1</version>
         </dependency>
-
+        <!--protobuf-->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>2.4.1</version>
+        </dependency>
 <!--
         &lt;!&ndash; The client &ndash;&gt;
         <dependency>

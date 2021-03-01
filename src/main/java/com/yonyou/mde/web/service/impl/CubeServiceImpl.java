@@ -174,7 +174,7 @@ public class CubeServiceImpl extends AbstractService<Cube> implements CubeServic
                 result.put(dimcode, dimColumns);
             }
             List<Member> members = memberService.getMembersByDimid(dimId);
-            Map<String, Map<String, Object>> attrValues = attrvalueService.getAttrValues(dimId);
+            Map<String, Map<String, String>> attrValues = attrvalueService.getAttrValues(dimId);
             Map<String, String> parentMap = new HashMap<>();
             parentMap.put(dimId, dim.getCode());
             for (Member member : members) {

@@ -57,12 +57,12 @@ public class AttrvalueServiceImpl extends AbstractService<AttrValue> implements 
     }
 
     @Override
-    public Map<String, Map<String, Object>> getAttrValues(String dimid) {
+    public Map<String, Map<String, String>> getAttrValues(String dimid) {
         List<AttrValueVO> allAttrValues = attrvalueMapper.getAttrValues(dimid); //获取所有属性
-        Map<String, Map<String, Object>> results = new HashMap<>();
+        Map<String, Map<String, String>> results = new HashMap<>();
         for (AttrValueVO allAttrValue : allAttrValues) {
             String membercode = allAttrValue.getCode();
-            Map<String, Object> attrs = results.get(membercode);
+            Map<String, String> attrs = results.get(membercode);
             if (attrs == null) {
                 attrs = new HashMap<>();
                 results.put(membercode, attrs);

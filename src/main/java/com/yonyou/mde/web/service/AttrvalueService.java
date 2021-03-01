@@ -19,5 +19,5 @@ public interface AttrvalueService extends Service<AttrValue> {
 
     void deleteByDimIdAndName(AttrValueVO attrValueVO);
 
-    Map<String, Map<String, Object>> getAttrValues(String dimid);
+    Map<String, Map<String, String>> getAttrValues(String dimid);
 }

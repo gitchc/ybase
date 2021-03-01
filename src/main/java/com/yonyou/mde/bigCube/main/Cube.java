@@ -5,6 +5,7 @@ import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.model.MultiDimModel;
 import com.yonyou.mde.model.api.MultiDimModelApi;
 import com.yonyou.mde.model.graph.DimTree;
+import com.yonyou.mde.model.result.MultiSliceResult;
 import com.yonyou.mde.model.result.SliceResult;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,7 +26,9 @@ public class Cube implements ICube {
     public SliceResult find(String exp) throws MdeException {
         return modelApi.find(exp);
     }
-
+    public MultiSliceResult find(String... exp) throws MdeException {
+        return modelApi.find(exp);
+    }
     public double findVal(String exp) throws MdeException {
         return modelApi.findVal(exp);
     }
