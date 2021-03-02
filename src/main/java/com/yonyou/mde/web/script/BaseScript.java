@@ -8,7 +8,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import cn.hutool.db.ds.simple.SimpleDataSource;
-import cn.hutool.extra.spring.SpringUtil;
 import com.yonyou.mde.error.MdeException;
 import com.yonyou.mde.web.configurer.DataSourceConfig;
 import com.yonyou.mde.web.core.ServiceException;
@@ -22,6 +21,7 @@ import com.yonyou.mde.web.service.DimensionService;
 import com.yonyou.mde.web.service.MemberService;
 import com.yonyou.mde.web.service.ScriptService;
 import com.yonyou.mde.web.utils.SnowID;
+import com.yonyou.mde.web.utils.SpringUtil;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 

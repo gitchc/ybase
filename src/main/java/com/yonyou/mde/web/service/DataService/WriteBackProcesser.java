@@ -1,10 +1,10 @@
 package com.yonyou.mde.web.service.DataService;
 
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.extra.spring.SpringUtil;
 import com.yonyou.mde.constant.DataEventType;
 import com.yonyou.mde.model.processor.BaseEventDataProcessor;
 import com.yonyou.mde.model.wal.DataEvent;
+import com.yonyou.mde.web.utils.SpringUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Iterator;
