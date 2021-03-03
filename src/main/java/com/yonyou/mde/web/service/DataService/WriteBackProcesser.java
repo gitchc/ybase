@@ -3,7 +3,7 @@ package com.yonyou.mde.web.service.DataService;
 import cn.hutool.core.thread.ThreadUtil;
 import com.yonyou.mde.constant.DataEventType;
 import com.yonyou.mde.model.processor.BaseEventDataProcessor;
-import com.yonyou.mde.model.wal.DataEvent;
+import com.yonyou.mde.queue.dto.DataEvent;
 import com.yonyou.mde.web.utils.SpringUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +53,7 @@ public class WriteBackProcesser extends BaseEventDataProcessor {
                 break;
             case DELETE:
                 ThreadUtil.execAsync(() -> {//异步执行,不保证数据的准确性,硬删除
-                    dataService.deleteValue(cubeName, rawRow,false);
+                    dataService.deleteValue(cubeName, rawRow, false);
                 });
 
                 break;

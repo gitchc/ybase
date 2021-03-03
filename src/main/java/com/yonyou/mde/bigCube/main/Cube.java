@@ -97,7 +97,7 @@ public class Cube implements ICube {
             keyvalues.put(dimToValues[0], dimToValues[1]);
         }
         keyvalues.put("VALUE", vl);
-        keyvalues.put("TXTVALUE", "");
+        keyvalues.put("TXTVALUE", null);
         modelApi.set(Arrays.asList(keyvalues));
     }
 
