@@ -38,11 +38,10 @@ public class MDEManager {
             configuration.setZkConfig(zkConfig);
             configuration.setModelReplicaNum(1);
             configuration.setServerPort(200);
-            configuration.setServerAddress("127.0.0.1");
         }
         try {
             Mde.init(configuration);
-        } catch (InsufficientResourcesException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

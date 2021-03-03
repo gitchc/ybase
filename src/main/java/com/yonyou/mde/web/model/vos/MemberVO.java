@@ -9,7 +9,6 @@ public class MemberVO extends Position {
      * 雪花id
      */
     private String id;
-
     /**
      * 维度id
      */
@@ -67,5 +66,4 @@ public class MemberVO extends Position {
 
     private String datatypedetail;
     private String statusdetail;
-    private String namedetail;
 }

@@ -46,7 +46,9 @@
         padding-right: 10px;
         text-align: right;
     }
-
+    .ew-tree-icon{
+        display: none;
+    }
 </style>
 <body>
 <div id="dimlayout">
@@ -127,8 +129,8 @@
         base: '/static/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'jquery', 'layer', 'form', 'table'], function () {
-        $ = layui.$, layer = layui.layer, form = layui.form, table = layui.table;
+    }).use(['index', 'jquery', 'layer', 'form','treeTable'], function () {
+        $ = layui.$, layer = layui.layer, form = layui.form, table = layui.treeTable;
         //渲染
         bindEvent();
         dimBtnevent.initDims();
@@ -263,7 +265,7 @@
                 , data = obj.data //得到所在行所有键值
                 , field = obj.field; //得到字段
             // layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
-            fetchPost("/member/updateField", {code: data.code, field: obj.field, value: value, dimid: dimid})
+            fetchPost("/member/updateField", {code: data.code, field:field, value: value, dimid: dimid})
         });
         //监听行单击事件（双击事件为：rowDouble）
         table.on('row(membertable)', function (obj) {
@@ -415,9 +417,14 @@
             elem: '#membertable'
             , id: 'membertable'
             , height: 'full-85'
+            ,tree: {
+                iconIndex: 0,    // 折叠图标显示在第几列
+                isPidData: true,  // 是否是pid形式数据
+                onlyIconControl:true
+            }
             , cols: [[ //标题栏
-                {field: 'namedetail', title: '名称', width: 150}
-                , {field: 'code', title: '编码', width: 120, align: 'center', edit: 'text'}
+                {field: 'name', title: '名称', width: 150,align: 'left',edit: 'text'}
+                , {field: 'code', title: '编码', width: 120, align: 'center'}
                 , {field: 'weight', title: '权重', width: 80, align: 'center', edit: 'text'}
                 , {field: 'datatypedetail', title: '数据类型', align: 'center', width: 120,}
                 , {field: 'statusdetail', title: '成员状态', align: 'center', width: 120,}
