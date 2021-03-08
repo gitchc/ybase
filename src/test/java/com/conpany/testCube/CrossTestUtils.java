@@ -1,15 +1,11 @@
 package com.conpany.testCube;
 
-import cn.hutool.core.date.StopWatch;
-import cn.hutool.core.util.ArrayUtil;
-import com.yonyou.mde.web.utils.MuiltCross;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import cn.hutool.core.util.HashUtil;
+import com.google.common.hash.Hasher;
+import com.google.common.hash.Hashing;
 
 public class CrossTestUtils {
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         List<String[]> list = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             List<String> abc = new ArrayList<>();
@@ -42,5 +38,18 @@ public class CrossTestUtils {
         watch.stop();
         System.out.println(Arrays.toString(re2.get(0)));
         System.out.println(watch.getLastTaskTimeMillis());
+    }*/
+    // hash 对比
+ private  static Hasher hasher = Hashing.goodFastHash(128).newHasher();
+    public static void main(String[] args) {
+
+        String primaryKey = "111";
+        for (long l : HashUtil.cityHash128(primaryKey.getBytes())) {
+            System.out.println(l);
+        }
+        for (long l : HashUtil.murmur128(primaryKey.getBytes())) {
+            System.out.println(l);
+        }
+
     }
 }

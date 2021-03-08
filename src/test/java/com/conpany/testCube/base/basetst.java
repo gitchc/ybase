@@ -4,11 +4,12 @@ import com.conpany.project.Tester;
 import com.yonyou.mde.bigCube.main.Cube;
 import com.yonyou.mde.bigCube.main.Server;
 import com.yonyou.mde.error.MdeException;
-//import com.yonyou.mde.model.result.MultiSliceResult;
 import com.yonyou.mde.model.result.SliceResult;
 import com.yonyou.mde.web.script.utils.Assert;
 import org.junit.jupiter.api.Test;
 import tech.tablesaw.api.Row;
+
+//import com.yonyou.mde.model.result.MultiSliceResult;
 
 public class basetst extends Tester {
     @Test
@@ -21,6 +22,7 @@ public class basetst extends Tester {
             Assert.assrt("累计值不正确", row.getDouble("VALUE") == 3);
         }
     }
+
     @Test
     public void substract() throws MdeException {
         Cube cube = Server.getCube("testmodel");
@@ -31,6 +33,7 @@ public class basetst extends Tester {
             Assert.assrt("累计值不正确", row.getDouble("VALUE") == 1);
         }
     }
+
     @Test
     public void multi() throws MdeException {
         Cube cube = Server.getCube("testmodel");
@@ -41,6 +44,7 @@ public class basetst extends Tester {
             Assert.assrt("累计值不正确", row.getDouble("VALUE") == 2);
         }
     }
+
     @Test
     public void devid() throws MdeException {
         Cube cube = Server.getCube("testmodel");
@@ -63,13 +67,17 @@ public class basetst extends Tester {
             Assert.assrt("累计值不正确", row.getDouble("VALUE") == 3);
         }
     }
+
     @Test
     public void findall() throws MdeException {
-        /*Cube cube = Server.getCube("testmodel");
+        Cube cube = Server.getCube("testmodel");
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.1月", 1);
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.2月", 1);
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.3月", 1);
-        MultiSliceResult  allresult = cube.find("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.[1月,2月,3月]", "Area.北京#QIJIAN.1月#YEAR.2021年#VERSION.第1版#account.电费", "Area.北京#YEAR.2020年#QIJIAN.1月#VERSION.第2版#account.电费");
-        System.out.println(allresult.toTable().printAll());*/
+        String[] exp = new String[]{
+                "Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.[1月,2月,3月]", "Area.北京#QIJIAN.1月#YEAR.2021年#VERSION.第1版#account.电费", "Area.北京#YEAR.2020年#QIJIAN.1月#VERSION.第2版#account.电费"};
+
+        SliceResult allresult = cube.find(exp);
+        System.out.println(allresult.toTable().printAll());
     }
 }
