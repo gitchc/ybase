@@ -14,7 +14,7 @@ public class LayoutMember {
     private String id;
     private String code;
     private String dimCode;
-    private int CCount;
-    private Integer generation;
+    private int childCount;
+    private int generation;
 
 }

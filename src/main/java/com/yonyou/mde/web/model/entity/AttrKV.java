@@ -8,7 +8,7 @@ import lombok.Data;
  * @Date:First Created 2021/3/8
  */
 @Data
-public class ATTRVALUE {
+public class AttrKV {
     private String attr;
     private String value;
 }
