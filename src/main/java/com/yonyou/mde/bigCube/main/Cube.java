@@ -26,9 +26,11 @@ public class Cube implements ICube {
     public SliceResult find(String exp) throws MdeException {
         return modelApi.find(exp);
     }
+
     public SliceResult find(String... exp) throws MdeException {
         return modelApi.find(exp);
     }
+
     public double findVal(String exp) throws MdeException {
         return modelApi.findVal(exp);
     }
@@ -64,9 +66,17 @@ public class Cube implements ICube {
         return 1;
     }
 
+    public void setDataInMemory(String exp, Object value) throws MdeException {
+        setData(exp, value, true);
+    }
+
     public void setData(String exp, Object value) throws MdeException {
+        setData(exp, value, false);
+    }
+
+    private void setData(String exp, Object value, boolean isInMemory) throws MdeException {
         Double vl = 0d;
-        if (value == null|| StringUtils.isBlank(value.toString())) {
+        if (value == null || StringUtils.isBlank(value.toString())) {
             modelApi.clear(exp);//清空数据
             return;
         }
@@ -75,8 +85,8 @@ public class Cube implements ICube {
             if (StringUtils.isNotBlank(vlstr)) {
                 if (StringUtils.isNumeric(vlstr)) {
                     vl = Double.parseDouble(vlstr);
-                }else {
-                     setString(exp, vlstr);
+                } else {
+                    setString(exp, vlstr);
                     return;
                 }
 
@@ -98,7 +108,7 @@ public class Cube implements ICube {
         }
         keyvalues.put("VALUE", vl);
         keyvalues.put("TXTVALUE", null);
-        modelApi.set(Arrays.asList(keyvalues));
+        modelApi.set(Arrays.asList(keyvalues), isInMemory);
     }
 
     public Dimension getDimension(String dimName) {
