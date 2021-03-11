@@ -12,7 +12,6 @@ import tech.tablesaw.api.Row;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.yonyou.mde.model.result.MultiSliceResult;
 
 public class MDXEXP extends Tester {
     @Test
@@ -120,6 +119,7 @@ public class MDXEXP extends Tester {
     public void Ancestors() throws MdeException {
         Cube cube = Server.getCube("testmodel");
         cube.setDataInMemory("Area.海外城市#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价", 1);
+        cube.setDataInMemory("Area.纽约#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价", 1);
         SliceResult sliceResult = cube.find("ANCESTORS(Area,纽约)#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价");
         List<String> scope = new ArrayList<>();
         scope.add("所有城市");
@@ -146,5 +146,86 @@ public class MDXEXP extends Tester {
         Assert.assrt("过滤范围不正确", scope.size() == 0);
     }
 
+    @Test
+    public void Descendants() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        List<String> scope = new ArrayList<>();
+        scope.add("一级城市");
+        scope.add("二级城市");
+        scope.add("海外城市");
+        scope.add("深圳");
+        scope.add("广州");
+        scope.add("西安");
+        scope.add("武汉");
+        scope.add("纽约");
+        scope.add("芝加哥");
+        for (String mdx : scope) {
+            cube.setDataInMemory("Area." + mdx + "#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价", 1);
+        }
+        SliceResult sliceResult = cube.find("DESCENDANTS(Area,所有城市)#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价");
+        for (Row row : sliceResult.toTable()) {
+            scope.remove(row.getText("Area"));
+        }
+        Assert.assrt("过滤范围不正确", scope.size() == 0);
+    }
+
+    @Test
+    public void IDescendants() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        List<String> scope = new ArrayList<>();
+        scope.add("所有城市");
+        scope.add("一级城市");
+        scope.add("二级城市");
+        scope.add("海外城市");
+        scope.add("深圳");
+        scope.add("广州");
+        scope.add("西安");
+        scope.add("武汉");
+        scope.add("纽约");
+        scope.add("芝加哥");
+        String mdxfun = "IDESCENDANTS".toUpperCase();
+        for (String mdx : scope) {
+            cube.setDataInMemory("Area." + mdx + "#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价", 1);
+        }
+        SliceResult sliceResult = cube.find(mdxfun + "(Area,所有城市)#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价");
+        for (Row row : sliceResult.toTable()) {
+            scope.remove(row.getText("Area"));
+        }
+        Assert.assrt("过滤范围不正确", scope.size() == 0);
+    }
+
+    @Test
+    public void IParents() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        List<String> scope = new ArrayList<>();
+        scope.add("海外城市");
+        scope.add("纽约");
+        String mdxfun = "IParents".toUpperCase();
+        for (String mdx : scope) {
+            cube.setDataInMemory("Area." + mdx + "#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价", 1);
+        }
+        SliceResult sliceResult = cube.find(mdxfun + "(Area,纽约)#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价");
+        for (Row row : sliceResult.toTable()) {
+            scope.remove(row.getText("Area"));
+        }
+        Assert.assrt("过滤范围不正确", scope.size() == 0);
+    }
+
+    @Test
+    public void Parents() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        List<String> scope = new ArrayList<>();
+        scope.add("海外城市");
+        String mdxfun = "Parents".toUpperCase();
+        for (String mdx : scope) {
+            cube.setDataInMemory("Area." + mdx + "#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价", 1);
+        }
+        SliceResult sliceResult = cube.find(mdxfun + "(Area,纽约)#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.单价");
+        for (Row row : sliceResult.toTable()) {
+            scope.remove(row.getText("Area"));
+        }
+
+        Assert.assrt("过滤范围不正确", scope.size() == 0);
+    }
 
 }
