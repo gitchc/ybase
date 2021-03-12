@@ -17,7 +17,6 @@ import com.yonyou.mde.web.model.types.StatusType;
 import com.yonyou.mde.web.model.vos.MemberFiled;
 import com.yonyou.mde.web.model.vos.MemberVO;
 import com.yonyou.mde.web.service.MemberService;
-import com.yonyou.mde.web.utils.MemberUtil;
 import com.yonyou.mde.web.utils.SnowID;
 import com.yonyou.mde.web.utils.SortUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -189,9 +188,15 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
 
     @Override
     public List<Member> getMembersByScope(String dimid, String scope) {
+        List<Member> list;
+        if (StringUtils.isBlank(scope)) {//范围为空,去全部维度集合
+            list = getMembersByDimid(dimid);
+        } else {
             String scopes = "'" + scope.replaceAll(",", "','") + "'";
-            List<Member> list = memberMapper.getMembersByScope(dimid, scopes);
-            return SortUtil.sortMember(list);
+            list = memberMapper.getMembersByScope(dimid, scopes);
+            SortUtil.sortMember(list);
+        }
+        return list;
     }
 
     @Override

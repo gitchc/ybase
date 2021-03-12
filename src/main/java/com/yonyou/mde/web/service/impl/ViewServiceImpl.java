@@ -248,13 +248,8 @@ public class ViewServiceImpl extends AbstractService<View> implements ViewServic
      * @author chenghch
      */
     private LayoutDim getDimLayout(Dimension dimension, String scope) {
-        List<Member> list;
         String dimid = dimension.getId();
-        if (StringUtils.isBlank(scope)) {//范围为空,去全部维度集合
-            list = memberService.getMembersByDimid(dimid);
-        } else {
-            list = memberService.getMembersByScope(dimid, scope);
-        }
+        List<Member> list = memberService.getMembersByScope(dimid, scope);
         List<LayoutMember> res = new ArrayList<>(list.size());
         for (Member member : list) {//重构页面元素
             LayoutMember vo = new LayoutMember();

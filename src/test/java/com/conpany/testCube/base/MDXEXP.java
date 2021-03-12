@@ -224,7 +224,6 @@ public class MDXEXP extends Tester {
         for (Row row : sliceResult.toTable()) {
             scope.remove(row.getText("Area"));
         }
-
         Assert.assrt("过滤范围不正确", scope.size() == 0);
     }
 

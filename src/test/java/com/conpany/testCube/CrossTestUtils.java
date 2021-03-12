@@ -42,14 +42,13 @@ public class CrossTestUtils {
     // hash 对比
  private  static Hasher hasher = Hashing.goodFastHash(128).newHasher();
     public static void main(String[] args) {
-
         String primaryKey = "111";
+        System.out.println(hasher.putUnencodedChars(primaryKey).hash().toString());
         for (long l : HashUtil.cityHash128(primaryKey.getBytes())) {
             System.out.println(l);
         }
         for (long l : HashUtil.murmur128(primaryKey.getBytes())) {
             System.out.println(l);
         }
-
     }
 }
