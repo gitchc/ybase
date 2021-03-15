@@ -59,4 +59,55 @@ public class Math extends Tester {
             Assert.assrt("累计值不正确", row.getDouble("VALUE") == 1);
         }
     }
+
+    @Test
+    public void sum() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        cube.setDataInMemory("Area.纽约#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",1);
+        cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",1);
+        SliceResult sliceResult = cube.calc("Area.海外城市#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.标准电费=SUM(Leaves(Area,海外城市))");
+        for (Row row : sliceResult.toTable()) {
+            Assert.assrt("累计值不正确", row.getDouble("VALUE") == 2);
+        }
+    }
+    @Test
+    public void min() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        cube.setDataInMemory("Area.纽约#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",1);
+        cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",2);
+        SliceResult sliceResult = cube.calc("Area.海外城市#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.标准电费=MIN(Leaves(Area,海外城市))");
+        for (Row row : sliceResult.toTable()) {
+            Assert.assrt("累计值不正确", row.getDouble("VALUE") == 1);
+        }
+    }
+    @Test
+    public void max() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        cube.setDataInMemory("Area.纽约#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",1);
+        cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",2);
+        SliceResult sliceResult = cube.calc("Area.海外城市#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.标准电费=MAX(Leaves(Area,海外城市))");
+        for (Row row : sliceResult.toTable()) {
+            Assert.assrt("累计值不正确", row.getDouble("VALUE") == 2);
+        }
+    }
+    @Test
+    public void AVG() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        cube.setDataInMemory("Area.纽约#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",4);
+        cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",2);
+        SliceResult sliceResult = cube.calc("Area.海外城市#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.标准电费=AVG(Leaves(Area,海外城市))");
+        for (Row row : sliceResult.toTable()) {
+            Assert.assrt("累计值不正确", row.getDouble("VALUE") == 3);
+        }
+    }
+
+    @Test
+    public void Round() throws MdeException {
+        Cube cube = Server.getCube("testmodel");
+        cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",2.7);
+        SliceResult sliceResult = cube.calc("Area.海外城市#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.标准电费=Round(Area.芝加哥,0)");
+        for (Row row : sliceResult.toTable()) {
+            Assert.assrt("累计值不正确", row.getDouble("VALUE") == 3);
+        }
+    }
 }
