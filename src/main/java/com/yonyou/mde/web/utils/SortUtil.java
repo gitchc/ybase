@@ -21,9 +21,11 @@ public class SortUtil {
     public static List<Member> sortMember(List<Member> data) {
         return data.parallelStream().sorted(c1).collect(Collectors.toList());
     }
+
     public static List<Member> sortMemberSingle(List<Member> data) {
         return data.stream().sorted(c1).collect(Collectors.toList());
     }
+
     private static final int ToRight = 1;
     private static final int ToLeft = -1;
 
@@ -115,11 +117,11 @@ public class SortUtil {
 
         List<Member> data1 = new ArrayList<>();
         List<Member> data2 = new ArrayList<>();
-        int i = 10000000;
+        int i = 100000;
         for (int i1 = 0; i1 < i; i1++) {
             Member m = new Member();
             m.setUnipos(dataSource[i1 % 20]);
-            m.setId(i1+"");
+            m.setId(i1 + "");
             data1.add(m);
             data2.add(m);
         }
