@@ -188,15 +188,13 @@ public class MemberServiceImpl extends AbstractService<Member> implements Member
 
     @Override
     public List<Member> getMembersByScope(String dimid, String scope) {
-        List<Member> list;
         if (StringUtils.isBlank(scope)) {//范围为空,去全部维度集合
-            list = getMembersByDimid(dimid);
+            return getMembersByDimid(dimid);
         } else {
             String scopes = "'" + scope.replaceAll(",", "','") + "'";
-            list = memberMapper.getMembersByScope(dimid, scopes);
-            SortUtil.sortMember(list);
+            List<Member> list = memberMapper.getMembersByScope(dimid, scopes);
+            return SortUtil.sortMember(list);
         }
-        return list;
     }
 
     @Override
