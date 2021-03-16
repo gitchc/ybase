@@ -61,7 +61,7 @@ public class Math extends Tester {
     }
 
     @Test
-    public void sum() throws MdeException {
+    public void SUM() throws MdeException {
         Cube cube = Server.getCube("testmodel");
         cube.setDataInMemory("Area.纽约#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",1);
         cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",1);
@@ -71,7 +71,7 @@ public class Math extends Tester {
         }
     }
     @Test
-    public void min() throws MdeException {
+    public void MIN() throws MdeException {
         Cube cube = Server.getCube("testmodel");
         cube.setDataInMemory("Area.纽约#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",1);
         cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",2);
@@ -81,7 +81,7 @@ public class Math extends Tester {
         }
     }
     @Test
-    public void max() throws MdeException {
+    public void MAX() throws MdeException {
         Cube cube = Server.getCube("testmodel");
         cube.setDataInMemory("Area.纽约#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",1);
         cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",2);
@@ -102,12 +102,16 @@ public class Math extends Tester {
     }
 
     @Test
-    public void Round() throws MdeException {
+    public void ROUND() throws MdeException {
         Cube cube = Server.getCube("testmodel");
         cube.setDataInMemory("Area.芝加哥#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.电费",2.7);
         SliceResult sliceResult = cube.calc("Area.海外城市#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.标准电费=Round(Area.芝加哥,0)");
+        SliceResult sliceResult1 = cube.calc("Area.海外城市#YEAR.2020年#VERSION.第1版#QIJIAN.1月#ACCOUNT.标准电费=Round(Area.芝加哥,1)");
         for (Row row : sliceResult.toTable()) {
             Assert.assrt("累计值不正确", row.getDouble("VALUE") == 3);
+        }
+        for (Row row : sliceResult1.toTable()) {
+            Assert.assrt("累计值不正确", row.getDouble("VALUE") == 2.7);
         }
     }
 }
