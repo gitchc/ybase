@@ -1,10 +1,8 @@
 package com.yonyou.mde.web.utils;
 
-import cn.hutool.core.date.StopWatch;
 import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.entity.Position;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -108,35 +106,6 @@ public class SortUtil {
             return ToRight;
         }
     };
-
-
-    public static void main(String[] args) {
-        String[] dataSource = new String[]{"1,1,1", "1,1,100,211,1,6,1000,21", "1,3,100,211,1,6,1000,21", "1,9,100,211,1,6,1000,21", "1,7", "1,10,1", "1,10",
-                "1,2,1,6,1000,21", "1,4,1,6,1000,21,1,6,1000,21", "1,5,1,6,1000,21", "1,8,1,6,1000,21", "1,6,1000,21", "1,11,100,211", "2,4,100,211,1,6,1000,21", "2,10,100,211", "1,1,10,100,211", "1,1,8",
-                "1,1,3,1,6,1000,21", "2,1,5,1,6,1000,21", "2,1,10,1,6,1000,21", "2,1,6,1000,21"};
-
-        List<Member> data1 = new ArrayList<>();
-        List<Member> data2 = new ArrayList<>();
-        int i = 100000;
-        for (int i1 = 0; i1 < i; i1++) {
-            Member m = new Member();
-            m.setUnipos(dataSource[i1 % 20]);
-            m.setId(i1 + "");
-            data1.add(m);
-            data2.add(m);
-        }
-
-        StopWatch watch = new StopWatch();
-     /*   watch.start("串行");
-        System.out.println(sortMemberSingle(data1).get(200000).getUnipos());
-        watch.stop();
-        System.out.println(watch.getLastTaskTimeMillis());*/
-
-        watch.start("并行");
-        System.out.println(sortMember(data2).get(200000).getUnipos());
-        watch.stop();
-        System.out.println(watch.getLastTaskTimeMillis());
-    }
 
 
 }

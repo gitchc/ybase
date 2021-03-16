@@ -5,6 +5,7 @@ import com.yonyou.mde.web.model.Member;
 import com.yonyou.mde.web.model.entity.MemberTree;
 import com.yonyou.mde.web.model.vos.MemberFiled;
 import com.yonyou.mde.web.model.vos.MemberVO;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 

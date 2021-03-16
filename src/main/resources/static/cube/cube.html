@@ -196,9 +196,11 @@
             var dimArr = [];
             if (!dimids) {
                 $("#cubecode").removeClass('layui-disabled');
+                $("#cubecode").removeAttr("disabled");
             } else {
                 dimArr = dimids.split(',');
                 $("#cubecode").addClass('layui-disabled');
+                $("#cubecode").attr("disabled", "true");
             }
             fetchGet("/member/listDim", function (alldims) {
                 var content = "";
