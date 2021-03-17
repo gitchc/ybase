@@ -71,7 +71,7 @@ public class CubeLoader {
      * @param: config
      * @author chenghch
      */
-    private static DataSourceInfo getDataSourceInfo(DataSourceConfig config) {
+    public static DataSourceInfo getDataSourceInfo(DataSourceConfig config) {
         DataSourceInfo info = new DataSourceInfo();
         info.setUrl(config.getUrl());
         info.setUsername(config.getUsername());

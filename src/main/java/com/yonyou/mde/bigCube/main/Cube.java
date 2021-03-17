@@ -27,9 +27,9 @@ public class Cube implements ICube {
         return modelApi.find(exp);
     }
 
-    public SliceResult find(String... exp) throws MdeException {
+    /*public SliceResult find(String... exp) throws MdeException {
         return modelApi.find(exp);
-    }
+    }*/
 
     public double findVal(String exp) throws MdeException {
         return modelApi.findVal(exp);

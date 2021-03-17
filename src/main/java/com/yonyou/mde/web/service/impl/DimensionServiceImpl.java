@@ -26,7 +26,6 @@ import java.util.List;
  * Created by CodeGenerator on 2020-12-10.
  */
 @Service
-@Transactional
 public class DimensionServiceImpl extends AbstractService<Dimension> implements DimensionService {
     @Resource
     private DimensionMapper dimensionMapper;
@@ -40,7 +39,7 @@ public class DimensionServiceImpl extends AbstractService<Dimension> implements 
     public String insertDim(Dimension dimension) throws ServiceException {
         List<Dimension> old = dimensionMapper.getDimsByCode(dimension.getCode());
         if (old.size() > 0) {
-            throw new ServiceException("维度编码不能重复!");
+            throw new ServiceException(dimension.getCode()+"维度编码不能重复!");
         }
         dimension.setId(SnowID.nextID());
         dimension.setPid("-1");

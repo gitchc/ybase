@@ -70,7 +70,7 @@ public class basetst extends Tester {
 
     @Test
     public void findall() throws MdeException {
-        Cube cube = Server.getCube("testmodel");
+        /*Cube cube = Server.getCube("testmodel");
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.1月", 1);
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.2月", 1);
         cube.setData("Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.3月", 1);
@@ -78,6 +78,6 @@ public class basetst extends Tester {
                 "Area.北京#YEAR.2020年#VERSION.第1版#account.电费#QIJIAN.[1月,2月,3月]", "Area.北京#QIJIAN.1月#YEAR.2021年#VERSION.第1版#account.电费", "Area.北京#YEAR.2020年#QIJIAN.1月#VERSION.第2版#account.电费"};
 
         SliceResult allresult = cube.find(exp);
-        System.out.println(allresult.toTable().printAll());
+        System.out.println(allresult.toTable().printAll());*/
     }
 }
