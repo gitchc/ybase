@@ -23,8 +23,8 @@ public class LoadCube {
     @PostConstruct
     public void init() {//加载自动装载的cube
         mdeManager.initMde();//初始化MDE环境
-//        cubeService.loadAllAutoCube();//load所有自动加载
-        new BudgetMysqlModelLoader().load(dataSourceConfig);
+        cubeService.loadAllAutoCube();//load所有自动加载
+//        new BudgetMysqlModelLoader().load(dataSourceConfig);
 
     }
 }
